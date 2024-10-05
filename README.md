@@ -153,7 +153,7 @@ Este repositório foi criado com a intenção de propor uma possível solução 
 > 4. __L4. Questão aberta__
 >     - A seguir está uma questão aberta sobre um recurso importante de um autorizador completo (que você não precisa implementar, apenas discuta da maneira que achar adequada, como texto, diagramas, etc.).
 >       - Transações simultâneas: dado que o mesmo cartão de crédito pode ser utilizado em diferentes serviços online, existe uma pequena mas existente probabilidade de ocorrerem duas transações ao mesmo tempo. O que você faria para garantir que apenas uma transação por conta fosse processada em um determinado momento? Esteja ciente do fato de que todas as solicitações de transação são síncronas e devem ser processadas rapidamente (menos de 100 ms), ou a transação atingirá o timeout.
-> <br/>
+> 
 > <br/>
 > 
 > ---
@@ -161,7 +161,7 @@ Este repositório foi criado com a intenção de propor uma possível solução 
 > <br/>
 > 
 > _Para este teste, tente ao máximo implementar um sistema de autorização de transações considerando todos os desafios apresentados (L1 a L4) e conceitos básicos._
-> <br/>
+> 
 > <br/>
 
 <br/>
