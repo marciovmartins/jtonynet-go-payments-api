@@ -1,0 +1,29 @@
+name: TESTES_CI
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+         go-version: 1.18.1
+
+    - name: Install dependencies
+      working-directory: ./payments-api
+      run: go mod download
+
+    - name: Test
+      working-directory: ./payments-api
+      run: go test
+
