@@ -15,7 +15,7 @@
 
 
 ![Badge Status](https://img.shields.io/badge/STATUS-EM_DESENVOLVIMENTO-green) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW%20KANBAN-GITHUB-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1) <!-- ![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main) -->
-
+>
 ---
 
 ## 🕸️ Redes
@@ -183,6 +183,11 @@ __TODO__
 
 <a id="environment"></a>
 #### 🌐 Ambiente
+
+Docker e Docker Compose são necessários para rodar a aplicação de forma containerizada, e é fortemente recomendado utilizá-los para rodar o banco de dados localmente.
+
+Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./payments-api/.env`.
+
 <br/>
 
 <a id="run-containerized"></a>
@@ -288,6 +293,7 @@ erDiagram
         UUID uuid
         datetime created_at
         datetime updated_at
+        timestamp deleted_at
     }
 
     balances {
@@ -302,16 +308,17 @@ erDiagram
     }
 
     transactions {
-        int id
+        int id PK
         UUID uuid
         int account_id FK
         string mcc
         string merchant
-        int total_amount
-        int approved_amount
+        decimal total_amount
+        decimal approved_amount
         enum status
         timestamp created_at
         timestamp updated_at
+        timestamp deleted_at
     }
     
     mcc_merchant_map {
@@ -320,6 +327,9 @@ erDiagram
         string merchant_name
         string mcc
         string mapped_mcc
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_at
     }
 
     accounts ||--o{ balances : has

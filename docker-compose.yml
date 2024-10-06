@@ -1,0 +1,63 @@
+version: '3.7'
+name: payments-api
+
+networks:
+  payments-network:
+    driver: bridge
+
+volumes:
+  postgres-payments-data:
+    external: false
+  test-postgres-payments-data:
+    external: false
+
+services:
+  postgres-payments:
+    image: postgres:16.0-alpine
+    container_name: postgres-payments
+    hostname: postgres-payments
+    environment:
+      POSTGRES_USER: api_user
+      POSTGRES_PASSWORD: api_pass
+      POSTGRES_DB: payments_db
+      PGTZ: America/Sao_Paulo
+      TZ: America/Sao_Paulo
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-payments-data:/var/lib/postgresql/data
+    command: postgres -c timezone=America/Sao_Paulo
+    networks:
+      - payments-network
+
+  test-postgres-payments:
+    image: postgres:16.0-alpine
+    container_name: test-postgres-payments
+    hostname: test-postgres-payments
+    environment:
+      POSTGRES_USER: test_api_user
+      POSTGRES_PASSWORD: test_api_pass
+      POSTGRES_DB: test_payments_db
+      PGTZ: America/Sao_Paulo
+      TZ: America/Sao_Paulo
+    ports:
+      - "5433:5432"
+    volumes:
+      - test-postgres-payments-data:/var/lib/postgresql/data
+    command: postgres -c timezone=America/Sao_Paulo
+    networks:
+      - payments-network
+
+  payments-api:
+    build:
+      context: ./payments-api
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres-payments
+    container_name: payments-api
+    hostname: payments-api
+    ports:
+      - "8080:8080"
+    tty: true
+    networks:
+      - payments-network
