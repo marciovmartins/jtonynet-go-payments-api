@@ -179,8 +179,6 @@ Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adota
 <a id="run"></a>
 ### 💻 Rodando o Projeto
 
-__TODO__
-
 <a id="environment"></a>
 #### 🌐 Ambiente
 
@@ -192,6 +190,16 @@ Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./paymen
 
 <a id="run-containerized"></a>
 #### 🐋 Conteinerizado 
+
+Com a `.env` editada, rode os comandos `docker compose` (de acordo com sua versão do docker compose) no diretório raiz do projeto:
+
+```bash
+/js-med-planner$ docker compose build
+/js-med-planner$ docker compose up postgres-payments -d
+/js-med-planner$ docker compose up payments-api
+```
+ A API esta pronta e a rota da [documentação swagger](#api-docs) estará disponível.
+
 <br/>
 
 <a id="run-locally"></a>
@@ -250,6 +258,7 @@ flowchart TD
     H --> L[Retorna Código 51 Rejeitada]
 ```
 
+<a id="diagrams-flowchart-description"></a>
 ##### 📝 Descrição
 
 1. **Recebe Transação JSON**: O sistema recebe o payload de transação.
@@ -284,7 +293,7 @@ _*Esse fluxo representa o processo de aprovação, fallback e rejeição da tran
 <br/>
 
 <a id="diagrams-erchart"></a>
-#### 📈 Entidade Relacionamento
+#### 📈 ER
 
 ```mermaid
 erDiagram
@@ -336,7 +345,7 @@ erDiagram
     accounts ||--o{ transactions : performs
     transactions ||--|| mcc_merchant_map : "maps to"
 ```
-
+<a id="diagrams-erchart-description"></a>
 ##### 📝 Descrição
 
 **Accounts** é a tabela principal, conectada tanto a **Balances** quanto a **Transactions**, armazenando informações sobre as contas.  
