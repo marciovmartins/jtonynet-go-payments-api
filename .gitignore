@@ -13,6 +13,7 @@
 
 # env
 .env
+./payments-api/.env
 
 # vscode
 .vscode/

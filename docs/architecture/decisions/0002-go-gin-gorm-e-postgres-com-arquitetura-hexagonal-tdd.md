@@ -22,7 +22,7 @@ _[*Imagem retirada do artigo: The Testing Pyramid: Simplified for One and All](h
 
 Este documento determina o fluxo de trabalho __Branch Based com Feature Branch__, design estrutural e a abordagem de testes para garantir um padrão para a aplicação.
 
-O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`. Porém, realizarei em Golang, em arquitetura hexagonal, por ter maior familiaridade, além de considerá-las altamente performáticas.
+O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`. Porém, realizarei em Golang, em arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por ter maior familiaridade, além de considerá-las altamente performáticas.
 
 O desafio deixa claro no trecho:
 
@@ -47,7 +47,7 @@ Escolhemos GORM pela sua flexibilidade e capacidade de integração com os princ
 Optamos pelo PostgreSQL devido à sua robustez e features modernas, como JSONB, que oferecem flexibilidade para lidar com dados estruturados e semiestruturados. Postgres também é conhecido pela sua confiabilidade em ambientes de alta carga, o que é essencial considerando o volume de transações esperadas.
 
 #### Arquitetura Hexagonal
-A Arquitetura Hexagonal foi escolhida por sua capacidade de isolar o domínio do problema das implementações tecnológicas, permitindo que mudanças em frameworks ou bancos de dados não impactem o núcleo da aplicação. Esse design também facilita a testabilidade e a separação de responsabilidades, o que é crítico em um projeto que deve evoluir rapidamente sem comprometer a manutenibilidade.
+A Arquitetura [Hexagonal](https://alistair.cockburn.us/hexagonal-architecture/) foi escolhida por sua capacidade de isolar o domínio do problema das implementações tecnológicas, permitindo que mudanças em frameworks ou bancos de dados não impactem o núcleo da aplicação. Esse design também facilita a testabilidade e a separação de responsabilidades, o que é crítico em um projeto que deve evoluir rapidamente sem comprometer a manutenibilidade.
 
 #### TDD
 A adoção de TDD garante que a aplicação seja desenvolvida com um foco claro na cobertura de testes, minimizando bugs e retrabalho ao longo do ciclo de vida do projeto. Isso também nos prepara para uma maior resiliência em produção, especialmente considerando o impacto de falhas em um sistema financeiro.
