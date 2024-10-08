@@ -532,9 +532,9 @@ __TODO__
 ├── internal
 │   ├── core
 │   │   ├── service
-│   │   │    └── accountService.go
+│   │   │    └── accountService.go // fala com dominio
 │   │   ├── domain
-│   │   │    ├── accounts.go
+│   │   │    ├── accounts.go // fala com porta de repositorio
 │   │   │    ├── balances.go
 │   │   │    ├── transactions.go
 │   │   │    └── mccMerchantMap.go

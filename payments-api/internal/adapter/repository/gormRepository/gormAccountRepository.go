@@ -24,14 +24,14 @@ func NewGormAccountRepository(conn database.Conn) port.AccountRepository {
 	}
 
 	//---
-	var accounts []model.GormAccountModel
+	// var accounts []model.GormAccountModel
 
-	db := gormConn.GetDB()
+	// db := gormConn.GetDB()
 
-	err := db.Find(&accounts).Error
-	if err != nil {
-		return nil, fmt.Errorf("failure on database connection: %w", err)
-	}
+	// err := db.Find(&accounts).Error
+	// if err != nil {
+	// 	return nil, fmt.Errorf("failure on database connection: %w", err)
+	// }
 	//---
 
 	return GormAccountRepository{Conn: gormConn}
