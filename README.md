@@ -16,7 +16,7 @@
 
 ![Badge Status](https://img.shields.io/badge/STATUS-EM_DESENVOLVIMENTO-green) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW%20KANBAN-GITHUB-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1) <!-- ![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main) -->
 >
----
+
 
 ## 🕸️ Redes
 
@@ -166,7 +166,7 @@ Este repositório foi criado com a intenção de propor uma possível solução 
 
 <br/>
 
-O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`, evidenciando preferências, mas aceitando subscrições com outras linguagens e paradigmas. Realizarei em `Golang`, com arquitetura `hexagonal`, por maior familiaridade e experiência.
+O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`, evidenciando preferências, mas aceitando subscrições com outras linguagens e paradigmas. Realizarei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior familiaridade e experiência.
 
 Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adotar novas tecnologias e paradigmas conforme necessário.
 
@@ -179,8 +179,6 @@ Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adota
 <a id="run"></a>
 ### 💻 Rodando o Projeto
 
-__TODO__
-
 <a id="environment"></a>
 #### 🌐 Ambiente
 
@@ -192,10 +190,25 @@ Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./paymen
 
 <a id="run-containerized"></a>
 #### 🐋 Conteinerizado 
+
+Com a `.env` editada, rode os comandos `docker compose` (de acordo com sua versão do docker compose) no diretório raiz do projeto:
+
+```bash
+/go-payments-api$ docker compose build
+/go-payments-api$ docker compose up postgres-payments -d
+/go-payments-api$ docker compose up payments-api
+```
+ A API esta pronta e a rota da [documentação swagger](#api-docs) estará disponível.
+
 <br/>
 
 <a id="run-locally"></a>
 #### 🏠 Local
+
+```
+payments-api$ go run cmd/http/main.go
+```
+
 <br/>
 
 <br/>
@@ -250,6 +263,7 @@ flowchart TD
     H --> L[Retorna Código 51 Rejeitada]
 ```
 
+<a id="diagrams-flowchart-description"></a>
 ##### 📝 Descrição
 
 1. **Recebe Transação JSON**: O sistema recebe o payload de transação.
@@ -284,13 +298,14 @@ _*Esse fluxo representa o processo de aprovação, fallback e rejeição da tran
 <br/>
 
 <a id="diagrams-erchart"></a>
-#### 📈 Entidade Relacionamento
+#### 📈 ER
 
 ```mermaid
 erDiagram
     accounts {
         int id PK
         UUID uuid
+        string name
         datetime created_at
         datetime updated_at
         timestamp deleted_at
@@ -336,7 +351,7 @@ erDiagram
     accounts ||--o{ transactions : performs
     transactions ||--|| mcc_merchant_map : "maps to"
 ```
-
+<a id="diagrams-erchart-description"></a>
 ##### 📝 Descrição
 
 **Accounts** é a tabela principal, conectada tanto a **Balances** quanto a **Transactions**, armazenando informações sobre as contas.  
@@ -428,7 +443,7 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
 
 
 - Linguagem:
-  - [Go](https://go.dev/)
+  - [Go 1.23](https://go.dev/)
   - [GVM v1.0.22](https://github.com/moovweb/gvm)
 
 - Framework & Libs:
@@ -505,9 +520,73 @@ __TODO__
 
 [⤴️ de volta ao índice](#index)
 
----
+
+
+
 
 <!-- 
+
+```bash
+.
+├── bin
+├── cmd
+│   └── http
+│       └── main.go
+├── config
+│   └── config.go
+├── internal
+│   ├── adapter
+│   │    ├── routes
+│   │    ├── handler
+│   │    │   ├── http
+│   │    │       └── GinAccountHandler.go
+│   │    ├── database
+│   │    │   ├── strategies
+│   │    │   │   └── gormDB.go
+│   │    │   └── database.go
+│   │    └── model
+│   │    │   └── gormModel
+│   │    │       ├── Account.go
+│   │    │       ├── Balance.go
+│   │    │       ├── Transaction.go
+│   │    │       └── MCCmerchantMap.go
+│   │    └── repository
+│   │        ├── gormRepository
+│   │        │   ├── gormAccounts.go
+│   │        │   ├── gormBalances.go
+│   │        │   ├── gormTransactions.go
+│   │        │   └── gormMCCmerchantMap.go
+│   │        └── repository.go
+│   ├── bootstrap
+│   │   └── container.go
+│   └── core
+│       ├── service
+│       │   └── accountService.go // fala com dominio
+│       ├── domain
+│       │   ├── accounts.go // fala com porta de repositorio
+│       │   ├── balances.go
+│       │   ├── transactions.go
+│       │   └── mccMerchantMap.go
+│       └── port 
+│           ├── handler
+│           │   └── accountHandler.go
+│           └── repository
+|               ├── accounts.go
+|               ├── balances.go
+|               ├── transactions.go
+|               └── mccMerchantMap.go
+├── .env
+├── go.mod
+└── go.sum
+```
+
+
+│           ├── rawRepository
+│           │   ├── rawAccounts.go
+│           │   ├── rawBalances.go
+│           │   ├── rawTransactions.go
+│           │   └── rawMCCmerchantMap.go
+
 // Removendo processos de uma porta. ex.: 3000
 sudo kill -9 $(lsof -t -i:3000)
 
@@ -525,3 +604,49 @@ docker system prune -a --volumes
 
 sudo systemctl restart docker
 -->
+
+<!-- 
+Apos efetuar o download/instalacao de uma nova versao da GoLang:
+
+Validar a existencia da nova versao no diretorio `/usr/lib` como comando `ls -la | grep go`
+saida esperada:
+
+```bash
+drwxr-xr-x 129 root root   12288 ago 26 19:27 .
+lrwxrwxrwx   1 root root       7 mar 23  2022 go -> go-1.18
+lrwxrwxrwx  1 root   root     24 mar 23  2022 gofmt -> ../lib/go-1.18/bin/gofmt
+drwxr-xr-x   2 root root    4096 mar 20  2024 go-1.13
+drwxr-xr-x   4 root root    4096 mar 20  2024 go-1.18
+drwxr-xr-x  10 root root    4096 ago 31  2023 go-1.21.1
+
+```
+
+Em `/usr/bin` executar o comando `ls -la | grep go` e identificar os links simbolicos da versao atualmente instalada, a considerar:
+
+- go -> ../lib/go-1.18/bin/go            # ou similar
+- gofmt -> ../lib/go-1.18/bin/gofmt      # ou similar
+
+renomear os links simbolicos das versoes antigas de Go
+
+- sudo mv go go_OLD_1.18
+- sudo mv gofmt gofmt_OLD_1.18
+
+Apontar para as versoes recentes/atualizadas de `/usr/lib`
+
+```
+/usr/bin$ sudo ln -s ../lib/go-1.23.2/bin/gofmt gofmt
+/usr/bin$ sudo ln -s go-1.23.2 go
+
+```
+
+/*
+TODO: https://github.com/uber-go/fx as dependency container
+func NewApp() *fx.App {
+	app := fx.New()
+	return app
+}
+*/
+
+-->
+
+
