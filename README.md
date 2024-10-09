@@ -520,62 +520,73 @@ __TODO__
 
 [⤴️ de volta ao índice](#index)
 
----
 
+
+
+
+<!-- 
 
 ```bash
 .
+├── bin
 ├── cmd
 │   └── http
-│   │   └── main.go
+│       └── main.go
 ├── config
+│   └── config.go
 ├── internal
-│   ├── core
-│   │   ├── service
-│   │   │    └── accountService.go // fala com dominio
-│   │   ├── domain
-│   │   │    ├── accounts.go // fala com porta de repositorio
-│   │   │    ├── balances.go
-│   │   │    ├── transactions.go
-│   │   │    └── mccMerchantMap.go
-│   │   └── port 
-│   │       ├── handler
-│   │       │     └── accountHandler.go
-│   │       └── repository
-|   │           ├── accounts.go
-|   │           ├── balances.go
-|   │           ├── transactions.go
-|   │           └── mccMerchantMap.go
 │   ├── adapter
-│   │   ├── handler
-│   │   │    ├── AccountHandler
-│   │   │    │    └── GinAccountHandler.go
-│   │   ├── database
-│   │   │    ├── strategies
-│   │   │    │    ├── gormDB.go
-│   │   │    │    └── rawDB.go
-│   │   │    └── database.go
-│   │   └── model
-│   │   │    ├── gormModel
-│   │   │    │    ├── gormAccountModel.go
-│   │   │    │    ├── gormBalanceModel.go
-│   │   │    │    ├── gormTransactionModel.go
-│   │   │    │    └── gormMCCmerchantMapModel.go
-│   │   └── repository
-│   │   │    ├── gormRepository
-│   │   │    │    ├── gormAccounts.go
-│   │   │    │    ├── gormBalances.go
-│   │   │    │    ├── gormTransactions.go
-│   │   │    │    └── gormMCCmerchantMap.go
-│   │   │    └── rawRepository
-│   │   │    │    ├── rawAccounts.go
-│   │   │    │    ├── rawBalances.go
-│   │   │    │    ├── rawTransactions.go
-│   │   │    │    └── rawMCCmerchantMap.go
-│   │   │    └── repository.go
+│   │    ├── routes
+│   │    ├── handler
+│   │    │   ├── http
+│   │    │       └── GinAccountHandler.go
+│   │    ├── database
+│   │    │   ├── strategies
+│   │    │   │   └── gormDB.go
+│   │    │   └── database.go
+│   │    └── model
+│   │    │   └── gormModel
+│   │    │       ├── Account.go
+│   │    │       ├── Balance.go
+│   │    │       ├── Transaction.go
+│   │    │       └── MCCmerchantMap.go
+│   │    └── repository
+│   │        ├── gormRepository
+│   │        │   ├── gormAccounts.go
+│   │        │   ├── gormBalances.go
+│   │        │   ├── gormTransactions.go
+│   │        │   └── gormMCCmerchantMap.go
+│   │        └── repository.go
+│   ├── bootstrap
+│   │   └── container.go
+│   └── core
+│       ├── service
+│       │   └── accountService.go // fala com dominio
+│       ├── domain
+│       │   ├── accounts.go // fala com porta de repositorio
+│       │   ├── balances.go
+│       │   ├── transactions.go
+│       │   └── mccMerchantMap.go
+│       └── port 
+│           ├── handler
+│           │   └── accountHandler.go
+│           └── repository
+|               ├── accounts.go
+|               ├── balances.go
+|               ├── transactions.go
+|               └── mccMerchantMap.go
+├── .env
+├── go.mod
+└── go.sum
 ```
 
-<!-- 
+
+│           ├── rawRepository
+│           │   ├── rawAccounts.go
+│           │   ├── rawBalances.go
+│           │   ├── rawTransactions.go
+│           │   └── rawMCCmerchantMap.go
+
 // Removendo processos de uma porta. ex.: 3000
 sudo kill -9 $(lsof -t -i:3000)
 
@@ -627,6 +638,15 @@ Apontar para as versoes recentes/atualizadas de `/usr/lib`
 /usr/bin$ sudo ln -s go-1.23.2 go
 
 ```
+
+/*
+TODO: https://github.com/uber-go/fx as dependency container
+func NewApp() *fx.App {
+	app := fx.New()
+	return app
+}
+*/
+
 -->
 
 

@@ -15,5 +15,7 @@
 .env
 ./payments-api/.env
 
+./payments-api//internal/core/service/transaction.go
+
 # vscode
 .vscode/

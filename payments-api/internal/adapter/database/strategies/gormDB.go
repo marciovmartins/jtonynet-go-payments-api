@@ -5,16 +5,19 @@ import (
 	"fmt"
 
 	"github.com/jtonynet/go-payments-api/config"
-	model "github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
+	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
+	port "github.com/jtonynet/go-payments-api/internal/core/port"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-type GormDB struct {
-	DB *gorm.DB
+type GormConn struct {
+	DB       *gorm.DB
+	strategy string
+	driver   string
 }
 
-func NewGormDB(cfg config.Database) (GormDB, error) {
+func NewGormConn(cfg config.Database) (port.DBConn, error) {
 	switch cfg.Driver {
 	case "postgres":
 		strConn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
@@ -27,38 +30,45 @@ func NewGormDB(cfg config.Database) (GormDB, error) {
 
 		db, err := gorm.Open(postgres.Open(strConn), &gorm.Config{})
 		if err != nil {
-			return GormDB{}, fmt.Errorf("failure on database connection: %w", err)
+			return GormConn{}, fmt.Errorf("failure on database connection: %w", err)
 		}
 
-		db.AutoMigrate(&model.GormAccountModel{})
+		db.AutoMigrate(&gormModel.Account{})
 
-		gdb := GormDB{DB: db}
+		gConn := GormConn{
+			DB:       db,
+			strategy: cfg.Strategy,
+			driver:   cfg.Driver,
+		}
 
-		// var accountRepo port.AccountRepository = repository.NewGormAccountRepository(gdb)
-		// fmt.Println("\nolar:\n")
-		// fmt.Println(accountRepo)
-		// fmt.Println("\n-----------------\n")
-
-		return gdb, nil
+		return gConn, nil
 
 	default:
-		return GormDB{}, errors.New("database driver not suported: " + cfg.Driver)
+		return GormConn{}, errors.New("database conn driver not suported: " + cfg.Driver)
 	}
 }
 
-func (g GormDB) GetDB() interface{} {
-	return g.DB
-}
-
-func (g GormDB) Readiness() error {
-	sqlDB, err := g.DB.DB()
+func (gConn GormConn) Readiness() error {
+	rawDB, err := gConn.DB.DB()
 	if err != nil {
 		return fmt.Errorf("failed to get database instance: %w", err)
 	}
 
-	if err := sqlDB.Ping(); err != nil {
+	if err := rawDB.Ping(); err != nil {
 		return fmt.Errorf("database is not reachable: %w", err)
 	}
 
 	return nil
+}
+
+func (gConn GormConn) GetDB() interface{} {
+	return *gConn.DB
+}
+
+func (gConn GormConn) GetStrategy() string {
+	return gConn.strategy
+}
+
+func (gConn GormConn) GetDriver() string {
+	return gConn.driver
 }
