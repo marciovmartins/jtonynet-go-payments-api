@@ -443,7 +443,7 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
 
 
 - Linguagem:
-  - [Go 1.23.2](https://go.dev/)
+  - [Go 1.23](https://go.dev/)
   - [GVM v1.0.22](https://github.com/moovweb/gvm)
 
 - Framework & Libs:
