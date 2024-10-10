@@ -19,6 +19,6 @@ func RetrieveAccountList(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "OK",
-		"sumary":  list,
+		"summary": list,
 	})
 }

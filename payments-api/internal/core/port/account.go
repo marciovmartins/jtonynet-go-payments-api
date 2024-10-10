@@ -2,10 +2,14 @@ package port
 
 import (
 	"github.com/gofrs/uuid"
-	gormModel "github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
+	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
 )
 
+type AccountDTORepository struct {
+	UUID uuid.UUID
+}
+
 type AccountRepository interface {
-	FindAll() ([]gormModel.Account, error)
-	FindByUUID(uuid.UUID) (gormModel.Account, error)
+	FindAll() ([]gormModel.Account, error) //TODO: to remove, test purpose
+	FindByUUID(uuid.UUID) (AccountDTORepository, error)
 }

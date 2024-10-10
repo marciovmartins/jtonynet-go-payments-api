@@ -514,18 +514,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 __TODO__
 
-😊🚀
-
-<br/>
-
-[⤴️ de volta ao índice](#index)
-
-
-
-
-
-<!-- 
-
+__Estrutura Do Projeto__
 ```bash
 .
 ├── bin
@@ -536,34 +525,36 @@ __TODO__
 │   └── config.go
 ├── internal
 │   ├── adapter
-│   │    ├── routes
-│   │    ├── handler
-│   │    │   ├── http
-│   │    │       └── GinAccountHandler.go
-│   │    ├── database
-│   │    │   ├── strategies
-│   │    │   │   └── gormDB.go
-│   │    │   └── database.go
-│   │    └── model
-│   │    │   └── gormModel
-│   │    │       ├── Account.go
-│   │    │       ├── Balance.go
-│   │    │       ├── Transaction.go
-│   │    │       └── MCCmerchantMap.go
-│   │    └── repository
-│   │        ├── gormRepository
-│   │        │   ├── gormAccounts.go
-│   │        │   ├── gormBalances.go
-│   │        │   ├── gormTransactions.go
-│   │        │   └── gormMCCmerchantMap.go
-│   │        └── repository.go
+│   │   ├── handler
+│   │   │   ├── http
+│   │   │   │   └── GinTransactionHandler.go
+│   │   │   ├── middleware
+│   │   │   │   └── GinMiddleware.go
+|   |   |   └── routes
+|   |   |       └── ginRoutes.go
+│   │   ├── database
+│   │   │   ├── strategies
+│   │   │   │   └── gormConn
+│   │   │   │       └── gormConn.go
+│   │   │   └── database.go
+│   │   └── model
+│   │   │   └── gormModel
+│   │   │       ├── account.go
+│   │   │       └── baseModel.go
+│   │   └── repository
+│   │       ├── strategies
+│   │       │   └── gormRepos
+│   │       │       ├── account.go
+│   │       │       ├── balance.go
+│   │       │       └── transactions.go
+│   │       └── repository.go
 │   ├── bootstrap
 │   │   └── container.go
 │   └── core
 │       ├── service
-│       │   └── accountService.go // fala com dominio
+│       │   └── accountService.go //domains
 │       ├── domain
-│       │   ├── accounts.go // fala com porta de repositorio
+│       │   ├── accounts.go //port/repository
 │       │   ├── balances.go
 │       │   ├── transactions.go
 │       │   └── mccMerchantMap.go
@@ -579,6 +570,17 @@ __TODO__
 ├── go.mod
 └── go.sum
 ```
+_*Estrutura de pastas eh diferente de `Arquitetura`, mas fornece uma boa ideia do que foi desenvolvido_
+
+😊🚀
+
+<br/>
+
+[⤴️ de volta ao índice](#index)
+
+
+
+<!-- 
 
 
 │           ├── rawRepository
