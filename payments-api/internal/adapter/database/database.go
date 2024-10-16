@@ -4,8 +4,8 @@ import (
 	"errors"
 
 	"github.com/jtonynet/go-payments-api/config"
-	"github.com/jtonynet/go-payments-api/internal/adapter/database/strategies/gormConn"
-	port "github.com/jtonynet/go-payments-api/internal/core/port"
+	"github.com/jtonynet/go-payments-api/internal/adapter/database/gormConn"
+	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
 func NewConn(cfg config.Database) (port.DBConn, error) {

@@ -27,7 +27,7 @@ func NewApp(cfg *config.Config) (App, error) {
 
 	fmt.Println("successfully connected to the database!")
 
-	repos, err := repository.GetRepos(conn)
+	repos, err := repository.GetAll(conn)
 	if err != nil {
 		return App{}, fmt.Errorf("error when instantiating Account repository: %v", err)
 	}

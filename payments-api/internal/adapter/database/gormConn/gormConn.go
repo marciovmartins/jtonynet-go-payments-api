@@ -6,7 +6,7 @@ import (
 
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
-	port "github.com/jtonynet/go-payments-api/internal/core/port"
+	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

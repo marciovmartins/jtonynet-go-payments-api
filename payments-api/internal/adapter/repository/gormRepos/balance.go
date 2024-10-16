@@ -10,10 +10,10 @@ func NewGormBalanceRepository() (GormBalanceRepository, error) {
 	return GormBalanceRepository{}, nil
 }
 
-func (gbr *GormBalanceRepository) FindByAccountUUID(accountUUID string) (port.BalanceDTORepository, error) {
-	return port.BalanceDTORepository{}, nil
+func (gbr *GormBalanceRepository) FindByAccountID(id int) ([]port.BalanceEntity, error) {
+	return nil, nil
 }
 
-func (gbr *GormBalanceRepository) Update(port.BalanceDTORepository) error {
+func (gbr *GormBalanceRepository) Update(port.BalanceEntity) error {
 	return nil
 }

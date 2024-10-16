@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/jtonynet/go-payments-api/internal/adapter/repository/strategies/gormRepos"
-	port "github.com/jtonynet/go-payments-api/internal/core/port"
+	"github.com/jtonynet/go-payments-api/internal/adapter/repository/gormRepos"
+	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
 type Repos struct {
@@ -14,7 +14,7 @@ type Repos struct {
 	Transaction port.TransactionRepository
 }
 
-func GetRepos(conn port.DBConn) (Repos, error) {
+func GetAll(conn port.DBConn) (Repos, error) {
 	repos := Repos{}
 
 	strategy := conn.GetStrategy()
@@ -25,22 +25,6 @@ func GetRepos(conn port.DBConn) (Repos, error) {
 			return Repos{}, fmt.Errorf("error when instantiating Gorm Account repository: %v", err)
 		}
 		repos.Account = account
-
-		/*
-			balanceRepo, err := gormStrategy.NewGormBalanceRepository()
-			if err != nil {
-				// TODO Marcio pediu para ignorar mas meu toc nao deixa!
-				return Repos{}, fmt.Errorf("error when instantiating Gorm Account repository: %v", err)
-			}
-			repos.Balance = balanceRepo
-
-			transactionRepo, err := gormStrategy.NewGormTransactionRepository()
-			if err != nil {
-				// TODO Marcio pediu para ignorar mas meu toc nao deixa!
-				return Repos{}, fmt.Errorf("error when instantiating Gorm Account repository: %v", err)
-			}
-			repos.Transaction = transactionRepo
-		*/
 
 		return repos, nil
 	default:

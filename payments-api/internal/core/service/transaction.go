@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
+	"github.com/jtonynet/go-payments-api/internal/core/constants"
+	"github.com/jtonynet/go-payments-api/internal/core/customError"
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
@@ -12,70 +14,90 @@ type Transaction struct {
 	repos repository.Repos
 }
 
-func NewTransction(repos repository.Repos) Transaction {
-	return Transaction{repos}
+func NewTransaction(repos repository.Repos) *Transaction {
+	return &Transaction{repos}
 }
 
-func (t *Transaction) HandleTransactionL1(tDTOHandler port.TransactionDTORequest) (string, error) {
-	tDomain, _ := mapTransactionDTOtoDomain(tDTOHandler)
+func (t *Transaction) HandleTransaction(tRequest port.TransactionRequest) (*Transaction, error) {
+	tDomain, err := domain.NewTransactionFromRequest(tRequest)
+	if err != nil {
+		msg := fmt.Sprintf("dont map instantiate transaction domain from request: %v", err)
+		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+	}
 
 	accountRepo := t.repos.Account
-	accountDTORepository, err := accountRepo.FindByUUID(tDomain.AccountUUID)
+	accountEntity, err := accountRepo.FindByUID(tDomain.AccountUID)
 	if err != nil {
-		//TODO implements error in future
-		return "todo KCT", fmt.Errorf("dont retrieve account: %v", err)
+		msg := fmt.Sprintf("dont retrieve account entity: %v", err)
+		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
-	aDomain, _ := mapAccountDTOtoDomain(accountDTORepository)
+
+	accountDomain, err := domain.NewAccountFromEntity(accountEntity)
+	if err != nil {
+		msg := fmt.Sprintf("dont instantiate account domain from entity: %v", err)
+		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+	}
 
 	balanceRepo := t.repos.Balance
-	balanceDTORepository, err := balanceRepo.FindByAccountUUID(aDomain.UUID)
+	balanceEntity, err := balanceRepo.FindByAccountID(accountDomain.ID)
 	if err != nil {
-		//TODO implements error in future
-		return "todo KCT", fmt.Errorf("dont retrieve account: %v", err)
+		msg := fmt.Sprintf("dont retrieve balance entity: %v", err)
+		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
-	bDomain, _ := mapBalanceDTOtoDomain(balanceDTORepository)
 
-	approvedBalance, _ := bDomain.Approve(tDomain)
-	// TODO TRATAR ERROS
+	balanceDomain, err := domain.NewBalanceFromEntity(balanceEntity)
+	if err != nil {
+		msg := fmt.Sprintf("dont instantiate balance domain from entity: %v", err)
+		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+	}
+
+	approvedBalance, err := balanceDomain.Approve(tDomain)
+	if err != nil {
+		msg := fmt.Sprintf("dont approve balance domain: %v", err)
+		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+	}
 
 	err = balanceRepo.Update(mapBalanceDomainToEntity(approvedBalance))
 	if err != nil {
-		//TODO implements error in future
-		return "todo KCT", fmt.Errorf("dont retrieve account: %v", err)
+		msg := fmt.Sprintf("dont update balance entity: %v", err)
+		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
 
 	transactionRepo := t.repos.Transaction
 	err = transactionRepo.Save(mapTransactionDomainToEntity(tDomain))
 	if err != nil {
-		//TODO implements error in future
-		return "todo KCT", fmt.Errorf("dont retrieve account: %v", err)
+		msg := fmt.Sprintf("dont save transaction entity: %v", err)
+		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
 
-	fmt.Println(transactionRepo)
-
-	return "00", nil
+	return t, nil
 }
 
-func mapTransactionDomainToEntity(tDomain domain.Transaction) port.TransactionEntity {
-	return port.TransactionEntity{}
+func mapBalanceDomainToEntity(dBalance domain.Balance) port.BalanceEntity {
+	bCategories := make(map[int]port.BalanceByCategoryEntity)
+	for _, categoryItem := range dBalance.GetCategories().Itens {
+		bCategory := port.BalanceByCategoryEntity{
+			ID:        categoryItem.ID,
+			AccountID: dBalance.GetAccountID(),
+			Amount:    categoryItem.Amount,
+			Category:  port.Categories[categoryItem.Name],
+		}
+
+		bCategories[categoryItem.Order] = bCategory
+	}
+
+	return port.BalanceEntity{
+		AccountID:   dBalance.GetAccountID(),
+		AmountTotal: dBalance.GetAmountTotal(),
+		Categories:  bCategories,
+	}
 }
 
-func mapBalanceDomainToEntity(approvedBalance domain.Balance) port.BalanceDTORepository {
-	return port.BalanceDTORepository{}
-}
-
-func mapBalanceDTOtoDomain(bDTORepository port.BalanceDTORepository) (domain.Balance, error) {
-	return domain.Balance{}, nil
-}
-
-func mapAccountDTOtoDomain(aDTORepository port.AccountDTORepository) (domain.Account, error) {
-	return domain.Account{
-		UUID: aDTORepository.UUID,
-	}, nil
-}
-
-func mapTransactionDTOtoDomain(tDTOHandler port.TransactionDTORequest) (domain.Transaction, error) {
-	return domain.Transaction{
-		AccountUUID: tDTOHandler.AccountUUID,
-	}, nil
+func mapTransactionDomainToEntity(tDomain *domain.Transaction) port.TransactionEntity {
+	return port.TransactionEntity{
+		AccountUID:  tDomain.AccountUID,
+		TotalAmount: tDomain.TotalAmount,
+		MCCcode:     tDomain.MCCcode,
+		Merchant:    tDomain.Merchant,
+	}
 }

@@ -512,7 +512,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
-__TODO__
+
 
 __Estrutura Do Projeto__
 ```bash
@@ -525,39 +525,42 @@ __Estrutura Do Projeto__
 │   └── config.go
 ├── internal
 │   ├── adapter
-│   │   ├── handler
-│   │   │   ├── http
+│   │   ├── http
+│   │   │   ├── handler
 │   │   │   │   └── GinTransactionHandler.go
 │   │   │   ├── middleware
 │   │   │   │   └── GinMiddleware.go
 |   |   |   └── routes
-|   |   |       └── ginRoutes.go
-│   │   ├── database
-│   │   │   ├── strategies
-│   │   │   │   └── gormConn
-│   │   │   │       └── gormConn.go
-│   │   │   └── database.go
-│   │   └── model
+|   |   |       └── gin
+|   |   |           └── routes.go
+│   │   ├── model
 │   │   │   └── gormModel
 │   │   │       ├── account.go
 │   │   │       └── baseModel.go
+│   │   ├── database
+│   │   │   ├── gormConn
+│   │   │   │   └── gormConn.go
+│   │   │   └── conn.go
 │   │   └── repository
-│   │       ├── strategies
-│   │       │   └── gormRepos
-│   │       │       ├── account.go
-│   │       │       ├── balance.go
-│   │       │       └── transactions.go
-│   │       └── repository.go
+│   │       ├── gormRepos
+│   │       │   ├── account.go
+│   │       │   ├── balance.go
+│   │       │   └── transactions.go
+│   │       └── repos.go
 │   ├── bootstrap
 │   │   └── container.go
 │   └── core
+│       ├── constants
+│       │   └── constants.go
+│       ├── errors
+│       │   └── customError.go
 │       ├── service
-│       │   └── accountService.go //domains
+│       │   └── accountService.go
 │       ├── domain
-│       │   ├── accounts.go //port/repository
+│       │   ├── accounts.go
 │       │   ├── balances.go
 │       │   ├── transactions.go
-│       │   └── mccMerchantMap.go
+│       │   └── category.go
 │       └── port 
 │           ├── handler
 │           │   └── accountHandler.go
@@ -570,7 +573,6 @@ __Estrutura Do Projeto__
 ├── go.mod
 └── go.sum
 ```
-_*Estrutura de pastas eh diferente de `Arquitetura`, mas fornece uma boa ideia do que foi desenvolvido_
 
 😊🚀
 
@@ -588,6 +590,11 @@ _*Estrutura de pastas eh diferente de `Arquitetura`, mas fornece uma boa ideia d
 │           │   ├── rawBalances.go
 │           │   ├── rawTransactions.go
 │           │   └── rawMCCmerchantMap.go
+
+https://github.com/datosh/gau
+https://herbertograca.com/wp-content/uploads/2018/11/100-explicit-architecture-svg.png?w=1200
+
+---
 
 // Removendo processos de uma porta. ex.: 3000
 sudo kill -9 $(lsof -t -i:3000)

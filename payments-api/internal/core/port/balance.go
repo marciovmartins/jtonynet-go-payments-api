@@ -1,10 +1,23 @@
 package port
 
-import "github.com/gofrs/uuid"
+import (
+	"github.com/shopspring/decimal"
+)
 
-type BalanceDTORepository struct{}
+type BalanceByCategoryEntity struct {
+	ID        int
+	AccountID int
+	Amount    decimal.Decimal
+	Category  CategoryEntity
+}
+
+type BalanceEntity struct {
+	AccountID   int
+	AmountTotal decimal.Decimal
+	Categories  map[int]BalanceByCategoryEntity
+}
 
 type BalanceRepository interface {
-	FindByAccountUUID(uuid.UUID) (BalanceDTORepository, error)
-	Update(BalanceDTORepository) error
+	FindByAccountID(int) (BalanceEntity, error)
+	Update(BalanceEntity) error
 }
