@@ -21,7 +21,7 @@ func NewTransaction(repos repository.Repos) *Transaction {
 func (t *Transaction) HandleTransaction(tRequest port.TransactionRequest) (*Transaction, error) {
 	tDomain, err := domain.NewTransactionFromRequest(tRequest)
 	if err != nil {
-		msg := fmt.Sprintf("dont map instantiate transaction domain from request: %v", err)
+		msg := fmt.Sprintf("dont instantiate transaction domain from request: %v", err)
 		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
 
