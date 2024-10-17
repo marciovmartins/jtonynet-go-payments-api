@@ -10,31 +10,19 @@ import (
 )
 
 type Balance interface {
-	Approve(*Transaction) (Balance, error)
+	Approve(*Transaction) (Balance, *customError.CustomError)
 	GetAccountID() int
 	GetAmountTotal() decimal.Decimal
 	GetCategories() Categories
 }
 
-// type NoOpBalance struct {
-// }
-
-// func (nopB NoOpBalance) Approve(tDomain Transaction) (Balance, error) {
-// 	return NoOpBalance{}, nil
-// }
-
 type BaseBalance struct {
 	AccountID   int
 	AmountTotal decimal.Decimal
 	Categories
-	next Balance
 }
 
 type BalanceL1 struct {
-	BaseBalance
-}
-
-type BalanceL2 struct {
 	BaseBalance
 }
 
@@ -43,7 +31,7 @@ func NewBalanceFromEntity(be port.BalanceEntity) (*BalanceL1, error) {
 	for _, ce := range be.Categories {
 		category := Category{
 			ID:       ce.ID,
-			Name:     string(ce.Category.Name),
+			Name:     ce.Category.Name,
 			Amount:   ce.Amount,
 			MCCcodes: ce.Category.MCCcodes,
 			Order:    ce.Category.Order,
@@ -80,12 +68,7 @@ func (b *BalanceL1) GetCategories() Categories {
 	return b.Categories
 }
 
-func (b *BalanceL1) Approve(tDomain *Transaction) (Balance, error) {
-	// balance, err := b.next.Approve(tDomain)
-	// if err == nil {
-	// 	return balance, nil
-	// }
-
+func (b *BalanceL1) Approve(tDomain *Transaction) (Balance, *customError.CustomError) {
 	mcc := tDomain.MCCcode
 
 	bCategoryToDebt, err := b.Categories.GetByMCC(mcc)
@@ -112,12 +95,3 @@ func (b *BalanceL1) Approve(tDomain *Transaction) (Balance, error) {
 
 	return b, nil
 }
-
-// func (b *BalanceL2) Approve(tDomain Transaction) (Balance, error) {
-// 	balance, err := b.next.Approve(tDomain)
-// 	if err == nil {
-// 		return balance, nil
-// 	}
-
-// 	balanceToDebt := b.Categories.GetFallback()
-// }

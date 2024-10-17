@@ -1,6 +1,8 @@
 package port
 
 import (
+	"github.com/google/uuid"
+
 	"github.com/shopspring/decimal"
 )
 
@@ -12,6 +14,8 @@ type BalanceByCategoryEntity struct {
 }
 
 type BalanceEntity struct {
+	ID          int
+	UID         uuid.UUID
 	AccountID   int
 	AmountTotal decimal.Decimal
 	Categories  map[int]BalanceByCategoryEntity

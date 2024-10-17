@@ -3,7 +3,7 @@ package gormRepos
 import (
 	"fmt"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 
 	"gorm.io/gorm"

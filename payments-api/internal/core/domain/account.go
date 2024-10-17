@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 

@@ -1,7 +1,7 @@
 package port
 
 import (
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
 
@@ -13,7 +13,9 @@ type TransactionRequest struct {
 }
 
 type TransactionEntity struct {
-	AccountUID  uuid.UUID
+	ID          int
+	UID         uuid.UUID
+	AccountID   int
 	TotalAmount decimal.Decimal
 	MCCcode     string
 	Merchant    string

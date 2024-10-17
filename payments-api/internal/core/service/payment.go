@@ -10,67 +10,80 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
-type Transaction struct {
+type Payment struct {
 	repos repository.Repos
 }
 
-func NewTransaction(repos repository.Repos) *Transaction {
-	return &Transaction{repos}
+func NewPayment(repos repository.Repos) *Payment {
+	return &Payment{repos}
 }
 
-func (t *Transaction) HandleTransaction(tRequest port.TransactionRequest) (*Transaction, error) {
-	tDomain, err := domain.NewTransactionFromRequest(tRequest)
-	if err != nil {
-		msg := fmt.Sprintf("dont instantiate transaction domain from request: %v", err)
-		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
-	}
-
+func (t *Payment) Execute(tRequest port.TransactionRequest) (string, error) {
 	accountRepo := t.repos.Account
-	accountEntity, err := accountRepo.FindByUID(tDomain.AccountUID)
+	accountEntity, err := accountRepo.FindByUID(tRequest.AccountUID)
 	if err != nil {
 		msg := fmt.Sprintf("dont retrieve account entity: %v", err)
-		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC,
+			customError.New(constants.CODE_REJECTED_GENERIC, msg)
+	}
+
+	tDomain, err := domain.NewTransaction(
+		accountEntity.ID,
+		tRequest.AccountUID,
+		tRequest.MCCcode,
+		tRequest.TotalAmount,
+		tRequest.Merchant)
+	if err != nil {
+		msg := fmt.Sprintf("dont instantiate transaction domain from request: %v", err)
+		return constants.CODE_REJECTED_GENERIC,
+			customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
 
 	accountDomain, err := domain.NewAccountFromEntity(accountEntity)
 	if err != nil {
 		msg := fmt.Sprintf("dont instantiate account domain from entity: %v", err)
-		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC,
+			customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
 
 	balanceRepo := t.repos.Balance
 	balanceEntity, err := balanceRepo.FindByAccountID(accountDomain.ID)
 	if err != nil {
 		msg := fmt.Sprintf("dont retrieve balance entity: %v", err)
-		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC,
+			customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
 
 	balanceDomain, err := domain.NewBalanceFromEntity(balanceEntity)
 	if err != nil {
 		msg := fmt.Sprintf("dont instantiate balance domain from entity: %v", err)
-		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC,
+			customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
 
-	approvedBalance, err := balanceDomain.Approve(tDomain)
-	if err != nil {
+	approvedBalance, cErr := balanceDomain.Approve(tDomain)
+	if cErr != nil {
 		msg := fmt.Sprintf("dont approve balance domain: %v", err)
-		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return cErr.Code,
+			customError.New(cErr.Code, msg)
 	}
 
 	err = balanceRepo.Update(mapBalanceDomainToEntity(approvedBalance))
 	if err != nil {
 		msg := fmt.Sprintf("dont update balance entity: %v", err)
-		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC,
+			customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
 
 	transactionRepo := t.repos.Transaction
 	err = transactionRepo.Save(mapTransactionDomainToEntity(tDomain))
 	if err != nil {
 		msg := fmt.Sprintf("dont save transaction entity: %v", err)
-		return &Transaction{}, customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC,
+			customError.New(constants.CODE_REJECTED_GENERIC, msg)
 	}
 
-	return t, nil
+	return constants.CODE_APPROVED, nil
 }
 
 func mapBalanceDomainToEntity(dBalance domain.Balance) port.BalanceEntity {
@@ -95,7 +108,7 @@ func mapBalanceDomainToEntity(dBalance domain.Balance) port.BalanceEntity {
 
 func mapTransactionDomainToEntity(tDomain *domain.Transaction) port.TransactionEntity {
 	return port.TransactionEntity{
-		AccountUID:  tDomain.AccountUID,
+		AccountID:   tDomain.AccountID,
 		TotalAmount: tDomain.TotalAmount,
 		MCCcode:     tDomain.MCCcode,
 		Merchant:    tDomain.Merchant,

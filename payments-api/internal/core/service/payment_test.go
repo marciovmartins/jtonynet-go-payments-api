@@ -4,28 +4,21 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/shopspring/decimal"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
-	accountUIDtoTransact, _ = uuid.FromString("123e4567-e89b-12d3-a456-426614174000")
+	accountUIDtoTransact, _ = uuid.Parse("123e4567-e89b-12d3-a456-426614174000")
 )
 
 type DBfake struct {
 	Account     map[int]port.AccountEntity
 	Balance     map[int]port.BalanceByCategoryEntity
 	Transaction map[int]port.TransactionEntity
-}
-
-type BalanceRegisterInDB struct {
-	ID        int
-	UID       uuid.UUID
-	AccountId int
-	Category  string
-	Amount    decimal.Decimal
 }
 
 func newDBfake() DBfake {
@@ -40,9 +33,9 @@ func newDBfake() DBfake {
 		},
 	}
 
-	amountFood, _ := decimal.NewFromString("50.00")
-	amountMeal, _ := decimal.NewFromString("75.00")
-	amountCash, _ := decimal.NewFromString("100.00")
+	amountFood, _ := decimal.NewFromString("105.00")
+	amountMeal, _ := decimal.NewFromString("110.00")
+	amountCash, _ := decimal.NewFromString("115.00")
 
 	db.Balance = map[int]port.BalanceByCategoryEntity{
 		1: {
@@ -66,6 +59,10 @@ func newDBfake() DBfake {
 	}
 
 	return db
+}
+
+func (dbf *DBfake) GetDB() *DBfake {
+	return dbf
 }
 
 func (dbf *DBfake) AccountRepoFindByUID(uid uuid.UUID) (port.AccountEntity, error) {
@@ -169,15 +166,37 @@ func (brf *BalanceRepoFake) Update(be port.BalanceEntity) error {
 
 func (dbf *DBfake) TransactionRepoSave(te port.TransactionEntity) bool {
 	nextID := len(dbf.Transaction) + 1
+	te.ID = nextID
+	te.UID, _ = uuid.NewUUID()
 	dbf.Transaction[nextID] = te
 
 	return true
 }
 
+func (dbf *DBfake) TransactionRepoFindLastByAcountId(accountID int) (port.TransactionEntity, error) {
+	var lastTransaction port.TransactionEntity
+	found := false
+	maxKey := 0
+
+	for key, t := range dbf.Transaction {
+		if t.AccountID == accountID && key > maxKey {
+			lastTransaction = t
+			maxKey = key
+			found = true
+		}
+	}
+
+	if !found {
+		return port.TransactionEntity{}, fmt.Errorf("transaction with AccountID %v not found", accountID)
+	}
+
+	return lastTransaction, nil
+}
+
 func (trf *TransactionRepoFake) Save(te port.TransactionEntity) error {
 	ok := trf.db.TransactionRepoSave(te)
 	if !ok {
-		return fmt.Errorf("transaction with AccountUID %v not save", te.AccountUID)
+		return fmt.Errorf("transaction with AccountID %v not save", te.AccountID)
 	}
 
 	return nil
@@ -193,23 +212,34 @@ func TestTransactionService(t *testing.T) {
 	repos.Transaction = newTransactionRepoFake(dbFake)
 
 	//Act
-	tService := NewTransaction(repos)
+	paymentService := NewPayment(repos)
 
-	totalAmount, _ := decimal.NewFromString("15.00")
+	amountTransaction, _ := decimal.NewFromString("100.00")
 	tRequest := port.TransactionRequest{
 		AccountUID:  accountUIDtoTransact,
-		TotalAmount: totalAmount,
+		TotalAmount: amountTransaction,
 		MCCcode:     "5411",
 		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
 	}
 
-	tService.HandleTransaction(tRequest)
+	accountEntity, _ := repos.Account.FindByUID(tRequest.AccountUID)
+	balanceEntityAfterTransact, _ := repos.Balance.FindByAccountID(accountEntity.ID)
+	amountAfterTransact := balanceEntityAfterTransact.AmountTotal
+
+	returnCode, cErr := paymentService.Execute(tRequest)
 
 	//Assert
-	/*
-		- Return Code is equal "00"
-		- Balance is updated
-		- Transaction was registered
-	*/
+	// - Payment execution with received transaction has been approved
+	returnCodeApproved := "00" // constants.CODE_APPROVED
+	assert.Equal(t, returnCode, returnCodeApproved)
+	assert.Equal(t, cErr, nil)
 
+	// - Balance is updated
+	balanceEntityBeforeTransact, _ := repos.Balance.FindByAccountID(accountEntity.ID)
+	amountBeforeTransact := balanceEntityBeforeTransact.AmountTotal
+	assert.Equal(t, amountBeforeTransact, amountAfterTransact.Sub(amountTransaction))
+
+	// - Transaction was registered
+	transactionByAcountId, _ := dbFake.TransactionRepoFindLastByAcountId(accountEntity.ID)
+	assert.Equal(t, transactionByAcountId.TotalAmount, amountTransaction)
 }
