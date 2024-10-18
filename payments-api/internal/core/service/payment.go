@@ -5,7 +5,6 @@ import (
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 	"github.com/jtonynet/go-payments-api/internal/core/constants"
-	"github.com/jtonynet/go-payments-api/internal/core/customError"
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
@@ -22,9 +21,7 @@ func (t *Payment) Execute(tRequest port.TransactionRequest) (string, error) {
 	accountRepo := t.repos.Account
 	accountEntity, err := accountRepo.FindByUID(tRequest.AccountUID)
 	if err != nil {
-		msg := fmt.Sprintf("dont retrieve account entity: %v", err)
-		return constants.CODE_REJECTED_GENERIC,
-			customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC, fmt.Errorf("dont retrieve account entity: %v", err)
 	}
 
 	tDomain, err := domain.NewTransaction(
@@ -34,53 +31,39 @@ func (t *Payment) Execute(tRequest port.TransactionRequest) (string, error) {
 		tRequest.TotalAmount,
 		tRequest.Merchant)
 	if err != nil {
-		msg := fmt.Sprintf("dont instantiate transaction domain from request: %v", err)
-		return constants.CODE_REJECTED_GENERIC,
-			customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC, fmt.Errorf("dont instantiate transaction domain from request: %v", err)
 	}
 
 	accountDomain, err := domain.NewAccountFromEntity(accountEntity)
 	if err != nil {
-		msg := fmt.Sprintf("dont instantiate account domain from entity: %v", err)
-		return constants.CODE_REJECTED_GENERIC,
-			customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC, fmt.Errorf("dont instantiate account domain from entity: %v", err)
 	}
 
 	balanceRepo := t.repos.Balance
 	balanceEntity, err := balanceRepo.FindByAccountID(accountDomain.ID)
 	if err != nil {
-		msg := fmt.Sprintf("dont retrieve balance entity: %v", err)
-		return constants.CODE_REJECTED_GENERIC,
-			customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC, fmt.Errorf("dont retrieve balance entity: %v", err)
 	}
 
 	balanceDomain, err := domain.NewBalanceFromEntity(balanceEntity)
 	if err != nil {
-		msg := fmt.Sprintf("dont instantiate balance domain from entity: %v", err)
-		return constants.CODE_REJECTED_GENERIC,
-			customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC, fmt.Errorf("dont instantiate balance domain from entity: %v", err)
 	}
 
 	approvedBalance, cErr := balanceDomain.Approve(tDomain)
 	if cErr != nil {
-		msg := fmt.Sprintf("dont approve balance domain: %v", err)
-		return cErr.Code,
-			customError.New(cErr.Code, msg)
+		return cErr.Code, fmt.Errorf("dont approve balance domain: %v", err)
 	}
 
 	err = balanceRepo.Update(mapBalanceDomainToEntity(approvedBalance))
 	if err != nil {
-		msg := fmt.Sprintf("dont update balance entity: %v", err)
-		return constants.CODE_REJECTED_GENERIC,
-			customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC, fmt.Errorf("dont update balance entity: %v", err)
 	}
 
 	transactionRepo := t.repos.Transaction
 	err = transactionRepo.Save(mapTransactionDomainToEntity(tDomain))
 	if err != nil {
-		msg := fmt.Sprintf("dont save transaction entity: %v", err)
-		return constants.CODE_REJECTED_GENERIC,
-			customError.New(constants.CODE_REJECTED_GENERIC, msg)
+		return constants.CODE_REJECTED_GENERIC, fmt.Errorf("dont save transaction entity: %v", err)
 	}
 
 	return constants.CODE_APPROVED, nil

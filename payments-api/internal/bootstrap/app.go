@@ -10,7 +10,7 @@ import (
 )
 
 type App struct {
-	AccountService service.Account
+	PaymentService *service.Payment
 }
 
 func NewApp(cfg *config.Config) (App, error) {
@@ -32,7 +32,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error when instantiating Account repository: %v", err)
 	}
 
-	app.AccountService = service.NewAccount(repos)
+	app.PaymentService = service.NewPayment(repos)
 
 	return app, nil
 }

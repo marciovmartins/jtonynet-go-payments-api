@@ -7,5 +7,5 @@ import (
 type Account struct {
 	BaseModel `swaggerignore:"true"`
 	Name      string    `json:"name" binding:"required" example:"Jonh Doe"`
-	UID       uuid.UUID `json:"uid" example:"db047cc5-193a-4989-93f7-08b81c83eea0" type:uuid;unique`
+	UID       uuid.UUID `json:"uid" example:"123e4567-e89b-12d3-a456-426614174000" type:uuid;unique`
 }

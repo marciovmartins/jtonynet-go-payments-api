@@ -30,10 +30,17 @@ type Config struct {
 
 func LoadConfig(path string) (*Config, error) {
 	viper.AddConfigPath(path)
-	viper.SetConfigName(".env")
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
+
+	env := viper.GetString("ENV")
+	switch env {
+	case "test":
+		viper.SetConfigName(".env.TEST")
+	case "dev", "":
+		viper.SetConfigName(".env")
+	}
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, err

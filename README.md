@@ -654,13 +654,25 @@ Apontar para as versoes recentes/atualizadas de `/usr/lib`
 ```
 
 /*
-TODO: https://github.com/uber-go/fx as dependency container
+  // TODO: https://github.com/uber-go/fx as dependency container
+  // Better way for ctx as Dependency Container for DI
 func NewApp() *fx.App {
 	app := fx.New()
 	return app
 }
 */
 
+-->
+
+<!--
+
+Executing tests
+```
+go test -v ./internal/core/service
+go test -v ./internal/adapter/repository
+
+go test -v ./internal/adapter/repository ./internal/core/service
+```
 -->
 
 

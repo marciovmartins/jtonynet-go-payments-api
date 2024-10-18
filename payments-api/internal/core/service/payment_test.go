@@ -9,11 +9,16 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
 var (
 	accountUIDtoTransact, _ = uuid.Parse("123e4567-e89b-12d3-a456-426614174000")
 )
+
+type PaymentSuite struct {
+	suite.Suite
+}
 
 type DBfake struct {
 	Account     map[int]port.AccountEntity
@@ -114,12 +119,10 @@ func (dbf *DBfake) BalanceRepoFindByAccountID(accountID int) (port.BalanceEntity
 	categories := make(map[int]port.BalanceByCategoryEntity)
 	amountTotal := decimal.NewFromInt(0)
 
-	counter := 1
 	for _, be := range dbf.Balance {
 		if be.AccountID == accountID {
 			amountTotal = amountTotal.Add(be.Amount)
 			categories[be.Category.Order] = be
-			counter++
 		}
 	}
 
@@ -202,7 +205,7 @@ func (trf *TransactionRepoFake) Save(te port.TransactionEntity) error {
 	return nil
 }
 
-func TestTransactionService(t *testing.T) {
+func (suite *PaymentSuite) TestPaymentExecuteSuccess() {
 	//Arrange
 	dbFake := newDBfake()
 
@@ -231,15 +234,19 @@ func TestTransactionService(t *testing.T) {
 	//Assert
 	// - Payment execution with received transaction has been approved
 	returnCodeApproved := "00" // constants.CODE_APPROVED
-	assert.Equal(t, returnCode, returnCodeApproved)
-	assert.Equal(t, cErr, nil)
+	assert.Equal(suite.T(), returnCode, returnCodeApproved)
+	assert.Equal(suite.T(), cErr, nil)
 
 	// - Balance is updated
 	balanceEntityBeforeTransact, _ := repos.Balance.FindByAccountID(accountEntity.ID)
 	amountBeforeTransact := balanceEntityBeforeTransact.AmountTotal
-	assert.Equal(t, amountBeforeTransact, amountAfterTransact.Sub(amountTransaction))
+	assert.Equal(suite.T(), amountBeforeTransact, amountAfterTransact.Sub(amountTransaction))
 
 	// - Transaction was registered
 	transactionByAcountId, _ := dbFake.TransactionRepoFindLastByAcountId(accountEntity.ID)
-	assert.Equal(t, transactionByAcountId.TotalAmount, amountTransaction)
+	assert.Equal(suite.T(), transactionByAcountId.TotalAmount, amountTransaction)
+}
+
+func TestPaymentSuite(t *testing.T) {
+	suite.Run(t, new(PaymentSuite))
 }

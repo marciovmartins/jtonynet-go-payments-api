@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 
 	"gorm.io/gorm"
@@ -27,6 +28,13 @@ func NewAccount(conn port.DBConn) (port.AccountRepository, error) {
 	}, nil
 }
 
-func (gar *Account) FindByUID(accountUID uuid.UUID) (port.AccountEntity, error) {
-	return port.AccountEntity{}, nil
+func (gar *Account) FindByUID(uid uuid.UUID) (port.AccountEntity, error) {
+	accountModel := gormModel.Account{}
+	if err := gar.db.Where(&gormModel.Account{UID: uid}).First(&accountModel).Error; err != nil {
+		return port.AccountEntity{}, fmt.Errorf("account with uid: %s not found", uid)
+	}
+	return port.AccountEntity{
+		ID:  int(accountModel.ID),
+		UID: accountModel.UID,
+	}, nil
 }
