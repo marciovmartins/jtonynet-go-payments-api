@@ -2,7 +2,6 @@ package gormRepos
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
@@ -68,24 +67,13 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 }
 
 func (b *Balance) UpdateTotalAmount(be port.BalanceEntity) error {
-	idsAndAmountsToUpdate := make([]any, 0)
-	idsToUpdate := make([]any, 0)
-
 	query := "UPDATE balances SET amount = CASE"
 	for _, balanceCategory := range be.Categories {
-		query += " WHEN id = ? THEN ?"
-
-		idsAndAmountsToUpdate = append(idsAndAmountsToUpdate, balanceCategory.ID)
-		idsAndAmountsToUpdate = append(idsAndAmountsToUpdate, balanceCategory.Amount)
-
-		idsToUpdate = append(idsToUpdate, balanceCategory.ID)
+		query += fmt.Sprintf(" WHEN id = %v THEN %v", balanceCategory.ID, balanceCategory.Amount)
 	}
+	query += " END "
 
-	placeholderMarks := strings.Join(make([]string, len(idsToUpdate)), "?, ") + "?"
-	query += " END WHERE id IN (" + placeholderMarks + ")"
-
-	placeholderValues := append(idsAndAmountsToUpdate, idsToUpdate...)
-	if err := b.db.Exec(query, placeholderValues...).Error; err != nil {
+	if err := b.db.Exec(query).Error; err != nil {
 		return fmt.Errorf("error performing update balances: %w query: %s", err, query)
 	}
 

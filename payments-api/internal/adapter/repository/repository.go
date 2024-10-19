@@ -32,6 +32,12 @@ func GetAll(conn port.DBConn) (Repos, error) {
 		}
 		repos.Balance = balance
 
+		transaction, err := gormRepos.NewTransaction(conn)
+		if err != nil {
+			return Repos{}, fmt.Errorf("error when instantiating transaction repository: %v", err)
+		}
+		repos.Transaction = transaction
+
 		return repos, nil
 	default:
 		return Repos{}, errors.New("repository strategy not suported: " + strategy)

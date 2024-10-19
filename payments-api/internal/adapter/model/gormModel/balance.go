@@ -6,9 +6,10 @@ import (
 )
 
 type Balance struct {
-	BaseModel    `swaggerignore:"true"`
-	UID          uuid.UUID       `json:"uid" example:"91ee2159-f59f-4c89-a543-81987d563d7a" type:uuid;unique`
-	AccountID    uint            `json:"account_id" binding:"required" example:"1" type:uint`
-	CategoryName string          `json:"category_name" binding:"required" example:"CASH"`
-	Amount       decimal.Decimal `json:"amount" binding:"required" example:"100.00" sql:"type:numeric(20,2);"`
+	BaseModel `swaggerignore:"true"`
+
+	UID          uuid.UUID       `json:"uid" binding:"required" example:"4c39c8e9-6278-475a-9513-f2b134ece0b9" gorm:"type:uuid;unique"`
+	AccountID    uint            `json:"account_id" binding:"required" example:"1"`
+	CategoryName string          `json:"category_name" binding:"required" example:"CASH" gorm:"type:varchar(255)"`
+	Amount       decimal.Decimal `json:"amount" binding:"required" example:"110.22" gorm:"type:numeric(20,2);"`
 }
