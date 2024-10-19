@@ -12,6 +12,14 @@ type CategoryEntity struct {
 	Order    int
 }
 
+/*
+	TODO:
+	In a perfect world, the sections below could be register in a `categories` table/document/data(source|storage)
+	that should be related to an `mcc_codes`,  ensuring  flexibility  when creating new categories. For simplicity
+	in  developing  the  core  of  the  `services`  and  `domains`,  I  have  left  them hard-coded here, to later
+	extract into a more appropriate approach.
+*/
+
 var (
 	CategoryFood = CategoryEntity{Name: CATEGORY_FOOD_NAME, MCCcodes: []string{"5411", "5412"}, Order: 1}
 	CategoryMeal = CategoryEntity{Name: CATEGORY_MEAL_NAME, MCCcodes: []string{"5811", "5812"}, Order: 2}

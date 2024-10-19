@@ -33,7 +33,15 @@ func New(cfg config.Database) (port.DBConn, error) {
 			return GormConn{}, fmt.Errorf("failure on database connection: %w", err)
 		}
 
+		/*
+			TODO:
+			For simplicity, I am using GORM's AutoMigrate. If time permits,
+			I should migrate this solution to use the golang-migrate library,
+			as it is more robust and scalable.
+			See more at: https://github.com/golang-migrate/migrate
+		*/
 		db.AutoMigrate(&gormModel.Account{})
+		db.AutoMigrate(&gormModel.Balance{})
 
 		gConn := GormConn{
 			DB:       db,

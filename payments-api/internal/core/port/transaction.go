@@ -13,9 +13,9 @@ type TransactionRequest struct {
 }
 
 type TransactionEntity struct {
-	ID          int
+	ID          uint
 	UID         uuid.UUID
-	AccountID   int
+	AccountID   uint
 	TotalAmount decimal.Decimal
 	MCCcode     string
 	Merchant    string

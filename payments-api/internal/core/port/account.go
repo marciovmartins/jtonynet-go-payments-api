@@ -5,7 +5,7 @@ import (
 )
 
 type AccountEntity struct {
-	ID  int
+	ID  uint
 	UID uuid.UUID
 }
 

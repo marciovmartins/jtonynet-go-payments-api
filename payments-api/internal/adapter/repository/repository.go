@@ -22,9 +22,15 @@ func GetAll(conn port.DBConn) (Repos, error) {
 	case "gorm":
 		account, err := gormRepos.NewAccount(conn)
 		if err != nil {
-			return Repos{}, fmt.Errorf("error when instantiating repositories: %v", err)
+			return Repos{}, fmt.Errorf("error when instantiating account repository: %v", err)
 		}
 		repos.Account = account
+
+		balance, err := gormRepos.NewBalance(conn)
+		if err != nil {
+			return Repos{}, fmt.Errorf("error when instantiating balance repository: %v", err)
+		}
+		repos.Balance = balance
 
 		return repos, nil
 	default:

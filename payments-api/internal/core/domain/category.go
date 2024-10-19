@@ -7,7 +7,7 @@ import (
 )
 
 type Category struct {
-	ID       int
+	ID       uint
 	Name     string
 	Amount   decimal.Decimal
 	MCCcodes []string

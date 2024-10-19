@@ -19,7 +19,7 @@ func NewAccount(conn port.DBConn) (port.AccountRepository, error) {
 	db := conn.GetDB()
 	dbGorm, ok := db.(gorm.DB)
 	if !ok {
-		return nil, fmt.Errorf("failure to cast conn.GetDB() as gorm.DB")
+		return nil, fmt.Errorf("account repository failure to cast conn.GetDB() as gorm.DB")
 	}
 
 	return &Account{
@@ -28,13 +28,14 @@ func NewAccount(conn port.DBConn) (port.AccountRepository, error) {
 	}, nil
 }
 
-func (gar *Account) FindByUID(uid uuid.UUID) (port.AccountEntity, error) {
+func (a *Account) FindByUID(uid uuid.UUID) (port.AccountEntity, error) {
 	accountModel := gormModel.Account{}
-	if err := gar.db.Where(&gormModel.Account{UID: uid}).First(&accountModel).Error; err != nil {
+	if err := a.db.Where(&gormModel.Account{UID: uid}).First(&accountModel).Error; err != nil {
 		return port.AccountEntity{}, fmt.Errorf("account with uid: %s not found", uid)
 	}
+
 	return port.AccountEntity{
-		ID:  int(accountModel.ID),
+		ID:  accountModel.ID,
 		UID: accountModel.UID,
 	}, nil
 }

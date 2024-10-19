@@ -7,21 +7,20 @@ import (
 )
 
 type BalanceByCategoryEntity struct {
-	ID        int
-	AccountID int
+	ID        uint
+	UID       uuid.UUID
+	AccountID uint
 	Amount    decimal.Decimal
 	Category  CategoryEntity
 }
 
 type BalanceEntity struct {
-	ID          int
-	UID         uuid.UUID
-	AccountID   int
+	AccountID   uint
 	AmountTotal decimal.Decimal
 	Categories  map[int]BalanceByCategoryEntity
 }
 
 type BalanceRepository interface {
-	FindByAccountID(int) (BalanceEntity, error)
-	Update(BalanceEntity) error
+	FindByAccountID(uint) (BalanceEntity, error)
+	UpdateTotalAmount(BalanceEntity) error
 }

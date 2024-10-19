@@ -11,13 +11,13 @@ import (
 
 type Balance interface {
 	Approve(*Transaction) (Balance, *customError.CustomError)
-	GetAccountID() int
+	GetAccountID() uint
 	GetAmountTotal() decimal.Decimal
 	GetCategories() Categories
 }
 
 type BaseBalance struct {
-	AccountID   int
+	AccountID   uint
 	AmountTotal decimal.Decimal
 	Categories
 }
@@ -56,7 +56,7 @@ func NewBalanceFromEntity(be port.BalanceEntity) (*BalanceL1, error) {
 	return b, nil
 }
 
-func (b *BalanceL1) GetAccountID() int {
+func (b *BalanceL1) GetAccountID() uint {
 	return b.AccountID
 }
 

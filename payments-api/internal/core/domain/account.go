@@ -6,7 +6,7 @@ import (
 )
 
 type Account struct {
-	ID  int
+	ID  uint
 	UID uuid.UUID
 }
 

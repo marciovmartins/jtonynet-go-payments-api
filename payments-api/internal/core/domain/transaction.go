@@ -6,7 +6,7 @@ import (
 )
 
 type Transaction struct {
-	AccountID   int
+	AccountID   uint
 	AccountUID  uuid.UUID
 	MCCcode     string
 	TotalAmount decimal.Decimal
@@ -14,7 +14,7 @@ type Transaction struct {
 }
 
 func NewTransaction(
-	accountID int,
+	accountID uint,
 	accountUID uuid.UUID,
 	mccCode string,
 	totalAmount decimal.Decimal,

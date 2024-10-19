@@ -55,7 +55,7 @@ func (t *Payment) Execute(tRequest port.TransactionRequest) (string, error) {
 		return cErr.Code, fmt.Errorf("dont approve balance domain: %v", err)
 	}
 
-	err = balanceRepo.Update(mapBalanceDomainToEntity(approvedBalance))
+	err = balanceRepo.UpdateTotalAmount(mapBalanceDomainToEntity(approvedBalance))
 	if err != nil {
 		return constants.CODE_REJECTED_GENERIC, fmt.Errorf("dont update balance entity: %v", err)
 	}
