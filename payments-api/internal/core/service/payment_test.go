@@ -5,11 +5,12 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
-	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
+	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
 var (
@@ -211,12 +212,12 @@ func (suite *PaymentSuite) TestPaymentExecuteApproved() {
 	//Arrange
 	dbFake := newDBfake()
 
-	repos := repository.Repos{}
+	repos := repository.AllRepos{}
 	repos.Account = newAccountRepoFake(dbFake)
 	repos.Balance = newBalanceRepoFake(dbFake)
 	repos.Transaction = newTransactionRepoFake(dbFake)
 
-	tRequest := port.TransactionRequest{
+	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodTransaction,
 		MCCcode:     "5411",
@@ -228,13 +229,17 @@ func (suite *PaymentSuite) TestPaymentExecuteApproved() {
 	amountAfterTransact := balanceEntityAfterTransact.AmountTotal
 
 	//Act
-	paymentService := NewPayment(repos)
+	paymentService := NewPayment(
+		repos.Account,
+		repos.Balance,
+		repos.Transaction,
+	)
 	returnCode, err := paymentService.Execute(tRequest)
 
 	//Assert
 	// - Payment execution with received transaction has been approved
-	returnCodeApproved := "00" // constants.CODE_APPROVED
-	assert.Equal(suite.T(), returnCode, returnCodeApproved)
+	codeApproved := "00" // constants.CODE_APPROVED
+	assert.Equal(suite.T(), returnCode, codeApproved)
 	assert.Equal(suite.T(), err, nil)
 
 	// - Balance is updated

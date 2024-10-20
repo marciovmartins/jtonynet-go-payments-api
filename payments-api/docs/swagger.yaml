@@ -1,0 +1,86 @@
+definitions:
+  port.APIhealthResponse:
+    properties:
+      message:
+        example: OK
+        type: string
+      sumary:
+        example: 'payments-api:8080 in TagVersion: 0.0.0 on Envoriment:dev responds
+          OK'
+        type: string
+    type: object
+  port.TransactionPaymentRequest:
+    properties:
+      account:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      mcc:
+        example: "5411"
+        maxLength: 255
+        minLength: 1
+        type: string
+      merchant:
+        example: PADARIA DO ZE              SAO PAULO BR
+        maxLength: 255
+        minLength: 3
+        type: string
+      totalAmount:
+        example: 100.09
+        minimum: 0.01
+        type: number
+    required:
+    - account
+    - mcc
+    - merchant
+    - totalAmount
+    type: object
+  port.TransactionPaymentResponse:
+    properties:
+      code:
+        example: "00"
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /liveness:
+    get:
+      consumes:
+      - application/json
+      description: Check API Health Liveness with some app data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/port.APIhealthResponse'
+      summary: API Health Liveness
+      tags:
+      - API
+  /payment:
+    post:
+      consumes:
+      - application/json
+      description: Payment executes a transaction  based on the request body json
+        data. The HTTP status is always 200. The transaction can be **approved** (code
+        **00**), **rejected insufficient balance** (code **51**), or **rejected generally**
+        (code **07**). [See more here](https://github.com/jtonynet/go-payments-api/tree/main?tab=readme-ov-file#about)
+      parameters:
+      - description: Request body for Execute Transaction Payment
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/port.TransactionPaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/port.TransactionPaymentResponse'
+      summary: Payment Execute Transaction
+      tags:
+      - Payment
+swagger: "2.0"

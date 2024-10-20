@@ -6,9 +6,39 @@ on:
   pull_request:
     branches: [ '*' ]
 
+env:
+  TZ : America/Sao_Paulo
+  ENV: test
+  DATABASE_STRATEGY: gorm
+  DATABASE_DRIVER: postgres
+  DATABASE_HOST: localhost
+  DATABASE_USER: test_api_user
+  DATABASE_PASSWORD: test_api_pass
+  DATABASE_DB: test_payments_db
+  DATABASE_PORT: 5432
+  DATABASE_SSLMODE: disable
+
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: test_api_user
+          POSTGRES_PASSWORD: test_api_pass
+          POSTGRES_DB: test_payments_db
+          PGTZ: America/Sao_Paulo
+          TZ: America/Sao_Paulo
+
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
     - name: Check out repository code
@@ -25,5 +55,5 @@ jobs:
 
     - name: Test
       working-directory: ./payments-api
-      run: go test
+      run: ENV=test go test -v ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
 

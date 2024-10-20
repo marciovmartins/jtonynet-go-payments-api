@@ -1,0 +1,121 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/liveness": {
+            "get": {
+                "description": "Check API Health Liveness with some app data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "API"
+                ],
+                "summary": "API Health Liveness",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/port.APIhealthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/payment": {
+            "post": {
+                "description": "Payment executes a transaction  based on the request body json data. The HTTP status is always 200. The transaction can be **approved** (code **00**), **rejected insufficient balance** (code **51**), or **rejected generally** (code **07**). [See more here](https://github.com/jtonynet/go-payments-api/tree/main?tab=readme-ov-file#about)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Payment Execute Transaction",
+                "parameters": [
+                    {
+                        "description": "Request body for Execute Transaction Payment",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/port.TransactionPaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/port.TransactionPaymentResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "port.APIhealthResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "sumary": {
+                    "type": "string",
+                    "example": "payments-api:8080 in TagVersion: 0.0.0 on Envoriment:dev responds OK"
+                }
+            }
+        },
+        "port.TransactionPaymentRequest": {
+            "type": "object",
+            "required": [
+                "account",
+                "mcc",
+                "merchant",
+                "totalAmount"
+            ],
+            "properties": {
+                "account": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "mcc": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "example": "5411"
+                },
+                "merchant": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 3,
+                    "example": "PADARIA DO ZE              SAO PAULO BR"
+                },
+                "totalAmount": {
+                    "type": "number",
+                    "minimum": 0.01,
+                    "example": 100.09
+                }
+            }
+        },
+        "port.TransactionPaymentResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "00"
+                }
+            }
+        }
+    }
+}

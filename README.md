@@ -517,8 +517,6 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
-
-
 __Estrutura Do Projeto__
 ```bash
 .
@@ -535,9 +533,9 @@ __Estrutura Do Projeto__
 │   │   │   │   └── GinTransactionHandler.go
 │   │   │   ├── middleware
 │   │   │   │   └── GinMiddleware.go
-|   |   |   └── routes
-|   |   |       └── gin
-|   |   |           └── routes.go
+│   │   │   └── routes
+│   │   │       └── gin
+│   │   │           └── routes.go
 │   │   ├── model
 │   │   │   └── gormModel
 │   │   │       ├── account.go
@@ -570,10 +568,10 @@ __Estrutura Do Projeto__
 │           ├── handler
 │           │   └── accountHandler.go
 │           └── repository
-|               ├── accounts.go
-|               ├── balances.go
-|               ├── transactions.go
-|               └── mccMerchantMap.go
+│               ├── accounts.go
+│               ├── balances.go
+│               ├── transactions.go
+│               └── mccMerchantMap.go
 ├── .env
 ├── go.mod
 └── go.sum
@@ -588,13 +586,6 @@ __Estrutura Do Projeto__
 
 
 <!-- 
-
-
-│           ├── rawRepository
-│           │   ├── rawAccounts.go
-│           │   ├── rawBalances.go
-│           │   ├── rawTransactions.go
-│           │   └── rawMCCmerchantMap.go
 
 https://github.com/datosh/gau
 https://herbertograca.com/wp-content/uploads/2018/11/100-explicit-architecture-svg.png?w=1200
@@ -671,8 +662,11 @@ Executing tests
 go test -v ./internal/core/service
 go test -v ./internal/adapter/repository
 
-go test -v ./internal/adapter/repository ./internal/core/service
+ENV=test go test -v ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
 ```
+
+
+swag init --generalInfo cmd/http/main.go -o ./docs
 -->
 
 

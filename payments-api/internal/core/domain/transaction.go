@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
@@ -19,6 +21,11 @@ func NewTransaction(
 	mccCode string,
 	totalAmount decimal.Decimal,
 	merchant string) (*Transaction, error) {
+
+	if !totalAmount.GreaterThan(decimal.NewFromInt(0)) {
+		return &Transaction{}, fmt.Errorf("transaction totalAmount must be a positive value %v", totalAmount)
+	}
+
 	return &Transaction{
 		AccountID:   accountID,
 		AccountUID:  accountUID,

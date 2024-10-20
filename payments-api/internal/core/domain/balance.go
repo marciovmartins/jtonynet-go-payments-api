@@ -10,7 +10,7 @@ import (
 )
 
 type Balance interface {
-	Approve(*Transaction) (Balance, *customError.CustomError)
+	ApproveTransaction(*Transaction) (Balance, *customError.CustomError)
 	GetAccountID() uint
 	GetAmountTotal() decimal.Decimal
 	GetCategories() Categories
@@ -68,7 +68,7 @@ func (b *BalanceL1) GetCategories() Categories {
 	return b.Categories
 }
 
-func (b *BalanceL1) Approve(tDomain *Transaction) (Balance, *customError.CustomError) {
+func (b *BalanceL1) ApproveTransaction(tDomain *Transaction) (Balance, *customError.CustomError) {
 	mcc := tDomain.MCCcode
 
 	bCategoryToDebt, err := b.Categories.GetByMCC(mcc)

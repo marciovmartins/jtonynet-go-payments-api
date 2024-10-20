@@ -8,7 +8,7 @@ type API struct {
 	Name       string `mapstructure:"API_NAME"`
 	Port       string `mapstructure:"API_PORT"`
 	TagVersion string `mapstructure:"API_TAG_VERSION"`
-	Env        string `mapstructure:"API_ENV"`
+	Env        string `mapstructure:"ENV"`
 }
 
 type Database struct {
@@ -28,18 +28,26 @@ type Config struct {
 	Database Database `mapstructure:",squash"`
 }
 
-func LoadConfig(path string) (*Config, error) {
+func LoadConfig(path string, configFiles ...string) (*Config, error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
 
-	env := viper.GetString("ENV")
-	switch env {
-	case "test":
-		viper.SetConfigName(".env.TEST")
-	case "dev", "":
-		viper.SetConfigName(".env")
+	configFileFound := false
+	if len(configFiles) > 0 {
+		viper.SetConfigName(configFiles[0])
+		configFileFound = true
+	}
+
+	if !configFileFound {
+		env := viper.GetString("ENV")
+		switch env {
+		case "test":
+			viper.SetConfigName(".env.TEST")
+		case "dev", "":
+			viper.SetConfigName(".env")
+		}
 	}
 
 	if err := viper.ReadInConfig(); err != nil {

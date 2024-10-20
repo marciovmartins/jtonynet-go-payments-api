@@ -1,11 +1,5 @@
 package port
 
-const (
-	CATEGORY_FOOD_NAME string = "FOOD"
-	CATEGORY_MEAL_NAME string = "MEAL"
-	CATEGORY_CASH_NAME string = "CASH"
-)
-
 type CategoryEntity struct {
 	Name     string
 	MCCcodes []string
@@ -19,6 +13,12 @@ type CategoryEntity struct {
 	in  developing  the  core  of  the  `services`  and  `domains`,  I  have  left  them hard-coded here, to later
 	extract into a more appropriate approach.
 */
+
+const (
+	CATEGORY_FOOD_NAME string = "FOOD"
+	CATEGORY_MEAL_NAME string = "MEAL"
+	CATEGORY_CASH_NAME string = "CASH"
+)
 
 var (
 	CategoryFood = CategoryEntity{Name: CATEGORY_FOOD_NAME, MCCcodes: []string{"5411", "5412"}, Order: 1}

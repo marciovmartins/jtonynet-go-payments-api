@@ -3,7 +3,6 @@ package repository
 import (
 	"fmt"
 	"log"
-	"os"
 	"testing"
 
 	"github.com/google/uuid"
@@ -36,15 +35,15 @@ var (
 type RepositoriesSuite struct {
 	suite.Suite
 
-	Conn            port.DBConn
 	AccountRepo     port.AccountRepository
 	BalanceRepo     port.BalanceRepository
 	TransactionRepo port.TransactionRepository
+
+	AccountEntity port.AccountEntity
+	BalanceEntity port.BalanceEntity
 }
 
 func (suite *RepositoriesSuite) SetupSuite() {
-	os.Setenv("ENV", "test")
-
 	cfg, err := config.LoadConfig("./../../../")
 	if err != nil {
 		log.Fatalf("cannot load config: %v", err)
@@ -59,8 +58,6 @@ func (suite *RepositoriesSuite) SetupSuite() {
 		log.Fatalf("error connecting to database: %v", err)
 	}
 
-	suite.Conn = conn
-
 	repositories, err := GetAll(conn)
 	if err != nil {
 		log.Fatalf("error when instantiating repositories: %v", err)
@@ -69,20 +66,14 @@ func (suite *RepositoriesSuite) SetupSuite() {
 	suite.AccountRepo = repositories.Account
 	suite.BalanceRepo = repositories.Balance
 	suite.TransactionRepo = repositories.Transaction
+
+	suite.loadDBtestData(conn)
 }
 
-func (suite *RepositoriesSuite) TearDownSuite() {
-	os.Unsetenv("ENV")
-}
-
-func (suite *RepositoriesSuite) SetupTest() {
-	suite.dbChargeData()
-}
-
-func (suite *RepositoriesSuite) dbChargeData() {
-	switch suite.Conn.GetStrategy() {
+func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
+	switch conn.GetStrategy() {
 	case "gorm":
-		db := suite.Conn.GetDB()
+		db := conn.GetDB()
 		dbGorm, ok := db.(gorm.DB)
 		if !ok {
 			log.Fatalf("failure to cast conn.GetDB() as gorm.DB")
@@ -115,42 +106,32 @@ func (suite *RepositoriesSuite) dbChargeData() {
 	}
 }
 
-func (suite *RepositoriesSuite) TestAccountRepositoryFindByUIDsuccess() {
+func (suite *RepositoriesSuite) AccountRepositoryFindByUIDsuccess() {
 	accountEntity, err := suite.AccountRepo.FindByUID(accountUID)
 	assert.Equal(suite.T(), accountEntity.ID, uint(1))
 	assert.NoError(suite.T(), err)
+
+	suite.AccountEntity = accountEntity
 }
 
-func (suite *RepositoriesSuite) TestBalanceRepositoryFindByAccountIDsuccess() {
-	accountEntity, err := suite.AccountRepo.FindByUID(accountUID)
-	assert.Equal(suite.T(), accountEntity.ID, uint(1))
-	assert.NoError(suite.T(), err)
-
+func (suite *RepositoriesSuite) BalanceRepositoryFindByAccountIDsuccess() {
 	amountTotal := decimal.Sum(
 		balanceFoodAmount,
 		balanceMealAmount,
 		balanceCashAmount,
 	)
 
+	accountEntity := suite.AccountEntity
+
 	balanceEntity, err := suite.BalanceRepo.FindByAccountID(accountEntity.ID)
 	assert.Equal(suite.T(), balanceEntity.AmountTotal, amountTotal)
 	assert.NoError(suite.T(), err)
+
+	suite.BalanceEntity = balanceEntity
 }
 
-func (suite *RepositoriesSuite) TestBalanceRepositoryUpdateTotalAmountsuccess() {
-	accountEntity, err := suite.AccountRepo.FindByUID(accountUID)
-	assert.Equal(suite.T(), accountEntity.ID, uint(1))
-	assert.NoError(suite.T(), err)
-
-	amountTotal := decimal.Sum(
-		balanceFoodAmount,
-		balanceMealAmount,
-		balanceCashAmount,
-	)
-
-	balanceEntity, err := suite.BalanceRepo.FindByAccountID(accountEntity.ID)
-	assert.Equal(suite.T(), balanceEntity.AmountTotal, amountTotal)
-	assert.NoError(suite.T(), err)
+func (suite *RepositoriesSuite) BalanceRepositoryUpdateTotalAmountSuccess() {
+	balanceEntity := suite.BalanceEntity
 
 	foodBalanceCategory := balanceEntity.Categories[port.CategoryFood.Order]
 	foodBalanceCategory.Amount = foodBalanceCategory.Amount.Sub(amountFoodTransaction)
@@ -160,27 +141,8 @@ func (suite *RepositoriesSuite) TestBalanceRepositoryUpdateTotalAmountsuccess() 
 	assert.NoError(suite.T(), balanceEntityUpdateErr)
 }
 
-func (suite *RepositoriesSuite) TestTransactionRepositorySaveSuccess() {
-	accountEntity, err := suite.AccountRepo.FindByUID(accountUID)
-	assert.Equal(suite.T(), accountEntity.ID, uint(1))
-	assert.NoError(suite.T(), err)
-
-	amountTotal := decimal.Sum(
-		balanceFoodAmount,
-		balanceMealAmount,
-		balanceCashAmount,
-	)
-
-	balanceEntity, err := suite.BalanceRepo.FindByAccountID(accountEntity.ID)
-	assert.Equal(suite.T(), balanceEntity.AmountTotal, amountTotal)
-	assert.NoError(suite.T(), err)
-
-	foodBalanceCategory := balanceEntity.Categories[port.CategoryFood.Order]
-	foodBalanceCategory.Amount = foodBalanceCategory.Amount.Sub(amountFoodTransaction)
-	balanceEntity.Categories[port.CategoryFood.Order] = foodBalanceCategory
-
-	balanceEntityUpdateErr := suite.BalanceRepo.UpdateTotalAmount(balanceEntity)
-	assert.NoError(suite.T(), balanceEntityUpdateErr)
+func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
+	accountEntity := suite.AccountEntity
 
 	transactionEntity := port.TransactionEntity{
 		AccountID:   accountEntity.ID,
@@ -196,4 +158,19 @@ func (suite *RepositoriesSuite) TestTransactionRepositorySaveSuccess() {
 
 func TestRepositoriesSuite(t *testing.T) {
 	suite.Run(t, new(RepositoriesSuite))
+}
+
+func (suite *RepositoriesSuite) TestCases() {
+	suite.T().Run("Test AccountRepository Find By UID Success", func(t *testing.T) {
+		suite.AccountRepositoryFindByUIDsuccess()
+	})
+	suite.T().Run("Test Balance Repository Find By AccountID Success", func(t *testing.T) {
+		suite.BalanceRepositoryFindByAccountIDsuccess()
+	})
+	suite.T().Run("Test Balance Repository Update TotalAmount Success", func(t *testing.T) {
+		suite.BalanceRepositoryUpdateTotalAmountSuccess()
+	})
+	suite.T().Run("Test Transaction Repository Save Success", func(t *testing.T) {
+		suite.BalanceRepositoryUpdateTotalAmountSuccess()
+	})
 }
