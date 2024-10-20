@@ -287,7 +287,7 @@ Cada vez que o comando for executado, a database de testes será recriada no tes
 Saída esperada pelo comando:
 <img src="./docs/assets/images/screen_captures/tests_run.png">
 
-Os testes também são executados como parte da rotina minima de __CI__ do <a href="https://github.com/jtonynet/go-products-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge __TESTS_CI__ no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
+Os testes também são executados como parte da rotina minima de __CI__ do <a href="https://github.com/jtonynet/go-payments-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge __TESTS_CI__ no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
 <img src="./docs/assets/images/screen_captures/githubactions_tests_run.png">
 
 Essa abordagem pode evoluir para uma rotina adequada de __CD__ no futuro.
