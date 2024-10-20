@@ -5,11 +5,21 @@
 /dist/
 /build/
 
+/payments-api/bin/
+/payments-api/pkg/
+/payments-api/vendor/
+/payments-api/dist/
+/payments-api/build/
+
 # Test Binary
 *.test
 
+/payments-api/*.test
+
 # Coverage
 *.out
+
+/payments-api/*.out
 
 # env
 .env
@@ -17,3 +27,5 @@
 
 # vscode
 .vscode/
+
+/payments-api/.vscode/

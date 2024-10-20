@@ -36,18 +36,20 @@ __[Go Payments API](#header)__<br/>
       - 🌐 [Ambiente](#environment)
       - 🐋 [Conteinerizado](#run-containerized)
       - 🏠 [Local](#run-locally)
-  4.  📰 [Documentação da API](#apidocs)
-  5.  📊 [Diagramas](#diagrams)
+  4.  📰 [Documentação da API](#api-docs)
+  5.  ✅ [Testes](#tests)
+      - ⚙️[Automatizados](#test-auto)
+      - 🧑‍🔧[Manuais](#test-manual)
+  4.  📊 [Diagramas](#diagrams)
       - 📈 [Fluxo](#diagrams-flowchart)
       - 📈 [ER](#diagrams-erchart)
-  6.  ✅ [Testes](#tests)
-  7.  🪲 [Debug](#debug)
-  8.  👏 [Boas Práticas](#best-practices)
-  9.  🧠 [ADR - Architecture Decision Records](#adr)
-  10. 🔢 [Versões](#versions)
-  11. 🧰 [Ferramentas](#tools)
-  12. 🤖 [Uso de IA](#ia)
-  13. 🏁 [Conclusão](#conclusion)
+  6.  🪲 [Debug](#debug)
+  7.  👏 [Boas Práticas](#best-practices)
+  8.  🧠 [ADR - Architecture Decision Records](#adr)
+  9.  🔢 [Versões](#versions)
+  10. 🧰 [Ferramentas](#tools)
+  11. 🤖 [Uso de IA](#ia)
+  12. 🏁 [Conclusão](#conclusion)
 
 ---
 
@@ -203,16 +205,35 @@ docker compose up postgres-payments -d
 # Rodar a API
 docker compose up payments-api
 ```
- A API esta pronta e a rota da [documentação swagger](#api-docs) estará disponível.
+ A API esta pronta e a rota da [documentação swagger](#api-docs) estará disponível, assim como a [suite de testes](#tests) poderá ser executada.
+
 
 <br/>
 
 <a id="run-locally"></a>
 #### 🏠 Local
 
+Com o Golang 1.23 instalado e após seguir os comandos de edição do arquivo `./payments-api/.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu localhost. Observe que há linhas com comentários semelhantes ao seguinte:
+```bash
+# local: localhost | conteinerized: postgres-payments
 ```
-payments-api$ go run cmd/http/main.go
+Substitua os valores das `envs` com esses comentarios para o valor sugerido na primeira opcao `local`
+```bash
+DATABASE_HOST=postgres-payments # local: localhost | conteinerized: postgres-payments
 ```
+
+Após editar o arquivo, suba apenas o banco de dados com o comando:
+
+```
+docker compose up postgres-payments
+```
+ou se conecte a uma database válida no arquivo `.env`, então vá para o diretório `payments-api` e execute os comandos:
+
+```bash
+go mod download
+go run cmd/http/main.go
+```
+
 
 <br/>
 
@@ -222,10 +243,79 @@ payments-api$ go run cmd/http/main.go
 
 ---
 
-<a id="apidocs"></a>
+<a id="api-docs"></a>
 ### 📰  Documentação da API
 
-__TODO__
+####  <img src="./docs/assets/images/icons/swagger.svg" width="20px" height="20px" alt="Swagger" title="Swagger">  Swagger
+
+Com a aplicação em execução, a rota de documentação Swagger fica disponível em http://localhost:8080/swagger/index.html
+
+<img src="./docs/assets/images/screen_captures/swagger.png">
+
+<br/>
+
+[⤴️ de volta ao índice](#index)
+
+---
+
+<a id="tests"></a>
+### ✅ Testes
+
+As configurações para executar os testes de repositório e integração estão no arquivo `./payments-api/.env.TEST`, e não é necessário alterá-lo para rodar de forma conteinerizada. No entanto, é preciso editar o arquivo de maneira similar a `./payments-api/.env`, como anteriormente visto [aqui](#run-locally), se desejar executar os testes em ambiente local.
+
+
+<a id="test-auto"></a>
+#### ⚙️ Automatizados
+
+Com o projeto da backend-rest [adequadamente instalado](#run) em seu ambiente local ou conteinerizado, levante o banco de testes com
+
+```bash
+docker compose up test-postgres-payments -d
+```
+
+e, caso esteja rodando a API conteinerizada, execute o comando:
+```bash
+docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
+```
+ou então, caso esteja rodando a API de maneira local, vá para o diretório da API `payments-api` e execute o comando de testes:
+
+```bash
+ENV=test go test -v ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
+```
+
+Cada vez que o comando for executado, a database de testes será recriada no test-postgres-med-planner assegurando uma execução limpa.
+Saída esperada pelo comando:
+<img src="./docs/assets/images/screen_captures/tests_run.png">
+
+Os testes também são executados como parte da rotina minima de __CI__ do <a href="https://github.com/jtonynet/go-products-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge __TESTS_CI__ no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
+<img src="./docs/assets/images/screen_captures/githubactions_tests_run.png">
+
+Essa abordagem pode evoluir para uma rotina adequada de __CD__ no futuro.
+
+<a id="test-manual"></a>
+#### 🧑‍🔧Manuais
+
+Como as migrations ainda não foram adicionadas ao projeto, você pode rodar a suite de testes no ambiente de desenvolvimento (atenção: isso trunca todas as tabelas antes de efetuar a carga de testes) para carregar os valores iniciais.
+
+```bash
+docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
+```
+
+> 
+> | __Account:__                                            | __AcountID:__ |
+> |---------------------------------------------------------|---------------|
+> |123e4567-e89b-12d3-a456-426614174000                     | 1             |
+>
+> ---
+>
+> | __Categoria__ | __MCCs__           | __Amount Disponível na Categoria__ |
+> |---------------|--------------------|------------------------------------|
+> | FOOD          | 5411, 5412         | 5.02                               |
+> | MEAL          | 5811, 5812         | 110.22                             |
+> | CASH          |                    | 115.33                             |
+
+Com acesso ao banco a partir dos dados de `./payments-api/.env`, os limites de amount podem ser ajustados em desenvolvimento para facilitar testes manuais. Bem como o [Swagger da API](#api-docs) pode ser utilizado para proceder as requests
+
 
 <br/>
 
@@ -365,17 +455,6 @@ erDiagram
 
 _*Esse diagrama oferece uma visão clara de como modelar as entidades principais e seus relacionamentos para atender aos requisitos do sistema de autorização de transações._
 
-
-<br/>
-
-[⤴️ de volta ao índice](#index)
-
----
-
-<a id="tests"></a>
-### ✅ Testes
-
-__TODO__
 
 <br/>
 
@@ -598,11 +677,8 @@ sudo kill -9 $(lsof -t -i:3000)
 //LIMPANDO DOCKER
 docker stop $(docker ps -aq)
 docker rm $(docker ps -aq)
-
 docker rmi $(docker images -q) --force
-
 docker volume rm $(docker volume ls -q) --force
-
 docker network prune -f
 
 docker system prune -a --volumes

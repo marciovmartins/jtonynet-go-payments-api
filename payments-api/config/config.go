@@ -28,26 +28,18 @@ type Config struct {
 	Database Database `mapstructure:",squash"`
 }
 
-func LoadConfig(path string, configFiles ...string) (*Config, error) {
+func LoadConfig(path string) (*Config, error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
 
-	configFileFound := false
-	if len(configFiles) > 0 {
-		viper.SetConfigName(configFiles[0])
-		configFileFound = true
-	}
-
-	if !configFileFound {
-		env := viper.GetString("ENV")
-		switch env {
-		case "test":
-			viper.SetConfigName(".env.TEST")
-		case "dev", "":
-			viper.SetConfigName(".env")
-		}
+	env := viper.GetString("ENV")
+	switch env {
+	case "test":
+		viper.SetConfigName(".env.TEST")
+	case "dev", "":
+		viper.SetConfigName(".env")
 	}
 
 	if err := viper.ReadInConfig(); err != nil {

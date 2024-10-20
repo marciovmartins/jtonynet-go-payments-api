@@ -27,7 +27,6 @@ func New(cfg config.Database) (port.DBConn, error) {
 			cfg.DB,
 			cfg.Port,
 			cfg.SSLmode)
-
 		db, err := gorm.Open(postgres.Open(strConn), &gorm.Config{})
 		if err != nil {
 			return GormConn{}, fmt.Errorf("failure on database connection: %w", err)

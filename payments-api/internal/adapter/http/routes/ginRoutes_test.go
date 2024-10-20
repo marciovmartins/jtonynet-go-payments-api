@@ -43,7 +43,7 @@ type GinRoutesSuite struct {
 }
 
 func (suite *GinRoutesSuite) SetupSuite() {
-	cfg, err := config.LoadConfig("./../../../../", ".env.TEST")
+	cfg, err := config.LoadConfig("./../../../../")
 	if err != nil {
 		log.Fatalf("cannot load config: %v", err)
 	}
