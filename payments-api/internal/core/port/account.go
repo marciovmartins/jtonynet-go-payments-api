@@ -1,11 +1,14 @@
 package port
 
 import (
-	"github.com/gofrs/uuid"
-	gormModel "github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
+	"github.com/google/uuid"
 )
 
+type AccountEntity struct {
+	ID  uint
+	UID uuid.UUID
+}
+
 type AccountRepository interface {
-	FindAll() ([]gormModel.Account, error)
-	FindByUUID(uuid.UUID) (gormModel.Account, error)
+	FindByUID(uuid.UUID) (AccountEntity, error)
 }

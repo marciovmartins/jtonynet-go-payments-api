@@ -13,7 +13,7 @@ import (
 		Common sense indicates that agnostic databases/sources/queues and memory banks are changed more
 		frequently, taking better advantage of hexagonal
 	*/
-	ginRoutes "github.com/jtonynet/go-payments-api/internal/adapter/handler/routes"
+	ginRoutes "github.com/jtonynet/go-payments-api/internal/adapter/http/routes"
 )
 
 func main() {

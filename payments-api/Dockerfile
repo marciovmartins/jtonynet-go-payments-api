@@ -1,6 +1,12 @@
 FROM golang:1.23-alpine AS builder
 WORKDIR /usr/src/app
 
+# Environment variables which CompileDaemon requires to run
+ENV PROJECT_DIR=/app \
+    GO111MODULE=on \
+    CGO_ENABLED=0
+
+
 COPY go.mod ./
 COPY go.sum ./
 
@@ -8,13 +14,7 @@ COPY . .
 
 RUN go mod download
 
-RUN go build ./cmd/http/main.go
-RUN chmod a+x main
+RUN go get github.com/githubnemo/CompileDaemon
+RUN go install github.com/githubnemo/CompileDaemon
 
-FROM alpine:latest
-WORKDIR /usr/src/app
-
-COPY --from=builder /usr/src/app/.env /usr/src/app/.env
-COPY --from=builder /usr/src/app/main /usr/src/app/main
-
-CMD ["./main"]
+ENTRYPOINT CompileDaemon -log-prefix=false -build="go build -o /usr/src/app/bin/main /usr/src/app/cmd/http/main.go" -command="./bin/main"

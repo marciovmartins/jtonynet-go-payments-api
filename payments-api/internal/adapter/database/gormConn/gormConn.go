@@ -1,4 +1,4 @@
-package database
+package gormConn
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
-	port "github.com/jtonynet/go-payments-api/internal/core/port"
+	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -17,7 +17,7 @@ type GormConn struct {
 	driver   string
 }
 
-func NewGormConn(cfg config.Database) (port.DBConn, error) {
+func New(cfg config.Database) (port.DBConn, error) {
 	switch cfg.Driver {
 	case "postgres":
 		strConn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
@@ -27,13 +27,21 @@ func NewGormConn(cfg config.Database) (port.DBConn, error) {
 			cfg.DB,
 			cfg.Port,
 			cfg.SSLmode)
-
 		db, err := gorm.Open(postgres.Open(strConn), &gorm.Config{})
 		if err != nil {
 			return GormConn{}, fmt.Errorf("failure on database connection: %w", err)
 		}
 
+		/*
+			TODO:
+			For simplicity, I am using GORM's AutoMigrate. If time permits,
+			I should migrate this solution to use the golang-migrate library,
+			as it is more robust and scalable.
+			See more at: https://github.com/golang-migrate/migrate
+		*/
 		db.AutoMigrate(&gormModel.Account{})
+		db.AutoMigrate(&gormModel.Balance{})
+		db.AutoMigrate(&gormModel.Transaction{})
 
 		gConn := GormConn{
 			DB:       db,

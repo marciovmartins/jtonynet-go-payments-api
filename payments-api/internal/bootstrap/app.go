@@ -6,11 +6,13 @@ import (
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
+	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/jtonynet/go-payments-api/internal/core/service"
 )
 
 type App struct {
-	AccountService service.Account
+	Conn           port.DBConn
+	PaymentService *service.Payment
 }
 
 func NewApp(cfg *config.Config) (App, error) {
@@ -21,18 +23,24 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error connecting to database: %v", err)
 	}
 
+	app.Conn = conn // TODO: for testing only, remove when implementing golang.migrate
+
 	if conn.Readiness() != nil {
 		return App{}, fmt.Errorf("error connecting to database: %v", err)
 	}
 
 	fmt.Println("successfully connected to the database!")
 
-	repos, err := repository.GetRepos(conn)
+	allRepos, err := repository.GetAll(conn)
 	if err != nil {
 		return App{}, fmt.Errorf("error when instantiating Account repository: %v", err)
 	}
 
-	app.AccountService = service.NewAccount(repos)
+	app.PaymentService = service.NewPayment(
+		allRepos.Account,
+		allRepos.Balance,
+		allRepos.Transaction,
+	)
 
 	return app, nil
 }

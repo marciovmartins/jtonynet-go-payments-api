@@ -14,7 +14,7 @@
 [<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="Go Logo" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Logo" title="Gin">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSql Logo" title="PostgreSql">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubuntu" alt="Ubuntu" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="Viper DotEnv Logo" title="Viper DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet)  [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) <!-- [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/)  [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.com/) [<img src="./docs/assets/images/icons/rabbitmq.svg" width="25px" height="25px" alt="RabbitMQ Logo" title="RabbitMQ">](https://rabbitmq.com/) -->
 
 
-![Badge Status](https://img.shields.io/badge/STATUS-EM_DESENVOLVIMENTO-green) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW%20KANBAN-GITHUB-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1) <!-- ![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main) -->
+![Badge Status](https://img.shields.io/badge/STATUS-EM_DESENVOLVIMENTO-green) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW%20KANBAN-GITHUB-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  ![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main) 
 >
 
 
@@ -36,18 +36,20 @@ __[Go Payments API](#header)__<br/>
       - 🌐 [Ambiente](#environment)
       - 🐋 [Conteinerizado](#run-containerized)
       - 🏠 [Local](#run-locally)
-  4.  📰 [Documentação da API](#apidocs)
-  5.  📊 [Diagramas](#diagrams)
+  4.  📰 [Documentação da API](#api-docs)
+  5.  ✅ [Testes](#tests)
+      - ⚙️[Automatizados](#test-auto)
+      - 🧑‍🔧[Manuais](#test-manual)
+  4.  📊 [Diagramas](#diagrams)
       - 📈 [Fluxo](#diagrams-flowchart)
       - 📈 [ER](#diagrams-erchart)
-  6.  ✅ [Testes](#tests)
-  7.  🪲 [Debug](#debug)
-  8.  👏 [Boas Práticas](#best-practices)
-  9.  🧠 [ADR - Architecture Decision Records](#adr)
-  10. 🔢 [Versões](#versions)
-  11. 🧰 [Ferramentas](#tools)
-  12. 🤖 [Uso de IA](#ia)
-  13. 🏁 [Conclusão](#conclusion)
+  6.  🪲 [Debug](#debug)
+  7.  👏 [Boas Práticas](#best-practices)
+  8.  🧠 [ADR - Architecture Decision Records](#adr)
+  9.  🔢 [Versões](#versions)
+  10. 🧰 [Ferramentas](#tools)
+  11. 🤖 [Uso de IA](#ia)
+  12. 🏁 [Conclusão](#conclusion)
 
 ---
 
@@ -166,7 +168,7 @@ Este repositório foi criado com a intenção de propor uma possível solução 
 
 <br/>
 
-O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`, evidenciando preferências, mas aceitando subscrições com outras linguagens e paradigmas. Realizarei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior familiaridade e experiência.
+O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`, evidenciando preferências, mas aceitando subscrições com outras linguagens e paradigmas. Realizarei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior familiaridade e experiência além de entender que essa linguagem e arquitetura se encaixam ao desafio.
 
 Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adotar novas tecnologias e paradigmas conforme necessário.
 
@@ -194,20 +196,44 @@ Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./paymen
 Com a `.env` editada, rode os comandos `docker compose` (de acordo com sua versão do docker compose) no diretório raiz do projeto:
 
 ```bash
-/go-payments-api$ docker compose build
-/go-payments-api$ docker compose up postgres-payments -d
-/go-payments-api$ docker compose up payments-api
+# Construir a imagem
+docker compose build
+
+# Rodar o PostgreSQL
+docker compose up postgres-payments -d
+
+# Rodar a API
+docker compose up payments-api
 ```
- A API esta pronta e a rota da [documentação swagger](#api-docs) estará disponível.
+ A API esta pronta e a rota da [documentação swagger](#api-docs) estará disponível, assim como a [suite de testes](#tests) poderá ser executada.
+
 
 <br/>
 
 <a id="run-locally"></a>
 #### 🏠 Local
 
+Com o Golang 1.23 instalado e após seguir os comandos de edição do arquivo `./payments-api/.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu localhost. Observe que há linhas com comentários semelhantes ao seguinte:
+```bash
+# local: localhost | conteinerized: postgres-payments
 ```
-payments-api$ go run cmd/http/main.go
+Substitua os valores das `envs` com esses comentarios para o valor sugerido na primeira opcao `local`
+```bash
+DATABASE_HOST=postgres-payments # local: localhost | conteinerized: postgres-payments
 ```
+
+Após editar o arquivo, suba apenas o banco de dados com o comando:
+
+```
+docker compose up postgres-payments
+```
+ou se conecte a uma database válida no arquivo `.env`, então vá para o diretório `payments-api` e execute os comandos:
+
+```bash
+go mod download
+go run cmd/http/main.go
+```
+
 
 <br/>
 
@@ -217,10 +243,79 @@ payments-api$ go run cmd/http/main.go
 
 ---
 
-<a id="apidocs"></a>
+<a id="api-docs"></a>
 ### 📰  Documentação da API
 
-__TODO__
+####  <img src="./docs/assets/images/icons/swagger.svg" width="20px" height="20px" alt="Swagger" title="Swagger">  Swagger
+
+Com a aplicação em execução, a rota de documentação Swagger fica disponível em http://localhost:8080/swagger/index.html
+
+<img src="./docs/assets/images/screen_captures/swagger.png">
+
+<br/>
+
+[⤴️ de volta ao índice](#index)
+
+---
+
+<a id="tests"></a>
+### ✅ Testes
+
+As configurações para executar os testes de repositório e integração estão no arquivo `./payments-api/.env.TEST`, e não é necessário alterá-lo para rodar de forma conteinerizada. No entanto, é preciso editar o arquivo de maneira similar a `./payments-api/.env`, como anteriormente visto [aqui](#run-locally), se desejar executar os testes em ambiente local.
+
+
+<a id="test-auto"></a>
+#### ⚙️ Automatizados
+
+Com o projeto da backend-rest [adequadamente instalado](#run) em seu ambiente local ou conteinerizado, levante o banco de testes com
+
+```bash
+docker compose up test-postgres-payments -d
+```
+
+e, caso esteja rodando a API conteinerizada, execute o comando:
+```bash
+docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
+```
+ou então, caso esteja rodando a API de maneira local, vá para o diretório da API `payments-api` e execute o comando de testes:
+
+```bash
+ENV=test go test -v ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
+```
+
+Cada vez que o comando for executado, a database de testes será recriada no test-postgres-med-planner assegurando uma execução limpa.
+Saída esperada pelo comando:
+<img src="./docs/assets/images/screen_captures/tests_run.png">
+
+Os testes também são executados como parte da rotina minima de __CI__ do <a href="https://github.com/jtonynet/go-products-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge __TESTS_CI__ no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
+<img src="./docs/assets/images/screen_captures/githubactions_tests_run.png">
+
+Essa abordagem pode evoluir para uma rotina adequada de __CD__ no futuro.
+
+<a id="test-manual"></a>
+#### 🧑‍🔧Manuais
+
+Como as migrations ainda não foram adicionadas ao projeto, você pode rodar a suite de testes no ambiente de desenvolvimento (atenção: isso trunca todas as tabelas antes de efetuar a carga de testes) para carregar os valores iniciais.
+
+```bash
+docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
+```
+
+> 
+> | __Account:__                                            | __AcountID:__ |
+> |---------------------------------------------------------|---------------|
+> |123e4567-e89b-12d3-a456-426614174000                     | 1             |
+>
+> ---
+>
+> | __Categoria__ | __MCCs__           | __Amount Disponível na Categoria__ |
+> |---------------|--------------------|------------------------------------|
+> | FOOD          | 5411, 5412         | 5.02                               |
+> | MEAL          | 5811, 5812         | 110.22                             |
+> | CASH          |                    | 115.33                             |
+
+Com acesso ao banco a partir dos dados de `./payments-api/.env`, os limites de amount podem ser ajustados em desenvolvimento para facilitar testes manuais. Bem como o [Swagger da API](#api-docs) pode ser utilizado para proceder as requests
+
 
 <br/>
 
@@ -367,17 +462,6 @@ _*Esse diagrama oferece uma visão clara de como modelar as entidades principais
 
 ---
 
-<a id="tests"></a>
-### ✅ Testes
-
-__TODO__
-
-<br/>
-
-[⤴️ de volta ao índice](#index)
-
----
-
 <a id="debug"></a>
 ### 🪲 Debug
 
@@ -512,20 +596,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
-__TODO__
-
-😊🚀
-
-<br/>
-
-[⤴️ de volta ao índice](#index)
-
-
-
-
-
-<!-- 
-
+__Estrutura Do Projeto__
 ```bash
 .
 ├── bin
@@ -536,56 +607,69 @@ __TODO__
 │   └── config.go
 ├── internal
 │   ├── adapter
-│   │    ├── routes
-│   │    ├── handler
-│   │    │   ├── http
-│   │    │       └── GinAccountHandler.go
-│   │    ├── database
-│   │    │   ├── strategies
-│   │    │   │   └── gormDB.go
-│   │    │   └── database.go
-│   │    └── model
-│   │    │   └── gormModel
-│   │    │       ├── Account.go
-│   │    │       ├── Balance.go
-│   │    │       ├── Transaction.go
-│   │    │       └── MCCmerchantMap.go
-│   │    └── repository
-│   │        ├── gormRepository
-│   │        │   ├── gormAccounts.go
-│   │        │   ├── gormBalances.go
-│   │        │   ├── gormTransactions.go
-│   │        │   └── gormMCCmerchantMap.go
-│   │        └── repository.go
+│   │   ├── http
+│   │   │   ├── handler
+│   │   │   │   └── GinTransactionHandler.go
+│   │   │   ├── middleware
+│   │   │   │   └── GinMiddleware.go
+│   │   │   └── routes
+│   │   │       └── gin
+│   │   │           └── routes.go
+│   │   ├── model
+│   │   │   └── gormModel
+│   │   │       ├── account.go
+│   │   │       └── baseModel.go
+│   │   ├── database
+│   │   │   ├── gormConn
+│   │   │   │   └── gormConn.go
+│   │   │   └── conn.go
+│   │   └── repository
+│   │       ├── gormRepos
+│   │       │   ├── account.go
+│   │       │   ├── balance.go
+│   │       │   └── transactions.go
+│   │       └── repos.go
 │   ├── bootstrap
 │   │   └── container.go
 │   └── core
+│       ├── constants
+│       │   └── constants.go
+│       ├── errors
+│       │   └── customError.go
 │       ├── service
-│       │   └── accountService.go // fala com dominio
+│       │   └── accountService.go
 │       ├── domain
-│       │   ├── accounts.go // fala com porta de repositorio
+│       │   ├── accounts.go
 │       │   ├── balances.go
 │       │   ├── transactions.go
-│       │   └── mccMerchantMap.go
+│       │   └── category.go
 │       └── port 
 │           ├── handler
 │           │   └── accountHandler.go
 │           └── repository
-|               ├── accounts.go
-|               ├── balances.go
-|               ├── transactions.go
-|               └── mccMerchantMap.go
+│               ├── accounts.go
+│               ├── balances.go
+│               ├── transactions.go
+│               └── mccMerchantMap.go
 ├── .env
 ├── go.mod
 └── go.sum
 ```
 
+😊🚀
 
-│           ├── rawRepository
-│           │   ├── rawAccounts.go
-│           │   ├── rawBalances.go
-│           │   ├── rawTransactions.go
-│           │   └── rawMCCmerchantMap.go
+<br/>
+
+[⤴️ de volta ao índice](#index)
+
+
+
+<!-- 
+
+https://github.com/datosh/gau
+https://herbertograca.com/wp-content/uploads/2018/11/100-explicit-architecture-svg.png?w=1200
+
+---
 
 // Removendo processos de uma porta. ex.: 3000
 sudo kill -9 $(lsof -t -i:3000)
@@ -593,11 +677,8 @@ sudo kill -9 $(lsof -t -i:3000)
 //LIMPANDO DOCKER
 docker stop $(docker ps -aq)
 docker rm $(docker ps -aq)
-
 docker rmi $(docker images -q) --force
-
 docker volume rm $(docker volume ls -q) --force
-
 docker network prune -f
 
 docker system prune -a --volumes
@@ -640,13 +721,28 @@ Apontar para as versoes recentes/atualizadas de `/usr/lib`
 ```
 
 /*
-TODO: https://github.com/uber-go/fx as dependency container
+  // TODO: https://github.com/uber-go/fx as dependency container
+  // Better way for ctx as Dependency Container for DI
 func NewApp() *fx.App {
 	app := fx.New()
 	return app
 }
 */
 
+-->
+
+<!--
+
+Executing tests
+```
+go test -v ./internal/core/service
+go test -v ./internal/adapter/repository
+
+ENV=test go test -v ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
+```
+
+
+swag init --generalInfo cmd/http/main.go -o ./docs
 -->
 
 
