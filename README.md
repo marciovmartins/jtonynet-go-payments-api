@@ -186,7 +186,7 @@ Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adota
 <a id="environment"></a>
 #### 🌐 Ambiente
 
-Docker e Docker Compose são necessários para rodar a aplicação de forma containerizada, e é fortemente recomendado utilizá-los para rodar o banco de dados localmente.
+`Docker` e `Docker Compose` são necessários para rodar a aplicação de forma containerizada, e é fortemente recomendado utilizá-los para rodar o banco de dados localmente.
 
 Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./payments-api/.env`.
 
@@ -215,7 +215,7 @@ docker compose up payments-api
 <a id="run-locally"></a>
 #### 🏠 Local
 
-Com o Golang 1.23 instalado e após seguir os comandos de edição do arquivo `.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu localhost.
+Com o `Golang 1.23` instalado e após seguir os comandos de edição do arquivo `.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu localhost.
 
 No arquivo `.env`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
@@ -237,6 +237,7 @@ go mod download
 # Rodar a API
 go run cmd/http/main.go
 ```
+ A API está pronta e a rota da [documentação Swagger](#api-docs) estará disponível, assim como a [suite de testes](#tests) poderá ser executada.
 
 <br/>
 
@@ -315,7 +316,7 @@ Essa abordagem pode evoluir para uma rotina adequada de __CD__ no futuro.
 <a id="test-manual"></a>
 #### 🧑‍🔧Manuais
 
-Como as migrations ainda não foram adicionadas ao projeto, você pode rodar a suite de testes no ambiente de desenvolvimento (atenção: isso trunca todas as tabelas antes de efetuar a carga de testes) para carregar os valores iniciais.
+Como as `migrations` e `seeds` ainda não foram adicionadas ao projeto, você pode rodar a suite de testes no ambiente de desenvolvimento (atenção: isso trunca todas as tabelas antes de efetuar a carga de testes) para carregar os valores iniciais.
 
 ```bash
 # Executa Testes no Docker com ENV dev (PostgreSQL de Desenvolvimento na Integração)
