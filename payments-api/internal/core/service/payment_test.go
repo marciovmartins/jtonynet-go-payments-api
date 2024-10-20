@@ -239,6 +239,7 @@ func (suite *PaymentSuite) TestPaymentExecuteApproved() {
 	//Assert
 	// - Payment execution with received transaction has been approved
 	codeApproved := "00" // constants.CODE_APPROVED
+
 	assert.Equal(suite.T(), returnCode, codeApproved)
 	assert.Equal(suite.T(), err, nil)
 
