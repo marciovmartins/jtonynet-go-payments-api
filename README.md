@@ -215,7 +215,7 @@ docker compose up payments-api
 <a id="run-locally"></a>
 #### 🏠 Local
 
-Com o `Golang 1.23` instalado e após seguir os comandos de edição do arquivo `.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu localhost.
+Com o `Golang 1.23` instalado e após ter renomeado a copia de `.env.SAMPLE` para `.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu localhost.
 
 No arquivo `.env`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
