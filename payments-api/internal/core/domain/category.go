@@ -28,6 +28,26 @@ func (c *Categories) GetByMCC(mcc string) (Category, error) {
 	return Category{}, fmt.Errorf("balance category with MCC %s not found", mcc)
 }
 
+func (c *Categories) GetFallback() (Category, error) {
+	var categoryFallback Category
+	found := false
+	maxKey := -1
+
+	for key, categoryItem := range c.Itens {
+		if key > maxKey && len(categoryItem.MCCcodes) == 0 {
+			maxKey = key
+			categoryFallback = categoryItem
+			found = true
+		}
+	}
+
+	if found {
+		return categoryFallback, nil
+	}
+
+	return Category{}, fmt.Errorf("balance category with Fallback not found")
+}
+
 func (c *Category) Approve(tDomain *Transaction) bool {
 	return c.Amount.Sub(tDomain.TotalAmount).IsPositive()
 }

@@ -207,15 +207,14 @@ docker compose up postgres-payments -d
 # Rodar a API
 docker compose up payments-api
 ```
- A API está pronta e a rota da [documentação Swagger](#api-docs) estará disponível, assim como a [suite de testes](#tests) poderá ser executada.
-
+ A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executada.
 
 <br/>
 
 <a id="run-locally"></a>
 #### 🏠 Local
 
-Com o `Golang 1.23` instalado e após ter renomeado a copia de `.env.SAMPLE` para `.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu localhost.
+Com o `Golang 1.23` instalado e após ter renomeado a copia de `.env.SAMPLE` para `.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu `localhost`.
 
 No arquivo `.env`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
@@ -237,7 +236,7 @@ go mod download
 # Rodar a API
 go run cmd/http/main.go
 ```
- A API está pronta e a rota da [documentação Swagger](#api-docs) estará disponível, assim como a [suite de testes](#tests) poderá ser executada.
+ A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executada.
 
 <br/>
 
@@ -267,11 +266,15 @@ A interface do [Swagger pode executar testes manuais](#test-manual) a partir de 
 
 <a id="test-containerized"></a>
 #### 🐋 Conteinerizado 
-As configurações para executar os testes de repositório e integração (dependentes de infraestrutura no caso desse projeto) estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo para rodar de forma containerizada, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `teste`.
+Para rodar os testes [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Conteinerizado](#run-containerized).
+
+As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _conteinerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `teste`.
+
+<br/>
 
 <a id="test-locally"></a>
 #### 🏠 Local
-Para rodar os testes automatizados com a API fora do container (localmente), é necessário que o projeto já esteja [adequadamente instalado](#run-locally).
+Para rodar os testes [Testes Automatizados](#test-auto) com a API fora do container, de maneira _local_, é necessário editar seu `/.env.TEST`.
 
 No arquivo `/.env.TEST`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
@@ -283,33 +286,42 @@ DATABASE_PORT=5433 # local: 5433 | conteinerized: 5432
 <a id="test-auto"></a>
 #### ⚙️ Automatizados
 
-Com o projeto da `payment-api` [adequadamente instalado](#run) em seu ambiente local ou conteinerizado, levante o banco de testes com
+[Rodando o Projeto](#run) `payment-api`  em seu ambiente _local_ ou _conteinerizado_, levante o banco de testes com
 
 ```bash
 # Rodar o PostgreSQL de Testes
 docker compose up test-postgres-payments -d
 ```
 
-Comando para executar o teste conteinerizado com a API levantada
+Comando para executar o teste _conteinerizado_ com a API levantada
 ```bash
 # Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
 docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
 ```
 
-Comando para executar o teste local em `payments-api`
+Comando para executar o teste _local_ em `payments-api`
 ```bash
 # Executa Testes Localmente com ENV test (PostgreSQL de Testes na Integração)
 ENV=test go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
 ```
 
-Cada vez que o comando for executado, a database de testes será recriada no test-postgres-med-planner assegurando uma execução limpa.
-Saída esperada pelo comando:
+<br/>
+
+Cada vez que o comando for executado, as tabelas e índices da base de dados testada serão truncados e recriados no banco de dados do ambiente selecionado (`test` ou `dev`). Os usuários dos ambientes `homol`, `prod` e correlatos não devem ter permissões para executar essas ações no próprio database, garantindo uma execução segura, limpa e sem impacto nos dados de produção.
+
+
 <img src="./docs/assets/images/screen_captures/tests_run.png">
 
-Os testes também são executados como parte da rotina minima de __CI__ do <a href="https://github.com/jtonynet/go-payments-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge __TESTS_CI__ no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
+_*Saída esperada do comando_
+
+<br/>
+
+Os testes também são executados como parte da rotina minima de `CI` do <a href="https://github.com/jtonynet/go-payments-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge `TESTS_CI` no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
+
 <img src="./docs/assets/images/screen_captures/githubactions_tests_run.png">
 
-Essa abordagem pode evoluir para uma rotina adequada de __CD__ no futuro.
+_*Saída esperada do `workload` na fase test do `github` <br/> **Essa abordagem pode evoluir para uma rotina adequada de `CD`._ 
+
 
 <br/>
 
@@ -351,9 +363,7 @@ Com acesso ao banco a partir dos dados de `.env`, os limites de amount podem ser
 
 <a id="diagrams"></a>
 ### 📊 Diagramas do Sistema
-_*Diagramas embrionários_
-
-_**Diagramas Mermaid podem apresentar problemas de visualização em aplicativos mobile_
+_*Diagramas embrionários <br> **Diagramas Mermaid podem apresentar problemas de visualização em aplicativos mobile_
 
 <!-- 
     diagrams by:
