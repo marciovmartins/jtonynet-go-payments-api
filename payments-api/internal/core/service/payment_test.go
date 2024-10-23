@@ -16,16 +16,16 @@ import (
 var (
 	accountUIDtoTransact, _ = uuid.Parse("123e4567-e89b-12d3-a456-426614174000")
 
-	balanceFoodAmount, _ = decimal.NewFromString("105.11")
-	balanceMealAmount, _ = decimal.NewFromString("110.22")
-	balanceCashAmount, _ = decimal.NewFromString("115.33")
+	balanceFoodAmount, _ = decimal.NewFromString("205.11")
+	balanceMealAmount, _ = decimal.NewFromString("310.22")
+	balanceCashAmount, _ = decimal.NewFromString("415.33")
 
-	amountFoodTransaction, _ = decimal.NewFromString("100.10")
+	correctFoodMCC = "5411"
+
+	amountFoodFundsApproved, _         = decimal.NewFromString("100.10")
+	amountFoodFundsRejected, _         = decimal.NewFromString("500.44")
+	amountFoodFundsFallbackApproved, _ = decimal.NewFromString("320.00")
 )
-
-type PaymentSuite struct {
-	suite.Suite
-}
 
 type DBfake struct {
 	Account     map[uint]port.AccountEntity
@@ -208,48 +208,159 @@ func (trf *TransactionRepoFake) Save(te port.TransactionEntity) error {
 	return nil
 }
 
-func (suite *PaymentSuite) TestPaymentExecuteApproved() {
-	//Arrange
+type PaymentSuite struct {
+	suite.Suite
+
+	dbFake     DBfake
+	repository repository.AllRepos
+}
+
+func (suite *PaymentSuite) SetupSuite() {
 	dbFake := newDBfake()
 
-	repos := repository.AllRepos{}
-	repos.Account = newAccountRepoFake(dbFake)
-	repos.Balance = newBalanceRepoFake(dbFake)
-	repos.Transaction = newTransactionRepoFake(dbFake)
+	suite.dbFake = dbFake
 
+	suite.repository = repository.AllRepos{}
+	suite.repository.Account = newAccountRepoFake(dbFake)
+	suite.repository.Balance = newBalanceRepoFake(dbFake)
+	suite.repository.Transaction = newTransactionRepoFake(dbFake)
+}
+
+func (suite *PaymentSuite) TestPaymentExecuteCorrectMCCWithFundsApproved() {
+	//Arrange
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
-		TotalAmount: amountFoodTransaction,
-		MCCcode:     "5411",
+		TotalAmount: amountFoodFundsApproved,
+		MCCcode:     correctFoodMCC,
 		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
 	}
 
-	accountEntity, _ := repos.Account.FindByUID(tRequest.AccountUID)
-	balanceEntityAfterTransact, _ := repos.Balance.FindByAccountID(accountEntity.ID)
-	amountAfterTransact := balanceEntityAfterTransact.AmountTotal
+	accountEntity, _ := suite.repository.Account.FindByUID(tRequest.AccountUID)
+	balanceEntityBeforeTransact, err := suite.repository.Balance.FindByAccountID(accountEntity.ID)
+	assert.NoError(suite.T(), err)
+	amountBeforeTransact := balanceEntityBeforeTransact.AmountTotal
 
 	//Act
 	paymentService := NewPayment(
-		repos.Account,
-		repos.Balance,
-		repos.Transaction,
+		suite.repository.Account,
+		suite.repository.Balance,
+		suite.repository.Transaction,
 	)
 	returnCode, err := paymentService.Execute(tRequest)
 
 	//Assert
 	// - Payment execution with received transaction has been approved
-	codeApproved := "00" // constants.CODE_APPROVED
+	codeApproved := "00" // domain.CODE_APPROVED
+
 	assert.Equal(suite.T(), returnCode, codeApproved)
-	assert.Equal(suite.T(), err, nil)
+	assert.NoError(suite.T(), err)
 
 	// - Balance is updated
-	balanceEntityBeforeTransact, _ := repos.Balance.FindByAccountID(accountEntity.ID)
-	amountBeforeTransact := balanceEntityBeforeTransact.AmountTotal
-	assert.Equal(suite.T(), amountBeforeTransact, amountAfterTransact.Sub(amountFoodTransaction))
+	balanceEntityAfterTransact, _ := suite.repository.Balance.FindByAccountID(accountEntity.ID)
+	amountAfterTransact := balanceEntityAfterTransact.AmountTotal
+	assert.Equal(suite.T(), amountAfterTransact, amountBeforeTransact.Sub(amountFoodFundsApproved))
+
+	balanceDomain, err := mapBalanceEntityToDomain(balanceEntityAfterTransact)
+	assert.NoError(suite.T(), err)
+
+	expectedFunds := balanceFoodAmount.Sub(amountFoodFundsApproved)
+	balanceCategory, err := balanceDomain.GetByMCC(correctFoodMCC)
+	assert.Equal(suite.T(), balanceCategory.Amount, expectedFunds)
+	assert.NoError(suite.T(), err)
 
 	// - Transaction was registered
-	transactionByAcountId, _ := dbFake.TransactionRepoFindLastByAcountId(accountEntity.ID)
-	assert.Equal(suite.T(), transactionByAcountId.TotalAmount, amountFoodTransaction)
+	transactionByAcountId, _ := suite.dbFake.TransactionRepoFindLastByAcountId(accountEntity.ID)
+	assert.Equal(suite.T(), transactionByAcountId.TotalAmount, amountFoodFundsApproved)
+}
+
+func (suite *PaymentSuite) TestPaymentExecuteCorrectMCCWithFundsRejected() {
+	//Arrange
+	tRequest := port.TransactionPaymentRequest{
+		AccountUID:  accountUIDtoTransact,
+		TotalAmount: amountFoodFundsRejected,
+		MCCcode:     correctFoodMCC,
+		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
+	}
+
+	accountEntity, err := suite.repository.Account.FindByUID(tRequest.AccountUID)
+	assert.NoError(suite.T(), err)
+
+	balanceEntity, err := suite.repository.Balance.FindByAccountID(accountEntity.ID)
+	assert.NoError(suite.T(), err)
+
+	balanceDomain, err := mapBalanceEntityToDomain(balanceEntity)
+	assert.NoError(suite.T(), err)
+
+	balanceCategory, err := balanceDomain.GetFallback()
+	assert.NoError(suite.T(), err)
+
+	//Act
+	paymentService := NewPayment(
+		suite.repository.Account,
+		suite.repository.Balance,
+		suite.repository.Transaction,
+	)
+
+	returnCode, err := paymentService.Execute(tRequest)
+
+	//Assert
+	// - Payment execution with received transaction has been rejected
+	codeRejected := "51" // domain.CODE_REJECTED_INSUFICIENT_FUNDS
+	insuficientFundsError := fmt.Sprintf(
+		"failed to approve balance domain: CASH balance category has insuficient funds, %s available, transaction value is %s for account 1",
+		balanceCategory.Amount,
+		amountFoodFundsRejected,
+	)
+
+	assert.Equal(suite.T(), returnCode, codeRejected)
+	assert.Equal(suite.T(), err.Error(), insuficientFundsError)
+}
+
+func (suite *PaymentSuite) TestPaymentExecuteCorrectMCCFallbackApproved() {
+	//Arrange
+	tRequest := port.TransactionPaymentRequest{
+		AccountUID:  accountUIDtoTransact,
+		TotalAmount: amountFoodFundsFallbackApproved,
+		MCCcode:     correctFoodMCC,
+		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
+	}
+
+	accountEntity, _ := suite.repository.Account.FindByUID(tRequest.AccountUID)
+	balanceEntityBeforeTransact, err := suite.repository.Balance.FindByAccountID(accountEntity.ID)
+	assert.NoError(suite.T(), err)
+	amountBeforeTransact := balanceEntityBeforeTransact.AmountTotal
+
+	//Act
+	paymentService := NewPayment(
+		suite.repository.Account,
+		suite.repository.Balance,
+		suite.repository.Transaction,
+	)
+	returnCode, err := paymentService.Execute(tRequest)
+
+	//Assert
+	// - Payment execution with received transaction has been approved
+	codeApproved := "00" // domain.CODE_APPROVED
+
+	assert.Equal(suite.T(), returnCode, codeApproved)
+	assert.NoError(suite.T(), err)
+
+	// - Balance is updated
+	balanceEntityAfterTransact, _ := suite.repository.Balance.FindByAccountID(accountEntity.ID)
+	amountAfterTransact := balanceEntityAfterTransact.AmountTotal
+	assert.Equal(suite.T(), amountAfterTransact, amountBeforeTransact.Sub(amountFoodFundsFallbackApproved))
+
+	balanceDomain, err := mapBalanceEntityToDomain(balanceEntityAfterTransact)
+	assert.NoError(suite.T(), err)
+
+	expectedFunds := balanceCashAmount.Sub(amountFoodFundsFallbackApproved)
+	balanceCategory, err := balanceDomain.GetFallback()
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), balanceCategory.Amount, expectedFunds)
+
+	// - Transaction was registered
+	transactionByAcountId, _ := suite.dbFake.TransactionRepoFindLastByAcountId(accountEntity.ID)
+	assert.Equal(suite.T(), transactionByAcountId.TotalAmount, amountFoodFundsFallbackApproved)
 }
 
 func TestPaymentSuite(t *testing.T) {

@@ -1,4 +1,4 @@
-package constants
+package domain
 
 const (
 	CODE_APPROVED                   = "00"

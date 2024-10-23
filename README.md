@@ -14,7 +14,7 @@
 [<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="Go Logo" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Logo" title="Gin">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSql Logo" title="PostgreSql">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubuntu" alt="Ubuntu" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="Viper DotEnv Logo" title="Viper DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet)  [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) <!-- [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/)  [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.com/) [<img src="./docs/assets/images/icons/rabbitmq.svg" width="25px" height="25px" alt="RabbitMQ Logo" title="RabbitMQ">](https://rabbitmq.com/) -->
 
 
-![Badge Status](https://img.shields.io/badge/STATUS-EM_DESENVOLVIMENTO-green) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW%20KANBAN-GITHUB-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  ![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main) 
+[![Badge Status](https://img.shields.io/badge/STATUS-EM_DESENVOLVIMENTO-green)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW%20KANBAN-GITHUB-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions)
 >
 
 
@@ -38,18 +38,20 @@ __[Go Payments API](#header)__<br/>
       - 🏠 [Local](#run-locally)
   4.  📰 [Documentação da API](#api-docs)
   5.  ✅ [Testes](#tests)
+      - 🐋 [Conteinerizado](#test-containerized)
+      - 🏠 [Local](#test-locally)
       - ⚙️[Automatizados](#test-auto)
       - 🧑‍🔧[Manuais](#test-manual)
-  4.  📊 [Diagramas](#diagrams)
+  6.  📊 [Diagramas](#diagrams)
       - 📈 [Fluxo](#diagrams-flowchart)
       - 📈 [ER](#diagrams-erchart)
-  6.  🪲 [Debug](#debug)
-  7.  👏 [Boas Práticas](#best-practices)
-  8.  🧠 [ADR - Architecture Decision Records](#adr)
-  9.  🔢 [Versões](#versions)
-  10. 🧰 [Ferramentas](#tools)
-  11. 🤖 [Uso de IA](#ia)
-  12. 🏁 [Conclusão](#conclusion)
+  7.  🪲 [Debug](#debug)
+  8.  👏 [Boas Práticas](#best-practices)
+  9.  🧠 [ADR - Architecture Decision Records](#adr)
+  10. 🔢 [Versões](#versions)
+  11. 🧰 [Ferramentas](#tools)
+  12. 🤖 [Uso de IA](#ia)
+  13. 🏁 [Conclusão](#conclusion)
 
 ---
 
@@ -184,7 +186,7 @@ Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adota
 <a id="environment"></a>
 #### 🌐 Ambiente
 
-Docker e Docker Compose são necessários para rodar a aplicação de forma containerizada, e é fortemente recomendado utilizá-los para rodar o banco de dados localmente.
+`Docker` e `Docker Compose` são necessários para rodar a aplicação de forma containerizada, e é fortemente recomendado utilizá-los para rodar o banco de dados localmente.
 
 Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./payments-api/.env`.
 
@@ -193,49 +195,48 @@ Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./paymen
 <a id="run-containerized"></a>
 #### 🐋 Conteinerizado 
 
-Com a `.env` editada, rode os comandos `docker compose` (de acordo com sua versão do docker compose) no diretório raiz do projeto:
+Após a `.env` renomeada, rode os comandos `docker compose` (de acordo com sua versão do docker compose) no diretório raiz do projeto:
 
 ```bash
 # Construir a imagem
 docker compose build
 
-# Rodar o PostgreSQL
+# Rodar o PostgreSQL de Desenvolvimento
 docker compose up postgres-payments -d
 
 # Rodar a API
 docker compose up payments-api
 ```
- A API esta pronta e a rota da [documentação swagger](#api-docs) estará disponível, assim como a [suite de testes](#tests) poderá ser executada.
-
+ A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executada.
 
 <br/>
 
 <a id="run-locally"></a>
 #### 🏠 Local
 
-Com o Golang 1.23 instalado e após seguir os comandos de edição do arquivo `./payments-api/.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu localhost. Observe que há linhas com comentários semelhantes ao seguinte:
+Com o `Golang 1.23` instalado e após ter renomeado a copia de `.env.SAMPLE` para `.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu `localhost`.
+
+No arquivo `.env`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
-# local: localhost | conteinerized: postgres-payments
-```
-Substitua os valores das `envs` com esses comentarios para o valor sugerido na primeira opcao `local`
-```bash
-DATABASE_HOST=postgres-payments # local: localhost | conteinerized: postgres-payments
+DATABASE_HOST=localhost # local: localhost | conteinerized: postgres-payments
 ```
 
 Após editar o arquivo, suba apenas o banco de dados com o comando:
 
-```
+```bash
+# Rodar o PostgreSQL de Desenvolvimento
 docker compose up postgres-payments
 ```
-ou se conecte a uma database válida no arquivo `.env`, então vá para o diretório `payments-api` e execute os comandos:
+ou se conecte a uma database válida no arquivo `.env`, então no diretório `payments-api` execute os comandos:
 
 ```bash
+# Instala Dependências
 go mod download
+
+# Rodar a API
 go run cmd/http/main.go
 ```
-
-
-<br/>
+ A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executada.
 
 <br/>
 
@@ -252,6 +253,8 @@ Com a aplicação em execução, a rota de documentação Swagger fica disponív
 
 <img src="./docs/assets/images/screen_captures/swagger.png">
 
+A interface do [Swagger pode executar testes manuais](#test-manual) a partir de `requests` no endpoint `POST: /payment` 
+
 <br/>
 
 [⤴️ de volta ao índice](#index)
@@ -261,45 +264,80 @@ Com a aplicação em execução, a rota de documentação Swagger fica disponív
 <a id="tests"></a>
 ### ✅ Testes
 
-As configurações para executar os testes de repositório e integração estão no arquivo `./payments-api/.env.TEST`, e não é necessário alterá-lo para rodar de forma conteinerizada. No entanto, é preciso editar o arquivo de maneira similar a `./payments-api/.env`, como anteriormente visto [aqui](#run-locally), se desejar executar os testes em ambiente local.
+<a id="test-containerized"></a>
+#### 🐋 Conteinerizado 
+Para rodar os testes [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Conteinerizado](#run-containerized).
 
+As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _conteinerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `teste`.
+
+<br/>
+
+<a id="test-locally"></a>
+#### 🏠 Local
+Para rodar os testes [Testes Automatizados](#test-auto) com a API fora do container, de maneira _local_, é necessário editar seu `/.env.TEST`.
+
+No arquivo `/.env.TEST`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
+```bash
+DATABASE_HOST=localhost # local: localhost | conteinerized: test-postgres-payments
+DATABASE_PORT=5433 # local: 5433 | conteinerized: 5432
+```
+<br/>
 
 <a id="test-auto"></a>
 #### ⚙️ Automatizados
 
-Com o projeto da backend-rest [adequadamente instalado](#run) em seu ambiente local ou conteinerizado, levante o banco de testes com
+[Rodando o Projeto](#run) `payment-api`  em seu ambiente _local_ ou _conteinerizado_, levante o banco de testes com
 
 ```bash
+# Rodar o PostgreSQL de Testes
 docker compose up test-postgres-payments -d
 ```
 
-e, caso esteja rodando a API conteinerizada, execute o comando:
+Comando para executar o teste _conteinerizado_ com a API levantada
 ```bash
+# Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
 docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
 ```
-ou então, caso esteja rodando a API de maneira local, vá para o diretório da API `payments-api` e execute o comando de testes:
 
+Comando para executar o teste _local_ em `payments-api`
 ```bash
-ENV=test go test -v ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
+# Executa Testes Localmente com ENV test (PostgreSQL de Testes na Integração)
+ENV=test go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
 ```
 
-Cada vez que o comando for executado, a database de testes será recriada no test-postgres-med-planner assegurando uma execução limpa.
-Saída esperada pelo comando:
+<br/>
+
+Cada vez que o comando for executado, as tabelas e índices da base de dados testada serão truncados e recriados no banco de dados do ambiente selecionado (`test` ou `dev`). Os usuários dos ambientes `homol`, `prod` e correlatos não devem ter permissões para executar essas ações no próprio database, garantindo uma execução segura, limpa e sem impacto nos dados de produção.
+
+
 <img src="./docs/assets/images/screen_captures/tests_run.png">
 
-Os testes também são executados como parte da rotina minima de __CI__ do <a href="https://github.com/jtonynet/go-payments-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge __TESTS_CI__ no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
+_*Saída esperada do comando_
+
+<br/>
+
+Os testes também são executados como parte da rotina minima de `CI` do <a href="https://github.com/jtonynet/go-payments-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge `TESTS_CI` no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
+
 <img src="./docs/assets/images/screen_captures/githubactions_tests_run.png">
 
-Essa abordagem pode evoluir para uma rotina adequada de __CD__ no futuro.
+_*Saída esperada do `workload` na fase test do `github` <br/> **Essa abordagem pode evoluir para uma rotina adequada de `CD`._ 
+
+
+<br/>
 
 <a id="test-manual"></a>
 #### 🧑‍🔧Manuais
 
-Como as migrations ainda não foram adicionadas ao projeto, você pode rodar a suite de testes no ambiente de desenvolvimento (atenção: isso trunca todas as tabelas antes de efetuar a carga de testes) para carregar os valores iniciais.
+Como as `migrations` e `seeds` ainda não foram adicionadas ao projeto, você pode rodar a suite de testes no ambiente de desenvolvimento (atenção: isso trunca todas as tabelas antes de efetuar a carga de testes) para carregar os valores iniciais.
 
 ```bash
+# Executa Testes no Docker com ENV dev (PostgreSQL de Desenvolvimento na Integração)
 docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
 ```
+
+<br/>
+
+Registo e Saldos para teste manual
 
 > 
 > | __Account:__                                            | __AcountID:__ |
@@ -310,11 +348,11 @@ docker compose exec payments-api go test -v -count=1 ./internal/adapter/reposito
 >
 > | __Categoria__ | __MCCs__           | __Amount Disponível na Categoria__ |
 > |---------------|--------------------|------------------------------------|
-> | FOOD          | 5411, 5412         | 5.02                               |
+> | FOOD          | 5411, 5412         | 105.01                             |
 > | MEAL          | 5811, 5812         | 110.22                             |
 > | CASH          |                    | 115.33                             |
 
-Com acesso ao banco a partir dos dados de `./payments-api/.env`, os limites de amount podem ser ajustados em desenvolvimento para facilitar testes manuais. Bem como o [Swagger da API](#api-docs) pode ser utilizado para proceder as requests
+Com acesso ao banco a partir dos dados de `.env`, os limites de amount podem ser ajustados em desenvolvimento para facilitar testes manuais. Bem como o [Swagger da API](#api-docs) pode ser utilizado para proceder as `requests`
 
 
 <br/>
@@ -325,9 +363,7 @@ Com acesso ao banco a partir dos dados de `./payments-api/.env`, os limites de a
 
 <a id="diagrams"></a>
 ### 📊 Diagramas do Sistema
-_*Diagramas embrionários_
-
-_**Diagramas Mermaid podem apresentar problemas de visualização em aplicativos mobile_
+_*Diagramas embrionários <br> **Diagramas Mermaid podem apresentar problemas de visualização em aplicativos mobile_
 
 <!-- 
     diagrams by:
@@ -637,7 +673,7 @@ __Estrutura Do Projeto__
 │       ├── errors
 │       │   └── customError.go
 │       ├── service
-│       │   └── accountService.go
+│       │   └── payment.go
 │       ├── domain
 │       │   ├── accounts.go
 │       │   ├── balances.go

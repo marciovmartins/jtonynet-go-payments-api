@@ -58,7 +58,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./payments-api:/usr/src/app/ # Use only live reload mode
+      - ./payments-api:/usr/src/app/
     tty: true
     networks:
       - payments-network

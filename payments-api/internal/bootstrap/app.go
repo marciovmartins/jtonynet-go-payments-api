@@ -23,8 +23,6 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error connecting to database: %v", err)
 	}
 
-	app.Conn = conn // TODO: for testing only, remove when implementing golang.migrate
-
 	if conn.Readiness() != nil {
 		return App{}, fmt.Errorf("error connecting to database: %v", err)
 	}

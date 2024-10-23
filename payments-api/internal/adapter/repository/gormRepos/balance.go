@@ -69,7 +69,7 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 func (b *Balance) UpdateTotalAmount(be port.BalanceEntity) error {
 	query := "UPDATE balances SET amount = CASE"
 	for _, balanceCategory := range be.Categories {
-		query += fmt.Sprintf(" WHEN id = %v THEN %v", balanceCategory.ID, balanceCategory.Amount)
+		query += fmt.Sprintf(" WHEN id = %v THEN %v", uint(balanceCategory.ID), decimal.Decimal(balanceCategory.Amount))
 	}
 	query += " END "
 

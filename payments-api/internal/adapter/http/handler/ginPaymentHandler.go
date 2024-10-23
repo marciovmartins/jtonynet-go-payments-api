@@ -12,7 +12,6 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/jtonynet/go-payments-api/internal/bootstrap"
-	"github.com/jtonynet/go-payments-api/internal/core/constants"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
@@ -36,10 +35,8 @@ func PaymentExecution(ctx *gin.Context) {
 
 	var transactionRequest port.TransactionPaymentRequest
 	if err := ctx.ShouldBindBodyWith(&transactionRequest, binding.JSON); err != nil {
-		fmt.Println(err)
-
 		ctx.JSON(http.StatusOK, port.TransactionPaymentResponse{
-			Code: constants.CODE_REJECTED_GENERIC,
+			Code: port.CODE_REJECTED_GENERIC,
 		})
 
 		return
@@ -50,7 +47,7 @@ func PaymentExecution(ctx *gin.Context) {
 		fmt.Println(validationErrors)
 
 		ctx.JSON(http.StatusOK, port.TransactionPaymentResponse{
-			Code: constants.CODE_REJECTED_GENERIC,
+			Code: port.CODE_REJECTED_GENERIC,
 		})
 
 		return
