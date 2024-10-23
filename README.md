@@ -632,6 +632,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
+<!-- 
 __Estrutura Do Projeto__
 ```bash
 .
@@ -690,6 +691,8 @@ __Estrutura Do Projeto__
 ├── .env
 ├── go.mod
 └── go.sum
+-->
+
 ```
 
 😊🚀

@@ -58,6 +58,7 @@ func (p *Payment) Execute(tRequest port.TransactionPaymentRequest) (string, erro
 
 	approvedBalance, cErr := balanceDomain.ApproveTransaction(tDomain)
 	if cErr != nil {
+		fmt.Println(cErr) // TODO: sLog
 		return cErr.Code, fmt.Errorf("failed to approve balance domain: %s", cErr.Message)
 	}
 

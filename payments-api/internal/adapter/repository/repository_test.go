@@ -179,7 +179,6 @@ func (suite *RepositoriesSuite) MerchantMapRepositoryFindByMerchantName() {
 	assert.Equal(suite.T(), merchantMapEntity.MccCode, MerchantIncorrectMccToMap)
 	assert.Equal(suite.T(), merchantMapEntity.MappedMccCode, MerchantCorrectMccToMap)
 	assert.NoError(suite.T(), err)
-
 }
 
 func TestRepositoriesSuite(t *testing.T) {
@@ -187,18 +186,22 @@ func TestRepositoriesSuite(t *testing.T) {
 }
 
 func (suite *RepositoriesSuite) TestCases() {
-	suite.T().Run("Test AccountRepository Find By UID Success", func(t *testing.T) {
+	suite.T().Run("TestAccountRepositoryFindByUIDSuccess", func(t *testing.T) {
 		suite.AccountRepositoryFindByUIDsuccess()
 	})
-	suite.T().Run("Test Balance Repository Find By AccountID Success", func(t *testing.T) {
+	suite.T().Run("TestBalanceRepositoryFindByAccountIDSuccess", func(t *testing.T) {
 		suite.BalanceRepositoryFindByAccountIDsuccess()
 	})
 
-	suite.T().Run("Test Balance Repository Update TotalAmount Success", func(t *testing.T) {
+	suite.T().Run("TestBalanceRepositoryUpdateTotalAmountSuccess", func(t *testing.T) {
 		suite.BalanceRepositoryUpdateTotalAmountSuccess()
 	})
 
-	suite.T().Run("Test Transaction Repository Save Success", func(t *testing.T) {
+	suite.T().Run("TestTransactionRepositorySaveSuccess", func(t *testing.T) {
 		suite.TransactionRepositorySaveSuccess()
+	})
+
+	suite.T().Run("TestMerchantMapRepositoryFindByMerchantName", func(t *testing.T) {
+		suite.MerchantMapRepositoryFindByMerchantName()
 	})
 }
