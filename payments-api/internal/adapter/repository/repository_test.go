@@ -28,8 +28,12 @@ var (
 	balanceCashAmount, _ = decimal.NewFromString("115.33")
 
 	amountFoodTransaction, _ = decimal.NewFromString("100.10")
-	mccCodeFoodTransaction   = "5411"
+	MccCodeFoodTransaction   = "5411"
 	merchantFoodTransaction  = "PADARIA DO ZE               SAO PAULO BR"
+
+	merchantNameToMap         = "UBER EATS                   SAO PAULO BR"
+	MerchantIncorrectMccToMap = "5555"
+	MerchantCorrectMccToMap   = "5412"
 )
 
 type RepositoriesSuite struct {
@@ -38,6 +42,7 @@ type RepositoriesSuite struct {
 	AccountRepo     port.AccountRepository
 	BalanceRepo     port.BalanceRepository
 	TransactionRepo port.TransactionRepository
+	MerchantMapRepo port.MerchantMaptRepository
 
 	AccountEntity port.AccountEntity
 	BalanceEntity port.BalanceEntity
@@ -66,6 +71,7 @@ func (suite *RepositoriesSuite) SetupSuite() {
 	suite.AccountRepo = repositories.Account
 	suite.BalanceRepo = repositories.Balance
 	suite.TransactionRepo = repositories.Transaction
+	suite.MerchantMapRepo = repositories.MerchanMap
 
 	suite.loadDBtestData(conn)
 }
@@ -78,6 +84,18 @@ func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
 		if !ok {
 			log.Fatalf("failure to cast conn.GetDB() as gorm.DB")
 		}
+
+		dbGorm.Exec("TRUNCATE TABLE merchant_maps RESTART IDENTITY CASCADE")
+		insertMerchantMapQuery := fmt.Sprintf(`
+			INSERT INTO merchant_maps (uid, merchant_name, mcc_code, mapped_mcc_code, created_at, updated_at)
+			VALUES
+				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', '%s', '%s', '%s', NOW(), NOW()),
+				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', 'PAG*JoseDaSilva          RIO DE JANEI BR', '5555', '5812', NOW(), NOW())`,
+			merchantNameToMap,
+			MerchantIncorrectMccToMap,
+			MerchantCorrectMccToMap,
+		)
+		dbGorm.Exec(insertMerchantMapQuery)
 
 		dbGorm.Exec("TRUNCATE TABLE accounts RESTART IDENTITY CASCADE")
 		insertAccountQuery := fmt.Sprintf(
@@ -146,13 +164,21 @@ func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
 
 	transactionEntity := port.TransactionEntity{
 		AccountID:   accountEntity.ID,
-		MCCcode:     mccCodeFoodTransaction,
+		MccCode:     MccCodeFoodTransaction,
 		Merchant:    merchantFoodTransaction,
 		TotalAmount: amountFoodTransaction,
 	}
 
 	transactionEntitySaveErr := suite.TransactionRepo.Save(transactionEntity)
 	assert.NoError(suite.T(), transactionEntitySaveErr)
+
+}
+
+func (suite *RepositoriesSuite) MerchantMapRepositoryFindByMerchantName() {
+	merchantMapEntity, err := suite.MerchantMapRepo.FindByMerchantName(merchantNameToMap)
+	assert.Equal(suite.T(), merchantMapEntity.MccCode, MerchantIncorrectMccToMap)
+	assert.Equal(suite.T(), merchantMapEntity.MappedMccCode, MerchantCorrectMccToMap)
+	assert.NoError(suite.T(), err)
 
 }
 

@@ -34,7 +34,7 @@ func (p *Payment) Execute(tRequest port.TransactionPaymentRequest) (string, erro
 	tDomain, err := mapParamsToTransactionDomain(
 		accountEntity.ID,
 		tRequest.AccountUID,
-		tRequest.MCCcode,
+		tRequest.MccCode,
 		tRequest.TotalAmount,
 		tRequest.Merchant)
 	if err != nil {

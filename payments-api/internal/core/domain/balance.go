@@ -14,7 +14,7 @@ type Balance struct {
 }
 
 func (b *Balance) ApproveTransaction(tDomain *Transaction) (*Balance, *customError.CustomError) {
-	mcc := tDomain.MCCcode
+	mcc := tDomain.MccCode
 
 	bCategoryToDebt, err := b.Categories.GetByMCC(mcc)
 	if err != nil {

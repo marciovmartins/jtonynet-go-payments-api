@@ -8,7 +8,7 @@ import (
 type Transaction struct {
 	AccountID   uint
 	AccountUID  uuid.UUID
-	MCCcode     string
+	MccCode     string
 	TotalAmount decimal.Decimal
 	Merchant    string
 }

@@ -231,7 +231,7 @@ func (suite *PaymentSuite) TestPaymentExecuteCorrectMCCWithFundsApproved() {
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsApproved,
-		MCCcode:     correctFoodMCC,
+		MccCode:     correctFoodMCC,
 		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
 	}
 
@@ -278,7 +278,7 @@ func (suite *PaymentSuite) TestPaymentExecuteCorrectMCCWithFundsRejected() {
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsRejected,
-		MCCcode:     correctFoodMCC,
+		MccCode:     correctFoodMCC,
 		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
 	}
 
@@ -321,7 +321,7 @@ func (suite *PaymentSuite) TestPaymentExecuteCorrectMCCFallbackApproved() {
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsFallbackApproved,
-		MCCcode:     correctFoodMCC,
+		MccCode:     correctFoodMCC,
 		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
 	}
 

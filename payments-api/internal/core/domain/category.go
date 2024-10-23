@@ -10,7 +10,7 @@ type Category struct {
 	ID       uint
 	Name     string
 	Amount   decimal.Decimal
-	MCCcodes []string
+	MccCodes []string
 	Order    int
 }
 
@@ -20,7 +20,7 @@ type Categories struct {
 
 func (c *Categories) GetByMCC(mcc string) (Category, error) {
 	for _, categoryItem := range c.Itens {
-		if searchInSlice(mcc, categoryItem.MCCcodes) {
+		if searchInSlice(mcc, categoryItem.MccCodes) {
 			return categoryItem, nil
 		}
 	}
@@ -34,7 +34,7 @@ func (c *Categories) GetFallback() (Category, error) {
 	maxKey := -1
 
 	for key, categoryItem := range c.Itens {
-		if key > maxKey && len(categoryItem.MCCcodes) == 0 {
+		if key > maxKey && len(categoryItem.MccCodes) == 0 {
 			maxKey = key
 			categoryFallback = categoryItem
 			found = true
