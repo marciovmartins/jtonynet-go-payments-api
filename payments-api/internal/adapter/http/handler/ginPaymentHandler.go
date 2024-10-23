@@ -11,7 +11,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 
-	"github.com/jtonynet/go-payments-api/internal/bootstrap"
+	"github.com/jtonynet/go-payments-api/bootstrap"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 

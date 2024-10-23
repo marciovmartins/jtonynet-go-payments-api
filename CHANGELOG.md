@@ -16,9 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - [Issue 4](https://github.com/jtonynet/go-payments-api/issues/8)
-    - Adiciona a lógica para debitar o saldo de CASH se o saldo da categoria principal for insuficiente.
-    - melhorias nos testes
-    - melhorias na arquitetura
+  - L2 finalizada
+  - Adiciona a lógica para debitar o saldo de CASH se o saldo da categoria principal for insuficiente.
+  - melhorias nos testes
+  - melhorias na arquitetura
 
 ## [0.0.3] - 2024-20-10
 ### Added

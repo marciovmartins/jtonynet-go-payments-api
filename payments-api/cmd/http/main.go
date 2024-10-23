@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/jtonynet/go-payments-api/bootstrap"
 	"github.com/jtonynet/go-payments-api/config"
-	"github.com/jtonynet/go-payments-api/internal/bootstrap"
 
 	/*
 		TODO:

@@ -10,11 +10,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jtonynet/go-payments-api/bootstrap"
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	ginHandler "github.com/jtonynet/go-payments-api/internal/adapter/http/handler"
 	ginMiddleware "github.com/jtonynet/go-payments-api/internal/adapter/http/middleware"
-	"github.com/jtonynet/go-payments-api/internal/bootstrap"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/shopspring/decimal"
 	"github.com/tidwall/gjson"
