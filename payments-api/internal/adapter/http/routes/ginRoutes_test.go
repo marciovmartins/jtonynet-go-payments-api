@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/jtonynet/go-payments-api/config"
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	ginHandler "github.com/jtonynet/go-payments-api/internal/adapter/http/handler"
 	ginMiddleware "github.com/jtonynet/go-payments-api/internal/adapter/http/middleware"
 	"github.com/jtonynet/go-payments-api/internal/bootstrap"
@@ -30,9 +31,11 @@ var (
 	balanceMealUID, _ = uuid.Parse("19475f4b-ee4c-4bce-add1-df0db5908201")
 	balanceCashUID, _ = uuid.Parse("389e9316-ce28-478e-b14e-f971812de22d")
 
-	balanceFoodAmount, _ = decimal.NewFromString("105.11")
+	balanceFoodAmount, _ = decimal.NewFromString("205.11")
 	balanceMealAmount, _ = decimal.NewFromString("110.22")
 	balanceCashAmount, _ = decimal.NewFromString("115.33")
+
+	amountFoodTransaction, _ = decimal.NewFromString("100.10")
 )
 
 type GinRoutesSuite struct {
@@ -53,7 +56,12 @@ func (suite *GinRoutesSuite) SetupSuite() {
 		log.Fatal("cannot initiate app: ", err)
 	}
 
-	suite.loadDBtestData(app.Conn)
+	conn, err := database.NewConn(cfg.Database)
+	if err != nil {
+		log.Fatalf("error connecting to database: %v", err)
+	}
+
+	suite.loadDBtestData(conn)
 	suite.router, suite.apiGroup = setupRouterAndGroup(cfg.API, app)
 
 	suite.apiGroup.POST("/payment", ginHandler.PaymentExecution)
@@ -112,16 +120,17 @@ func TestGinRoutesSuite(t *testing.T) {
 }
 
 func (suite *GinRoutesSuite) TestPaymentExecuteTransactionApproved() {
-	codeApproved := "00" // constants.CODE_APPROVED
+	codeApproved := "00" // domain.CODE_APPROVED
 
 	transactionJSON := fmt.Sprintf(
 		`{
   			"account": "%s",
   			"mcc": "5411",
   			"merchant": "PADARIA DO ZE              SAO PAULO BR",
-  			"totalAmount": 100.09
+  			"totalAmount": %v
 		}`,
 		accountUID,
+		amountFoodTransaction,
 	)
 	reqPaymentExecution, err := http.NewRequest("POST", "/payment", bytes.NewBuffer([]byte(transactionJSON)))
 	assert.NoError(suite.T(), err)
@@ -135,7 +144,7 @@ func (suite *GinRoutesSuite) TestPaymentExecuteTransactionApproved() {
 }
 
 func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInsufficientFunds() {
-	codeRejectedInsufficientFunds := "51" // constants.CODE_REJECTED_INSUFICIENT_FUNDS
+	codeRejectedInsufficientFunds := "51" // domain.CODE_REJECTED_INSUFICIENT_FUNDS
 
 	transactionJSON := fmt.Sprintf(
 		`{

@@ -348,7 +348,7 @@ Registo e Saldos para teste manual
 >
 > | __Categoria__ | __MCCs__           | __Amount Disponível na Categoria__ |
 > |---------------|--------------------|------------------------------------|
-> | FOOD          | 5411, 5412         | 5.02                               |
+> | FOOD          | 5411, 5412         | 105.01                             |
 > | MEAL          | 5811, 5812         | 110.22                             |
 > | CASH          |                    | 115.33                             |
 
@@ -673,7 +673,7 @@ __Estrutura Do Projeto__
 │       ├── errors
 │       │   └── customError.go
 │       ├── service
-│       │   └── accountService.go
+│       │   └── payment.go
 │       ├── domain
 │       │   ├── accounts.go
 │       │   ├── balances.go

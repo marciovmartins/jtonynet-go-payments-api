@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 
-	"github.com/jtonynet/go-payments-api/internal/core/constants"
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
@@ -26,87 +25,56 @@ func NewPayment(
 	}
 }
 
-func (t *Payment) Execute(tRequest port.TransactionPaymentRequest) (string, error) {
-	accountRepo := t.AccountRepository
-	accountEntity, err := accountRepo.FindByUID(tRequest.AccountUID)
+func (p *Payment) Execute(tRequest port.TransactionPaymentRequest) (string, error) {
+	accountEntity, err := p.AccountRepository.FindByUID(tRequest.AccountUID)
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("dont retrieve account entity: %w", err))
+		return rejectedCodeError(fmt.Errorf("failed to retrieve account entity: %w", err))
 	}
 
-	tDomain, err := domain.NewTransaction(
+	tDomain, err := mapParamsToTransactionDomain(
 		accountEntity.ID,
 		tRequest.AccountUID,
 		tRequest.MCCcode,
 		tRequest.TotalAmount,
 		tRequest.Merchant)
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("dont instantiate transaction domain from request: %w", err))
+		return rejectedCodeError(fmt.Errorf("failed to map transaction domain from request: %w", err))
 	}
 
-	accountDomain, err := domain.NewAccountFromEntity(accountEntity)
+	accountDomain, err := mapAccountEntityToDomain(accountEntity)
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("dont instantiate account domain from entity: %w", err))
+		return rejectedCodeError(fmt.Errorf("failed to map account domain from entity: %w", err))
 	}
 
-	balanceRepo := t.BalanceRepository
-	balanceEntity, err := balanceRepo.FindByAccountID(accountDomain.ID)
+	balanceEntity, err := p.BalanceRepository.FindByAccountID(accountDomain.ID)
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("dont retrieve balance entity: %w", err))
+		return rejectedCodeError(fmt.Errorf("failed to retrieve balance entity: %w", err))
 	}
 
-	balanceDomain, err := domain.NewBalanceFromEntity(balanceEntity)
+	balanceDomain, err := mapBalanceEntityToDomain(balanceEntity)
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("dont instantiate balance domain from entity: %w", err))
+		return rejectedCodeError(fmt.Errorf("failed to map balance domain from entity: %w", err))
 	}
 
 	approvedBalance, cErr := balanceDomain.ApproveTransaction(tDomain)
 	if cErr != nil {
-		return cErr.Code, fmt.Errorf("dont approve balance domain: %w", err)
+		return cErr.Code, fmt.Errorf("failed to approve balance domain: %s", cErr.Message)
 	}
 
-	err = balanceRepo.UpdateTotalAmount(mapBalanceDomainToEntity(approvedBalance))
+	err = p.BalanceRepository.UpdateTotalAmount(mapBalanceDomainToEntity(approvedBalance))
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("dont update balance entity: %w", err))
+		return rejectedCodeError(fmt.Errorf("failed to update balance entity: %w", err))
 	}
 
-	transactionRepo := t.TransactionRepository
-	err = transactionRepo.Save(mapTransactionDomainToEntity(tDomain))
+	err = p.TransactionRepository.Save(mapTransactionDomainToEntity(tDomain))
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("dont save transaction entity: %w", err))
+		return rejectedCodeError(fmt.Errorf("failed to save transaction entity: %w", err))
 	}
 
-	return constants.CODE_APPROVED, nil
-}
-
-func mapBalanceDomainToEntity(dBalance domain.Balance) port.BalanceEntity {
-	bCategories := make(map[int]port.BalanceByCategoryEntity)
-	for _, categoryItem := range dBalance.GetCategories().Itens {
-		bCategory := port.BalanceByCategoryEntity{
-			ID:        categoryItem.ID,
-			AccountID: dBalance.GetAccountID(),
-			Amount:    categoryItem.Amount,
-			Category:  port.Categories[categoryItem.Name],
-		}
-
-		bCategories[categoryItem.Order] = bCategory
-	}
-
-	return port.BalanceEntity{
-		AccountID:   dBalance.GetAccountID(),
-		AmountTotal: dBalance.GetAmountTotal(),
-		Categories:  bCategories,
-	}
-}
-
-func mapTransactionDomainToEntity(tDomain *domain.Transaction) port.TransactionEntity {
-	return port.TransactionEntity{
-		AccountID:   tDomain.AccountID,
-		TotalAmount: tDomain.TotalAmount,
-		MCCcode:     tDomain.MCCcode,
-		Merchant:    tDomain.Merchant,
-	}
+	return domain.CODE_APPROVED, nil
 }
 
 func rejectedCodeError(err error) (string, error) {
-	return constants.CODE_REJECTED_GENERIC, err
+	fmt.Println(err) // TODO: Use sLog
+	return domain.CODE_REJECTED_GENERIC, err
 }

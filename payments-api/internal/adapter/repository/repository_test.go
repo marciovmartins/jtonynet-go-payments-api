@@ -23,7 +23,7 @@ var (
 	balanceMealUID, _ = uuid.Parse("19475f4b-ee4c-4bce-add1-df0db5908201")
 	balanceCashUID, _ = uuid.Parse("389e9316-ce28-478e-b14e-f971812de22d")
 
-	balanceFoodAmount, _ = decimal.NewFromString("105.11")
+	balanceFoodAmount, _ = decimal.NewFromString("205.11")
 	balanceMealAmount, _ = decimal.NewFromString("110.22")
 	balanceCashAmount, _ = decimal.NewFromString("115.33")
 
@@ -167,10 +167,12 @@ func (suite *RepositoriesSuite) TestCases() {
 	suite.T().Run("Test Balance Repository Find By AccountID Success", func(t *testing.T) {
 		suite.BalanceRepositoryFindByAccountIDsuccess()
 	})
+
 	suite.T().Run("Test Balance Repository Update TotalAmount Success", func(t *testing.T) {
 		suite.BalanceRepositoryUpdateTotalAmountSuccess()
 	})
+
 	suite.T().Run("Test Transaction Repository Save Success", func(t *testing.T) {
-		suite.BalanceRepositoryUpdateTotalAmountSuccess()
+		suite.TransactionRepositorySaveSuccess()
 	})
 }
