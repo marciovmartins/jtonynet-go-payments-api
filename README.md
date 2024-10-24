@@ -503,7 +503,7 @@ erDiagram
 **Transactions** registra o histórico de transações realizadas.<br/>
 **MCC_Merchant_Map** ajusta MCCs incorretos de acordo com o nome do comerciante.
 
-_*Esse diagrama oferece uma visão clara de como modelar as entidades principais e seus relacionamentos para atender aos requisitos do sistema de autorização de transações.<br/>**Por simplicidade para um desenvolvimento mais rapido mantendo foco no Serviço, mantive as categorias no projeto e não em uma tabela, elas devem ganhar sua tabela no futuro._
+_*Por simplicidade para um desenvolvimento mais rapido mantendo foco no Serviço, mantive as categorias no projeto e não em uma tabela, elas devem ganhar sua tabela no futuro._
 
 
 <br/>
