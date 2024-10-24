@@ -187,7 +187,7 @@ Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adota
 <a id="environment"></a>
 #### 🌐 Ambiente
 
-`Docker` e `Docker Compose` são necessários para rodar a aplicação de forma containerizada, e é fortemente recomendado utilizá-los para rodar o banco de dados localmente.
+`Docker` e `Docker Compose` são necessários para rodar a aplicação de forma f containerizada, e é fortemente recomendado utilizá-los para rodar o banco de dados localmente.
 
 Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./payments-api/.env`.
 
@@ -269,7 +269,7 @@ A interface do [Swagger pode executar testes manuais](#test-manual) a partir de 
 #### 🐋 Conteinerizado 
 Para rodar os testes [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Conteinerizado](#run-containerized).
 
-As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _conteinerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `teste`.
+As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _containerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `teste`.
 
 <br/>
 
@@ -500,7 +500,7 @@ erDiagram
 **Accounts** é a tabela principal, conectada tanto a **Balances** quanto a **Transactions**, armazenando informações sobre as contas.  
 **Balances** armazena os saldos por categoria.<br/>
 **Transactions** registra o histórico de transações realizadas.<br/>
-**MCC_Merchant_Map** ajusta MCCs incorretos de acordo com o nome do comerciante.
+**Merchant_Map** ajusta MCCs incorretos de acordo com o nome do comerciante.
 
 _*Por simplicidade para um desenvolvimento mais rapido mantendo foco no Serviço, mantive as categorias no projeto e não em uma tabela, elas devem ganhar sua tabela no futuro._
 
@@ -517,7 +517,7 @@ _*Por simplicidade para um desenvolvimento mais rapido mantendo foco no Serviço
 > Transações simultâneas: dado que o mesmo cartão de crédito pode ser utilizado em diferentes serviços online, existe uma pequena mas existente probabilidade de ocorrerem duas transações ao mesmo tempo. O que você faria para garantir que apenas uma transação por conta fosse processada em um determinado momento? Esteja ciente do fato de que todas as solicitações de transação são síncronas e devem ser processadas rapidamente (menos de 100 ms), ou a transação atingirá o timeout.
 
 #### 🔒Locks Distribuídos
-Uma abordagem com o uso de `Locks Distribuídos`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esse dado seja distinto. Como o próprio enunciado sugere, a possibilidade de que existam essas colisões seja pequena, um sistema de dados em memória rápido o suficiente para armazenar, resgatar e liberar o processamento das tarefas da aplicação em nós distintos é um aliado, coordenando o acesso a recursos compartilhados. Em um cenário onde a latência é uma questão, é uma boa opção.
+Uma abordagem com o uso de `Locks Distribuídos`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esse dado seja distinto. Como o próprio enunciado sugere, a possibilidade de que existam essas colisões seja pequena, um sistema de dados em memória rápido o suficiente para armazenar, resgatar e liberar o processamento das tarefas da aplicação em nós distintos é um aliado. Coordenar o acesso a recursos compartilhados em cenário onde a latência é uma questão, é uma boa opção.
 
 ```mermaid
 flowchart TD
