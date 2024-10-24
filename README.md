@@ -536,7 +536,7 @@ flowchart TD
 ```
 
 #### 📥 Filas
-Outra abordagem  que pode ser utilizada em conjunto para garantir robustez, ou mesmo de maneira isolada seria o uso de de filas. Possuem garantias adicionais para o o controle de concorrência.
+Outra abordagem  que pode ser utilizada em conjunto para garantir robustez, ou mesmo de maneira isolada seria o uso de de filas. Possuem garantias adicionais para o controle de concorrência.
 
 <br/>
 
@@ -649,9 +649,11 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
-- Defini o modelo hexagonal pois sua abordagem de ports and adapters **proporciona** flexibilidade para que o sistema atenda a chamadas `http`, mas que possa ser facilmente estendido para outras abordagens, como processamento de mensagens e filas, sem alterar o `core` , garantindo um sistema com separação de preocupações.
+- Defini o modelo hexagonal pois sua abordagem de ports and adapters proporciona flexibilidade para que o sistema atenda a chamadas `http`, mas que possa ser facilmente estendido para outras abordagens, como processamento de mensagens e filas, sem alterar o `core` , garantindo um sistema com separação de preocupações.
 
 - Desde o princípio, imaginei um sistema de cache, que infelizmente não implementei, para lidar com os dados que possuem pouca possibilidade de alteração em curto período de tempo (`merchant names`, `mcc` e `categorias`). Essa mesma estrutura poderia ser utilizada para implantar uma versão inicial de `memory lock`.
+
+- Testes adicionais deveriam ser criado.
 
 😊🚀
 
