@@ -29,6 +29,7 @@
 <a id="index"></a>
 ### ⤴️ Índice
 
+
 __[Go Payments API](#header)__<br/>
   1.  ⤴️ [Índice](#index)
   2.  📖 [Sobre](#about)
@@ -45,12 +46,13 @@ __[Go Payments API](#header)__<br/>
   6.  📊 [Diagramas](#diagrams)
       - 📈 [Fluxo](#diagrams-flowchart)
       - 📈 [ER](#diagrams-erchart)
-  7.  👏 [Boas Práticas](#best-practices)
-  8.  🧠 [ADR - Architecture Decision Records](#adr)
-  9.  🔢 [Versões](#versions)
-  10. 🧰 [Ferramentas](#tools)
-  11. 🤖 [Uso de IA](#ia)
-  12. 🏁 [Conclusão](#conclusion)
+  7.  🅻4️⃣ [Questsão Aberta L4](#open-question)
+  8.  👏 [Boas Práticas](#best-practices)
+  9.  🧠 [ADR - Architecture Decision Records](#adr)
+  10. 🔢 [Versões](#versions)
+  11. 🧰 [Ferramentas](#tools)
+  12. 🤖 [Uso de IA](#ia)
+  13. 🏁 [Conclusão](#conclusion)
 
 ---
 
@@ -336,8 +338,9 @@ docker compose exec payments-api go test -v -count=1 ./internal/adapter/reposito
 
 <br/>
 
-Registo e Saldos para teste manual
+Registros e Saldos para teste manual
 
+L1. L2. Account e Saldos por Categoria
 > 
 > | __Account:__                                            | __AcountID:__ |
 > |---------------------------------------------------------|---------------|
@@ -351,7 +354,18 @@ Registo e Saldos para teste manual
 > | MEAL          | 5811, 5812         | 110.22                             |
 > | CASH          |                    | 115.33                             |
 
-Com acesso ao banco a partir dos dados de `.env`, os limites de amount podem ser ajustados em desenvolvimento para facilitar testes manuais. Bem como o [Swagger da API](#api-docs) pode ser utilizado para proceder as `requests`
+<br/>
+
+L3. Merchants com mapeamentos MCC incorretos
+>
+> | __Merchant__                             | __MCCs__           | __Mapeado para Categoria__ |
+> |------------------------------------------|--------------------|----------------------------|
+> | UBER EATS                   SAO PAULO BR | 5555               | FOOD                       |
+> | PAG*JoseDaSilva          RIO DE JANEI BR | 5555               | 5812                       |
+
+
+
+Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como o [Swagger da API](#api-docs) pode ser utilizado para proceder as `requests`
 
 
 <br/>
@@ -362,7 +376,7 @@ Com acesso ao banco a partir dos dados de `.env`, os limites de amount podem ser
 
 <a id="diagrams"></a>
 ### 📊 Diagramas do Sistema
-_*Diagramas embrionários <br> **Diagramas Mermaid podem apresentar problemas de visualização em aplicativos mobile_
+_*Diagramas Mermaid podem apresentar problemas de visualização em aplicativos mobile_
 
 <!-- 
     diagrams by:
@@ -374,23 +388,26 @@ _*Diagramas embrionários <br> **Diagramas Mermaid podem apresentar problemas de
 
 ```mermaid
 flowchart TD
-    A[Recebe Transação JSON] --> B[Inicia Transação no Banco]
-    B --> C[Buscar Saldos da Conta - com bloqueio]
-    C --> D{Saldo é suficiente na Categoria?}
+    A[Recebe Transação JSON] --> B[Mapeia Categoria pelo nome do comerciante]
+    B --> C[Buscar Saldos da Conta]
+    C --> D{Saldo é suficiente <br/> na Categoria?}
     
     D -- Sim --> E[Debita Saldo da Categoria]
-    D -- Não --> F{Saldo suficiente em CASH?}
+    D -- Não --> F{Saldo suficiente na <br/> Categoria e CASH?}
     
-    F -- Sim --> G[Debita Saldo de CASH]
-    F -- Não --> H[Rejeita Transação com Código 51]
+    F -- Sim --> G[Debita Categoria e CASH]
+    F -- Não --> H{Saldo suficiente em CASH?}
     
-    G --> I[Registrar Transação Aprovada]
-    E --> I[Registrar Transação Aprovada]
+    H -- Sim --> I[Debita Saldo de CASH]
+    H -- Não --> J[Rejeita Transação com Código 51]
     
-    I --> J[Commit no Banco de Dados]
-    J --> K[Retorna Código 00 - Aprovada]
+    E --> K[Registrar Transação Aprovada]
+    G --> K[Registrar Transação Aprovada]
+    I --> K[Registrar Transação Aprovada]
     
-    H --> L[Retorna Código 51 Rejeitada]
+    K --> M[Retorna Código 00 - Aprovada]
+    
+    J --> N[Retorna Código 51 Rejeitada]
 ```
 
 <a id="diagrams-flowchart-description"></a>
@@ -398,30 +415,28 @@ flowchart TD
 
 1. **Recebe Transação JSON**: O sistema recebe o payload de transação.
 
-2. **Inicia Transação no Banco**: Abre uma transação no banco de dados para garantir atomicidade.
+2. **Mapeia MCC pelo Merchant Name**: Busca um relacionamento entre o `merchant` e uma categoria adequada
 
-3. **Buscar Saldos da Conta**: A conta e os saldos (FOOD, MEAL, CASH) são buscados no banco de dados com um bloqueio exclusivo para evitar concorrência.
+3. **Buscar Saldos da Conta**: A conta e os saldos (FOOD, MEAL, CASH) são buscados no banco de dados 
 
 4. **Saldo é suficiente na Categoria?**: Verifica se o saldo disponível na categoria mapeada (com base no MCC) é suficiente.
     - Se sim, debita o saldo da categoria correspondente.
     - Se não, verifica o saldo de CASH.
 
 5. **Saldo suficiente em CASH?**: Se a categoria principal não tiver saldo suficiente, o sistema verifica o saldo de CASH.
-    - Se sim, debita o saldo de CASH.
+    - Se sim, debita parcial ou totalmente o saldo de CASH.
     - Se não, rejeita a transação com o código "51" (fundos insuficientes).
 
 6. **Registrar Transação Aprovada**: A transação aprovada é registrada no banco de dados.
 
-7. **Commit no Banco de Dados**: Confirma a transação no banco, persistindo as mudanças.
+7. **Retorna Código "00"**: Se a transação foi aprovada, retorna o código "00" (aprovada).
 
-8. **Retorna Código "00"**: Se a transação foi aprovada, retorna o código "00" (aprovada).
-
-9. **Retorna Código "51"**: Se a transação foi rejeitada por falta de fundos, retorna o código "51".
+8. **Retorna Código "51"**: Se a transação foi rejeitada por falta de fundos, retorna o código "51".
 
 
 <br/>
 
-_*Esse fluxo representa o processo de aprovação, fallback e rejeição da transação com base nos saldos e MCC, garantindo bloqueio exclusivo ao manipular os saldos._
+_*Esse fluxo representa o processo de aprovação, fallback e rejeição da transação com base nos saldos e MCC._
 
 ---
 
@@ -434,7 +449,7 @@ _*Esse fluxo representa o processo de aprovação, fallback e rejeição da tran
 erDiagram
     accounts {
         int id PK
-        UUID uuid
+        UUID uid
         string name
         datetime created_at
         datetime updated_at
@@ -443,10 +458,10 @@ erDiagram
 
     balances {
         int id PK
-        UUID uuid
+        UUID uid
         int account_id FK
-        enum category
-        int amount
+        string category_name
+        numeric amount
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at
@@ -456,22 +471,21 @@ erDiagram
         int id PK
         UUID uuid
         int account_id FK
-        string mcc
+        string mcc_code
         string merchant
-        decimal total_amount
+        numeric total_amount
         decimal approved_amount
-        enum status
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at
     }
     
-    mcc_merchant_map {
+    merchant_map {
         int id PK
-        UUID uuid
+        UUID uid
         string merchant_name
-        string mcc
-        string mapped_mcc
+        string mcc_code
+        string mapped_mcc_code
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at
@@ -479,17 +493,50 @@ erDiagram
 
     accounts ||--o{ balances : has
     accounts ||--o{ transactions : performs
-    transactions ||--|| mcc_merchant_map : "maps to"
+    
 ```
 <a id="diagrams-erchart-description"></a>
 ##### 📝 Descrição
 
 **Accounts** é a tabela principal, conectada tanto a **Balances** quanto a **Transactions**, armazenando informações sobre as contas.  
-**Balances** armazena os saldos por categoria.  
-**Transactions** registra o histórico de transações realizadas, enquanto **MCC_Merchant_Map** ajusta MCCs incorretos de acordo com o nome do comerciante.
+**Balances** armazena os saldos por categoria.<br/>
+**Transactions** registra o histórico de transações realizadas.<br/>
+**MCC_Merchant_Map** ajusta MCCs incorretos de acordo com o nome do comerciante.
 
-_*Esse diagrama oferece uma visão clara de como modelar as entidades principais e seus relacionamentos para atender aos requisitos do sistema de autorização de transações._
+_*Esse diagrama oferece uma visão clara de como modelar as entidades principais e seus relacionamentos para atender aos requisitos do sistema de autorização de transações.<br/>**Por simplicidade para um desenvolvimento mais rapido mantendo foco no Serviço, mantive as categorias no projeto e não em uma tabela, elas devem ganhar sua tabela no futuro._
 
+
+<br/>
+
+[⤴️ de volta ao índice](#index)
+
+---
+
+<a id="open-question"></a>
+### 🅻4️⃣ Questsão Aberta L4
+
+> Transações simultâneas: dado que o mesmo cartão de crédito pode ser utilizado em diferentes serviços online, existe uma pequena mas existente probabilidade de ocorrerem duas transações ao mesmo tempo. O que você faria para garantir que apenas uma transação por conta fosse processada em um determinado momento? Esteja ciente do fato de que todas as solicitações de transação são síncronas e devem ser processadas rapidamente (menos de 100 ms), ou a transação atingirá o timeout.
+
+#### 🔒Locks Distribuídos
+Uma abordagem com o uso de `Locks Distribuídos`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esse dado seja distinto. Como o próprio enunciado sugere, a possibilidade de que existam essas colisões seja pequena, um sistema de dados em memória rápido o suficiente para armazenar, resgatar e liberar o processamento das tarefas da aplicação em nós distintos é um aliado, coordenando o acesso a recursos compartilhados. Em um cenário onde a latência é uma questão, é uma boa opção.
+
+```mermaid
+flowchart TD
+    A[Recebe Transação JSON] --> B[Gerar Lock em Memória]
+    B --> C{Lock Obtido?}
+    
+    C -- Sim --> D[Processa Transação]
+    D --> E[Registrar Transação Aprovada]
+    D --> F[Release Lock em Memória]
+    
+    C -- Não --> G[Rejeita Transação <br/> com Código 52]
+    
+    E --> H[Retorna Código 00 <br/> Aprovada]
+    G --> I[Retorna Código 52 <br/> Rejeitada]
+```
+
+#### 📥 Filas
+Outra abordagem  que pode ser utilizada em conjunto para garantir robustez, ou mesmo de maneira isolada seria o uso de de filas. Possuem garantias adicionais para o o controle de concorrência.
 
 <br/>
 
@@ -507,11 +554,6 @@ _*Esse diagrama oferece uma visão clara de como modelar as entidades principais
 - [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - [ADR - Architecture Decision Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
 - [Mermaid Diagrams](https://mermaid.js.org)
-<!--
-- [Observabilidade](https://en.wikipedia.org/wiki/Observability_(software)) com:
-  - [Prometheus](.)
-  - [Grafana](https://grafana.com/)
--->
 
 <br/>
 
@@ -561,29 +603,16 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
   - [Gin-Swagger](https://github.com/swaggo/gin-swagger)
   - [gjson](https://github.com/tidwall/gjson)
   - [uuid](github.com/google/uuid)
-<!-- 
-  - [gin-contrib/pprof](https://github.com/gin-contrib/pprof)
-  - [Exponential Backoff](https://github.com/cenkalti/backoff)
-  - [go-redis](https://github.com/redis/go-redis)
-  - [amqp091-go](https://github.com/rabbitmq/amqp091-go)
--->
+
 
 - Infra & Tecnologias
   - [Docker v24.0.6](https://www.docker.com/)
   - [Docker compose v2.21.0](https://www.docker.com/)
   - [Postgres v16.0](https://www.postgresql.org/)
-<!--
-  - [Gatling v3.9.5](https://gatling.io/)
-  - [Redis 6.2](https://redis.io/)
-  - [RabbitMQ v3.12.6](https://www.rabbitmq.com/)
--->
 
 - GUIs:
   - [VsCode](https://code.visualstudio.com/)
   - [DBeaver](https://dbeaver.io/)
-<!--
-  - [another-redis-desktop-manager](https://github.com/qishibo/AnotherRedisDesktopManager)
--->
 
 <br/>
 
@@ -620,69 +649,9 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
-<!-- 
-__Estrutura Do Projeto__
-```bash
-.
-├── bin
-├── cmd
-│   └── http
-│       └── main.go
-├── config
-│   └── config.go
-├── internal
-│   ├── adapter
-│   │   ├── http
-│   │   │   ├── handler
-│   │   │   │   └── GinTransactionHandler.go
-│   │   │   ├── middleware
-│   │   │   │   └── GinMiddleware.go
-│   │   │   └── routes
-│   │   │       └── gin
-│   │   │           └── routes.go
-│   │   ├── model
-│   │   │   └── gormModel
-│   │   │       ├── account.go
-│   │   │       └── baseModel.go
-│   │   ├── database
-│   │   │   ├── gormConn
-│   │   │   │   └── gormConn.go
-│   │   │   └── conn.go
-│   │   └── repository
-│   │       ├── gormRepos
-│   │       │   ├── account.go
-│   │       │   ├── balance.go
-│   │       │   └── transactions.go
-│   │       └── repos.go
-│   ├── bootstrap
-│   │   └── container.go
-│   └── core
-│       ├── constants
-│       │   └── constants.go
-│       ├── errors
-│       │   └── customError.go
-│       ├── service
-│       │   └── payment.go
-│       ├── domain
-│       │   ├── accounts.go
-│       │   ├── balances.go
-│       │   ├── transactions.go
-│       │   └── category.go
-│       └── port 
-│           ├── handler
-│           │   └── accountHandler.go
-│           └── repository
-│               ├── accounts.go
-│               ├── balances.go
-│               ├── transactions.go
-│               └── mccMerchantMap.go
-├── .env
-├── go.mod
-└── go.sum
-```
--->
+- Defini o modelo hexagonal pois sua abordagem de ports and adapters **proporciona** flexibilidade para que o sistema atenda a chamadas `http`, mas que possa ser facilmente estendido para outras abordagens, como processamento de mensagens e filas, sem alterar o `core` da minha `service`, garantindo um sistema com separação de preocupações.
 
-
+- Desde o princípio, imaginei um sistema de cache, que infelizmente não implementei, para lidar com os dados que possuem pouca possibilidade de alteração em curto período de tempo (`merchant names`, `mcc` e `categorias`). Essa mesma estrutura poderia ser utilizada para implantar uma versão inicial de `memory lock`.
 
 😊🚀
 
@@ -691,18 +660,7 @@ __Estrutura Do Projeto__
 [⤴️ de volta ao índice](#index)
 
 
-
-<!-- 
-
-https://github.com/datosh/gau
-https://herbertograca.com/wp-content/uploads/2018/11/100-explicit-architecture-svg.png?w=1200
-
----
-
-// Removendo processos de uma porta. ex.: 3000
-sudo kill -9 $(lsof -t -i:3000)
-
-//LIMPANDO DOCKER
+<!--
 docker stop $(docker ps -aq)
 docker rm $(docker ps -aq)
 docker rmi $(docker images -q) --force
@@ -713,64 +671,4 @@ docker system prune -a --volumes
 
 sudo systemctl restart docker
 -->
-
-<!-- 
-Apos efetuar o download/instalacao de uma nova versao da GoLang:
-
-Validar a existencia da nova versao no diretorio `/usr/lib` como comando `ls -la | grep go`
-saida esperada:
-
-```bash
-drwxr-xr-x 129 root root   12288 ago 26 19:27 .
-lrwxrwxrwx   1 root root       7 mar 23  2022 go -> go-1.18
-lrwxrwxrwx  1 root   root     24 mar 23  2022 gofmt -> ../lib/go-1.18/bin/gofmt
-drwxr-xr-x   2 root root    4096 mar 20  2024 go-1.13
-drwxr-xr-x   4 root root    4096 mar 20  2024 go-1.18
-drwxr-xr-x  10 root root    4096 ago 31  2023 go-1.21.1
-
-```
-
-Em `/usr/bin` executar o comando `ls -la | grep go` e identificar os links simbolicos da versao atualmente instalada, a considerar:
-
-- go -> ../lib/go-1.18/bin/go            # ou similar
-- gofmt -> ../lib/go-1.18/bin/gofmt      # ou similar
-
-renomear os links simbolicos das versoes antigas de Go
-
-- sudo mv go go_OLD_1.18
-- sudo mv gofmt gofmt_OLD_1.18
-
-Apontar para as versoes recentes/atualizadas de `/usr/lib`
-
-```
-/usr/bin$ sudo ln -s ../lib/go-1.23.2/bin/gofmt gofmt
-/usr/bin$ sudo ln -s go-1.23.2 go
-
-```
-
-/*
-  // TODO: https://github.com/uber-go/fx as dependency container
-  // Better way for ctx as Dependency Container for DI
-func NewApp() *fx.App {
-	app := fx.New()
-	return app
-}
-*/
-
--->
-
-<!--
-
-Executing tests
-```
-go test -v ./internal/core/service
-go test -v ./internal/adapter/repository
-
-ENV=test go test -v ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
-```
-
-
-swag init --generalInfo cmd/http/main.go -o ./docs
--->
-
 
