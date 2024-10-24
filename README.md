@@ -361,7 +361,7 @@ L3. Merchants com mapeamentos MCC incorretos
 > | __Merchant__                             | __MCCs__           | __Mapeado para Categoria__ |
 > |------------------------------------------|--------------------|----------------------------|
 > | UBER EATS                   SAO PAULO BR | 5555               | FOOD                       |
-> | PAG*JoseDaSilva          RIO DE JANEI BR | 5555               | 5812                       |
+> | PAG*JoseDaSilva          RIO DE JANEI BR | 5555               | MEAL                       |
 
 
 
@@ -536,6 +536,8 @@ flowchart TD
 
 #### 📥 Filas
 Outra abordagem  que pode ser utilizada em conjunto para garantir robustez, ou mesmo de maneira isolada seria o uso de de filas. Possuem garantias adicionais para o controle de concorrência.
+
+Adotando qualquer solução, pelo fato de latência e concorrência serem questões de preocupação, testes de carga e performance, levando em conta esses critérios, devem ser criados e adicionados à rotina de desenvolvimento, visando garantir implantações seguras de nossos serviços. Existem várias opções no mercado que podem ser adicionadas ao ciclo de CI (por exemplo: JMeter, Gatling).
 
 <br/>
 
