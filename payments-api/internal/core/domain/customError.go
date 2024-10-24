@@ -1,4 +1,4 @@
-package customError
+package domain
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ func (e *CustomError) Error() string {
 	return fmt.Sprintf("Code: %s, Message: %s", e.Code, e.Message)
 }
 
-func New(code string, message string) *CustomError {
+func NewCustomError(code string, message string) *CustomError {
 	return &CustomError{
 		Code:    code,
 		Message: message,

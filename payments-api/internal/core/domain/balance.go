@@ -3,7 +3,6 @@ package domain
 import (
 	"log"
 
-	"github.com/jtonynet/go-payments-api/internal/core/customError"
 	"github.com/shopspring/decimal"
 )
 
@@ -13,7 +12,7 @@ type Balance struct {
 	Categories
 }
 
-func (b *Balance) ApproveTransaction(tDomain *Transaction) (*Balance, *customError.CustomError) {
+func (b *Balance) ApproveTransaction(tDomain *Transaction) (*Balance, *CustomError) {
 	debitedBalanceCategories, err := b.getDebitedBalanceCategories(tDomain)
 	if err != nil {
 		return b, err
@@ -26,7 +25,7 @@ func (b *Balance) ApproveTransaction(tDomain *Transaction) (*Balance, *customErr
 	return b, nil
 }
 
-func (b *Balance) getDebitedBalanceCategories(tDomain *Transaction) (map[int]Category, *customError.CustomError) {
+func (b *Balance) getDebitedBalanceCategories(tDomain *Transaction) (map[int]Category, *CustomError) {
 	amountDebtRemaining := tDomain.TotalAmount
 	debitedBalanceCategories := make(map[int]Category)
 
@@ -56,7 +55,7 @@ func (b *Balance) getDebitedBalanceCategories(tDomain *Transaction) (map[int]Cat
 		if err != nil {
 			log.Println("Error retrieving fallback category. Rolling back changes and returning an error.")
 
-			return make(map[int]Category), customError.New(CODE_REJECTED_GENERIC, "Category Fallback not found")
+			return make(map[int]Category), NewCustomError(CODE_REJECTED_GENERIC, "Category Fallback not found")
 
 		} else if bCategoryFallback.Amount.GreaterThanOrEqual(amountDebtRemaining) {
 			log.Println("Fallback category has sufficient funds available for the transaction.")
@@ -74,7 +73,7 @@ func (b *Balance) getDebitedBalanceCategories(tDomain *Transaction) (map[int]Cat
 	}
 
 	if amountDebtRemaining.GreaterThan(decimal.Zero) && len(debitedBalanceCategories) == 0 {
-		return make(map[int]Category), customError.New(CODE_REJECTED_INSUFICIENT_FUNDS, "balance category has insuficient funds")
+		return make(map[int]Category), NewCustomError(CODE_REJECTED_INSUFICIENT_FUNDS, "balance category has insuficient funds")
 	}
 
 	return debitedBalanceCategories, nil
