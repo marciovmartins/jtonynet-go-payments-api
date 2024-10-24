@@ -46,7 +46,7 @@ __[Go Payments API](#header)__<br/>
   6.  📊 [Diagramas](#diagrams)
       - 📈 [Fluxo](#diagrams-flowchart)
       - 📈 [ER](#diagrams-erchart)
-  7.  🅻4️⃣ [Questsão Aberta L4](#open-question)
+  7.  🅻4️⃣ [Questão Aberta L4](#open-question)
   8.  👏 [Boas Práticas](#best-practices)
   9.  🧠 [ADR - Architecture Decision Records](#adr)
   10. 🔢 [Versões](#versions)
@@ -513,7 +513,7 @@ _*Por simplicidade para um desenvolvimento mais rapido mantendo foco no Serviço
 ---
 
 <a id="open-question"></a>
-### 🅻4️⃣ Questsão Aberta L4
+### 🅻4️⃣ Questão Aberta L4
 
 > Transações simultâneas: dado que o mesmo cartão de crédito pode ser utilizado em diferentes serviços online, existe uma pequena mas existente probabilidade de ocorrerem duas transações ao mesmo tempo. O que você faria para garantir que apenas uma transação por conta fosse processada em um determinado momento? Esteja ciente do fato de que todas as solicitações de transação são síncronas e devem ser processadas rapidamente (menos de 100 ms), ou a transação atingirá o timeout.
 
