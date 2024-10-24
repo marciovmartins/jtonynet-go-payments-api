@@ -13,7 +13,7 @@ type MerchantMap struct {
 	db       *gorm.DB
 }
 
-func NewMerchantMap(conn port.DBConn) (port.MerchantMaptRepository, error) {
+func NewMerchantMap(conn port.DBConn) (port.MerchantMapRepository, error) {
 	db := conn.GetDB()
 	dbGorm, ok := db.(gorm.DB)
 	if !ok {

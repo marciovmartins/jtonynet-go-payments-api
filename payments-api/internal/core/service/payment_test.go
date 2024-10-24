@@ -31,6 +31,7 @@ type DBfake struct {
 	Account     map[uint]port.AccountEntity
 	Balance     map[uint]port.BalanceByCategoryEntity
 	Transaction map[uint]port.TransactionEntity
+	MerchantMap map[uint]port.MerchantMapEntity
 }
 
 func newDBfake() DBfake {
@@ -42,6 +43,14 @@ func newDBfake() DBfake {
 		1: {
 			ID:  1,
 			UID: accountUIDtoTransact,
+		},
+	}
+
+	db.MerchantMap = map[uint]port.MerchantMapEntity{
+		1: {
+			MerchantName:  "UBER EATS                   SAO PAULO BR",
+			MccCode:       "5555",
+			MappedMccCode: "5412",
 		},
 	}
 
@@ -116,6 +125,32 @@ func newTransactionRepoFake(db DBfake) port.TransactionRepository {
 	return &TransactionRepoFake{
 		db,
 	}
+}
+
+type MerchantMapRepoFake struct {
+	db DBfake
+}
+
+func newMerchantMapRepoFake(db DBfake) port.MerchantMapRepository {
+	return &MerchantMapRepoFake{
+		db,
+	}
+}
+
+func (m *MerchantMapRepoFake) FindByMerchantName(merchantName string) (port.MerchantMapEntity, error) {
+	merchantMapEntity, err := m.db.MerchantMapRepoFindByMerchantName(merchantName)
+	return merchantMapEntity, err
+}
+
+func (dbf *DBfake) MerchantMapRepoFindByMerchantName(merchantName string) (port.MerchantMapEntity, error) {
+
+	for _, m := range dbf.MerchantMap {
+		if m.MerchantName == merchantName {
+			return m, nil
+		}
+	}
+
+	return port.MerchantMapEntity{}, fmt.Errorf("merchantMAp with AccountID %s not found", merchantName)
 }
 
 func (dbf *DBfake) BalanceRepoFindByAccountID(accountID uint) (port.BalanceEntity, error) {

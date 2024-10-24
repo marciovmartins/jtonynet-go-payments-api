@@ -14,6 +14,7 @@ type Balance struct {
 }
 
 func (b *Balance) ApproveTransaction(tDomain *Transaction) (*Balance, *customError.CustomError) {
+	tDomain = b.getMappedMCCByMerchantName(tDomain)
 
 	debitedBalanceCategories, err := b.getDebitedBalanceCategories(tDomain)
 	if err != nil {
@@ -25,6 +26,10 @@ func (b *Balance) ApproveTransaction(tDomain *Transaction) (*Balance, *customErr
 	}
 
 	return b, nil
+}
+
+func (b *Balance) getMappedMCCByMerchantName(tDomain *Transaction) *Transaction {
+	return tDomain
 }
 
 func (b *Balance) getDebitedBalanceCategories(tDomain *Transaction) (map[int]Category, *customError.CustomError) {

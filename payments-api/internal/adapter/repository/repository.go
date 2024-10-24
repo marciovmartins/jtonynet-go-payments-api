@@ -12,7 +12,7 @@ type AllRepos struct {
 	Account     port.AccountRepository
 	Balance     port.BalanceRepository
 	Transaction port.TransactionRepository
-	MerchanMap  port.MerchantMaptRepository
+	MerchanMap  port.MerchantMapRepository
 }
 
 func GetAll(conn port.DBConn) (AllRepos, error) {

@@ -6,6 +6,6 @@ type MerchantMapEntity struct {
 	MappedMccCode string
 }
 
-type MerchantMaptRepository interface {
+type MerchantMapRepository interface {
 	FindByMerchantName(string) (MerchantMapEntity, error)
 }

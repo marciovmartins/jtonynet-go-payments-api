@@ -42,7 +42,7 @@ type RepositoriesSuite struct {
 	AccountRepo     port.AccountRepository
 	BalanceRepo     port.BalanceRepository
 	TransactionRepo port.TransactionRepository
-	MerchantMapRepo port.MerchantMaptRepository
+	MerchantMapRepo port.MerchantMapRepository
 
 	AccountEntity port.AccountEntity
 	BalanceEntity port.BalanceEntity
