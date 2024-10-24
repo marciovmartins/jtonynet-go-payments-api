@@ -653,7 +653,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Desde o princípio, imaginei um sistema de cache, que infelizmente não implementei, para lidar com os dados que possuem pouca possibilidade de alteração em curto período de tempo (`merchant names`, `mcc` e `categorias`). Essa mesma estrutura poderia ser utilizada para implantar uma versão inicial de `memory lock`.
 
-- Testes adicionais deveriam ser criado.
+- Testes adicionais deveriam ser criados.
 
 😊🚀
 
