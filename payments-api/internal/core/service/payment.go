@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
@@ -11,17 +12,20 @@ type Payment struct {
 	AccountRepository     port.AccountRepository
 	BalanceRepository     port.BalanceRepository
 	TransactionRepository port.TransactionRepository
+	MerchantMapRepository port.MerchantMapRepository
 }
 
 func NewPayment(
 	aRepository port.AccountRepository,
 	bRepository port.BalanceRepository,
 	tRepository port.TransactionRepository,
+	mRepository port.MerchantMapRepository,
 ) *Payment {
 	return &Payment{
 		AccountRepository:     aRepository,
 		BalanceRepository:     bRepository,
 		TransactionRepository: tRepository,
+		MerchantMapRepository: mRepository,
 	}
 }
 
@@ -29,6 +33,11 @@ func (p *Payment) Execute(tRequest port.TransactionPaymentRequest) (string, erro
 	accountEntity, err := p.AccountRepository.FindByUID(tRequest.AccountUID)
 	if err != nil {
 		return rejectedCodeError(fmt.Errorf("failed to retrieve account entity: %w", err))
+	}
+
+	merchantMapEntity, err := p.MerchantMapRepository.FindByMerchantName(tRequest.Merchant)
+	if err == nil {
+		tRequest.MccCode = merchantMapEntity.MappedMccCode
 	}
 
 	tDomain, err := mapParamsToTransactionDomain(
@@ -58,7 +67,7 @@ func (p *Payment) Execute(tRequest port.TransactionPaymentRequest) (string, erro
 
 	approvedBalance, cErr := balanceDomain.ApproveTransaction(tDomain)
 	if cErr != nil {
-		fmt.Println(cErr) // TODO: sLog
+		log.Println(cErr)
 		return cErr.Code, fmt.Errorf("failed to approve balance domain: %s", cErr.Message)
 	}
 
@@ -76,6 +85,6 @@ func (p *Payment) Execute(tRequest port.TransactionPaymentRequest) (string, erro
 }
 
 func rejectedCodeError(err error) (string, error) {
-	fmt.Println(err) // TODO: Use sLog
+	log.Println(err)
 	return domain.CODE_REJECTED_GENERIC, err
 }

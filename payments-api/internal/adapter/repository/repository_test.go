@@ -23,13 +23,13 @@ var (
 	balanceMealUID, _ = uuid.Parse("19475f4b-ee4c-4bce-add1-df0db5908201")
 	balanceCashUID, _ = uuid.Parse("389e9316-ce28-478e-b14e-f971812de22d")
 
-	balanceFoodAmount, _ = decimal.NewFromString("205.11")
-	balanceMealAmount, _ = decimal.NewFromString("110.22")
-	balanceCashAmount, _ = decimal.NewFromString("115.33")
+	balanceFoodAmount = decimal.NewFromFloat(205.11)
+	balanceMealAmount = decimal.NewFromFloat(110.22)
+	balanceCashAmount = decimal.NewFromFloat(115.33)
 
-	amountFoodTransaction, _ = decimal.NewFromString("100.10")
-	MccCodeFoodTransaction   = "5411"
-	merchantFoodTransaction  = "PADARIA DO ZE               SAO PAULO BR"
+	amountFoodTransaction   = decimal.NewFromFloat(100.10)
+	MccCodeFoodTransaction  = "5411"
+	merchantFoodTransaction = "PADARIA DO ZE               SAO PAULO BR"
 
 	merchantNameToMap         = "UBER EATS                   SAO PAULO BR"
 	MerchantIncorrectMccToMap = "5555"

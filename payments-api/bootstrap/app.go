@@ -38,6 +38,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
+		allRepos.MerchanMap,
 	)
 
 	return app, nil
