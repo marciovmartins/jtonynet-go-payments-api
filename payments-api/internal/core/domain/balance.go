@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/jtonynet/go-payments-api/internal/core/customError"
 	"github.com/shopspring/decimal"
@@ -14,46 +14,68 @@ type Balance struct {
 }
 
 func (b *Balance) ApproveTransaction(tDomain *Transaction) (*Balance, *customError.CustomError) {
-	mcc := tDomain.MCCcode
-
-	bCategoryToDebt, err := b.Categories.GetByMCC(mcc)
+	debitedBalanceCategories, err := b.getDebitedBalanceCategories(tDomain)
 	if err != nil {
-		return &Balance{}, customError.New(CODE_REJECTED_GENERIC, err.Error())
+		return b, err
 	}
 
-	approvedBalance := bCategoryToDebt.Approve(tDomain)
-	if !approvedBalance {
-		bCategoryFallback, err := b.getCategoryFallback()
-		if err != nil {
-			return &Balance{}, customError.New(CODE_REJECTED_GENERIC, err.Error())
-		}
-
-		bCategoryToDebt = bCategoryFallback
+	for order, balanceCategory := range debitedBalanceCategories {
+		b.Categories.Itens[order] = balanceCategory
 	}
-
-	approvedBalanceFallback := bCategoryToDebt.Approve(tDomain)
-	if !approvedBalanceFallback {
-		msg := fmt.Sprintf("%s balance category has insuficient funds, %v available, transaction value is %v for account %v",
-			bCategoryToDebt.Name,
-			bCategoryToDebt.Amount,
-			tDomain.TotalAmount,
-			b.AccountID,
-		)
-		return &Balance{}, customError.New(CODE_REJECTED_INSUFICIENT_FUNDS, msg)
-	}
-
-	bCategoryToDebt.Amount = bCategoryToDebt.Amount.Sub(tDomain.TotalAmount)
-	b.Categories.Itens[bCategoryToDebt.Order] = bCategoryToDebt
-
-	b.AmountTotal = b.AmountTotal.Sub(tDomain.TotalAmount)
 
 	return b, nil
 }
 
-func (b *Balance) getCategoryFallback() (Category, *customError.CustomError) {
-	bCategoryToDebt, err := b.Categories.GetFallback()
+func (b *Balance) getDebitedBalanceCategories(tDomain *Transaction) (map[int]Category, *customError.CustomError) {
+	amountDebtRemaining := tDomain.TotalAmount
+	debitedBalanceCategories := make(map[int]Category)
+
+	bCategoryMCC, err := b.Categories.GetByMCC(tDomain.MccCode)
 	if err != nil {
-		return Category{}, customError.New(CODE_REJECTED_GENERIC, err.Error())
+		log.Printf("Error retrieving category by MCC, attempting to debit remaining amount (%s) directly from fallback.\n", amountDebtRemaining)
+
+	} else if bCategoryMCC.Amount.GreaterThanOrEqual(tDomain.TotalAmount) {
+		log.Printf("Sufficient funds available in category '%s' to cover the transaction amount.\n", bCategoryMCC.Name)
+
+		amountDebtRemaining = decimal.NewFromFloat(0)
+
+		bCategoryMCC.Amount = bCategoryMCC.Amount.Sub(tDomain.TotalAmount)
+		debitedBalanceCategories[bCategoryMCC.Order] = bCategoryMCC
+
+	} else if bCategoryMCC.Amount.IsPositive() {
+		log.Printf("Category '%s' has a positive balance but insufficient funds for the transaction. Debiting the entire amount and checking fallback category.\n", bCategoryMCC.Name)
+
+		amountDebtRemaining = amountDebtRemaining.Sub(bCategoryMCC.Amount)
+
+		bCategoryMCC.Amount = decimal.NewFromFloat(0)
+		debitedBalanceCategories[bCategoryMCC.Order] = bCategoryMCC
 	}
-	return bCategoryToDebt, nil
+
+	if amountDebtRemaining.GreaterThan(decimal.Zero) {
+		bCategoryFallback, err := b.Categories.GetFallback()
+		if err != nil {
+			log.Println("Error retrieving fallback category. Rolling back changes and returning an error.")
+
+			return make(map[int]Category), customError.New(CODE_REJECTED_GENERIC, "Category Fallback not found")
+
+		} else if bCategoryFallback.Amount.GreaterThanOrEqual(amountDebtRemaining) {
+			log.Println("Fallback category has sufficient funds available for the transaction.")
+
+			bCategoryFallback.Amount = bCategoryFallback.Amount.Sub(amountDebtRemaining)
+			debitedBalanceCategories[bCategoryFallback.Order] = bCategoryFallback
+
+			amountDebtRemaining = decimal.NewFromFloat(0)
+		} else {
+			log.Println("Insufficient funds in the fallback category. Rolling back changes and returning an error.")
+
+			debitedBalanceCategories = make(map[int]Category)
+			amountDebtRemaining = tDomain.TotalAmount
+		}
+	}
+
+	if amountDebtRemaining.GreaterThan(decimal.Zero) && len(debitedBalanceCategories) == 0 {
+		return make(map[int]Category), customError.New(CODE_REJECTED_INSUFICIENT_FUNDS, "balance category has insuficient funds")
+	}
+
+	return debitedBalanceCategories, nil
 }

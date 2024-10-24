@@ -31,7 +31,7 @@ func (t *Transaction) Save(tEntity port.TransactionEntity) error {
 	transactionModel := &gormModel.Transaction{
 		UID:         uuid.New(),
 		AccountID:   tEntity.AccountID,
-		MCCcode:     tEntity.MCCcode,
+		MccCode:     tEntity.MccCode,
 		Merchant:    tEntity.Merchant,
 		TotalAmount: tEntity.TotalAmount,
 	}

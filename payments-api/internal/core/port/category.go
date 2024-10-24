@@ -2,7 +2,7 @@ package port
 
 type CategoryEntity struct {
 	Name     string
-	MCCcodes []string
+	MccCodes []string
 	Order    int
 }
 
@@ -21,8 +21,8 @@ const (
 )
 
 var (
-	CategoryFood = CategoryEntity{Name: CATEGORY_FOOD_NAME, MCCcodes: []string{"5411", "5412"}, Order: 1}
-	CategoryMeal = CategoryEntity{Name: CATEGORY_MEAL_NAME, MCCcodes: []string{"5811", "5812"}, Order: 2}
+	CategoryFood = CategoryEntity{Name: CATEGORY_FOOD_NAME, MccCodes: []string{"5411", "5412"}, Order: 1}
+	CategoryMeal = CategoryEntity{Name: CATEGORY_MEAL_NAME, MccCodes: []string{"5811", "5812"}, Order: 2}
 	CategoryCash = CategoryEntity{Name: CATEGORY_CASH_NAME, Order: 3}
 )
 

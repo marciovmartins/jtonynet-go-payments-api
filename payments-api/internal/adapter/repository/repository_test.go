@@ -23,13 +23,17 @@ var (
 	balanceMealUID, _ = uuid.Parse("19475f4b-ee4c-4bce-add1-df0db5908201")
 	balanceCashUID, _ = uuid.Parse("389e9316-ce28-478e-b14e-f971812de22d")
 
-	balanceFoodAmount, _ = decimal.NewFromString("205.11")
-	balanceMealAmount, _ = decimal.NewFromString("110.22")
-	balanceCashAmount, _ = decimal.NewFromString("115.33")
+	balanceFoodAmount = decimal.NewFromFloat(205.11)
+	balanceMealAmount = decimal.NewFromFloat(110.22)
+	balanceCashAmount = decimal.NewFromFloat(115.33)
 
-	amountFoodTransaction, _ = decimal.NewFromString("100.10")
-	mccCodeFoodTransaction   = "5411"
-	merchantFoodTransaction  = "PADARIA DO ZE               SAO PAULO BR"
+	amountFoodTransaction   = decimal.NewFromFloat(100.10)
+	MccCodeFoodTransaction  = "5411"
+	merchantFoodTransaction = "PADARIA DO ZE               SAO PAULO BR"
+
+	merchantNameToMap         = "UBER EATS                   SAO PAULO BR"
+	MerchantIncorrectMccToMap = "5555"
+	MerchantCorrectMccToMap   = "5412"
 )
 
 type RepositoriesSuite struct {
@@ -38,6 +42,7 @@ type RepositoriesSuite struct {
 	AccountRepo     port.AccountRepository
 	BalanceRepo     port.BalanceRepository
 	TransactionRepo port.TransactionRepository
+	MerchantMapRepo port.MerchantMapRepository
 
 	AccountEntity port.AccountEntity
 	BalanceEntity port.BalanceEntity
@@ -66,6 +71,7 @@ func (suite *RepositoriesSuite) SetupSuite() {
 	suite.AccountRepo = repositories.Account
 	suite.BalanceRepo = repositories.Balance
 	suite.TransactionRepo = repositories.Transaction
+	suite.MerchantMapRepo = repositories.MerchanMap
 
 	suite.loadDBtestData(conn)
 }
@@ -78,6 +84,18 @@ func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
 		if !ok {
 			log.Fatalf("failure to cast conn.GetDB() as gorm.DB")
 		}
+
+		dbGorm.Exec("TRUNCATE TABLE merchant_maps RESTART IDENTITY CASCADE")
+		insertMerchantMapQuery := fmt.Sprintf(`
+			INSERT INTO merchant_maps (uid, merchant_name, mcc_code, mapped_mcc_code, created_at, updated_at)
+			VALUES
+				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', '%s', '%s', '%s', NOW(), NOW()),
+				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', 'PAG*JoseDaSilva          RIO DE JANEI BR', '5555', '5812', NOW(), NOW())`,
+			merchantNameToMap,
+			MerchantIncorrectMccToMap,
+			MerchantCorrectMccToMap,
+		)
+		dbGorm.Exec(insertMerchantMapQuery)
 
 		dbGorm.Exec("TRUNCATE TABLE accounts RESTART IDENTITY CASCADE")
 		insertAccountQuery := fmt.Sprintf(
@@ -146,7 +164,7 @@ func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
 
 	transactionEntity := port.TransactionEntity{
 		AccountID:   accountEntity.ID,
-		MCCcode:     mccCodeFoodTransaction,
+		MccCode:     MccCodeFoodTransaction,
 		Merchant:    merchantFoodTransaction,
 		TotalAmount: amountFoodTransaction,
 	}
@@ -156,23 +174,34 @@ func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
 
 }
 
+func (suite *RepositoriesSuite) MerchantMapRepositoryFindByMerchantName() {
+	merchantMapEntity, err := suite.MerchantMapRepo.FindByMerchantName(merchantNameToMap)
+	assert.Equal(suite.T(), merchantMapEntity.MccCode, MerchantIncorrectMccToMap)
+	assert.Equal(suite.T(), merchantMapEntity.MappedMccCode, MerchantCorrectMccToMap)
+	assert.NoError(suite.T(), err)
+}
+
 func TestRepositoriesSuite(t *testing.T) {
 	suite.Run(t, new(RepositoriesSuite))
 }
 
 func (suite *RepositoriesSuite) TestCases() {
-	suite.T().Run("Test AccountRepository Find By UID Success", func(t *testing.T) {
+	suite.T().Run("TestAccountRepositoryFindByUIDSuccess", func(t *testing.T) {
 		suite.AccountRepositoryFindByUIDsuccess()
 	})
-	suite.T().Run("Test Balance Repository Find By AccountID Success", func(t *testing.T) {
+	suite.T().Run("TestBalanceRepositoryFindByAccountIDSuccess", func(t *testing.T) {
 		suite.BalanceRepositoryFindByAccountIDsuccess()
 	})
 
-	suite.T().Run("Test Balance Repository Update TotalAmount Success", func(t *testing.T) {
+	suite.T().Run("TestBalanceRepositoryUpdateTotalAmountSuccess", func(t *testing.T) {
 		suite.BalanceRepositoryUpdateTotalAmountSuccess()
 	})
 
-	suite.T().Run("Test Transaction Repository Save Success", func(t *testing.T) {
+	suite.T().Run("TestTransactionRepositorySaveSuccess", func(t *testing.T) {
 		suite.TransactionRepositorySaveSuccess()
+	})
+
+	suite.T().Run("TestMerchantMapRepositoryFindByMerchantName", func(t *testing.T) {
+		suite.MerchantMapRepositoryFindByMerchantName()
 	})
 }

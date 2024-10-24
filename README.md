@@ -45,13 +45,12 @@ __[Go Payments API](#header)__<br/>
   6.  📊 [Diagramas](#diagrams)
       - 📈 [Fluxo](#diagrams-flowchart)
       - 📈 [ER](#diagrams-erchart)
-  7.  🪲 [Debug](#debug)
-  8.  👏 [Boas Práticas](#best-practices)
-  9.  🧠 [ADR - Architecture Decision Records](#adr)
-  10. 🔢 [Versões](#versions)
-  11. 🧰 [Ferramentas](#tools)
-  12. 🤖 [Uso de IA](#ia)
-  13. 🏁 [Conclusão](#conclusion)
+  7.  👏 [Boas Práticas](#best-practices)
+  8.  🧠 [ADR - Architecture Decision Records](#adr)
+  9.  🔢 [Versões](#versions)
+  10. 🧰 [Ferramentas](#tools)
+  11. 🤖 [Uso de IA](#ia)
+  12. 🏁 [Conclusão](#conclusion)
 
 ---
 
@@ -498,17 +497,6 @@ _*Esse diagrama oferece uma visão clara de como modelar as entidades principais
 
 ---
 
-<a id="debug"></a>
-### 🪲 Debug
-
-__TODO__
-
-<br/>
-
-[⤴️ de volta ao índice](#index)
-
----
-
 <a id="best-practices"></a>
 ### 👏 Boas Práticas
 
@@ -632,6 +620,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
+<!-- 
 __Estrutura Do Projeto__
 ```bash
 .
@@ -690,6 +679,8 @@ __Estrutura Do Projeto__
 ├── .env
 ├── go.mod
 └── go.sum
+-->
+
 ```
 
 😊🚀

@@ -2,6 +2,7 @@ package ginHandler
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -11,7 +12,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 
-	"github.com/jtonynet/go-payments-api/internal/bootstrap"
+	"github.com/jtonynet/go-payments-api/bootstrap"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
@@ -28,7 +29,7 @@ func PaymentExecution(ctx *gin.Context) {
 
 	defer func() {
 		elapsedTime := time.Since(startTime).Milliseconds()
-		fmt.Printf("Execution time: %d ms\n", elapsedTime)
+		log.Printf("Execution time: %d ms\n", elapsedTime)
 	}()
 
 	app := ctx.MustGet("app").(bootstrap.App)
@@ -44,7 +45,7 @@ func PaymentExecution(ctx *gin.Context) {
 
 	validationErrors, ok := dtoIsValid(transactionRequest)
 	if !ok {
-		fmt.Println(validationErrors)
+		log.Println(validationErrors)
 
 		ctx.JSON(http.StatusOK, port.TransactionPaymentResponse{
 			Code: port.CODE_REJECTED_GENERIC,

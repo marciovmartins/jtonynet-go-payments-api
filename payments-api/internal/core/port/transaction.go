@@ -8,7 +8,7 @@ import (
 type TransactionPaymentRequest struct {
 	AccountUID  uuid.UUID       `json:"account" validate:"required,uuid" binding:"required" example:"123e4567-e89b-12d3-a456-426614174000"`
 	TotalAmount decimal.Decimal `json:"totalAmount" validate:"required,min=0.01" binding:"required" example:"100.09"`
-	MCCcode     string          `json:"mcc" validate:"required,min=1,max=255" binding:"required" example:"5411"`
+	MccCode     string          `json:"mcc" validate:"required,min=1,max=255" binding:"required" example:"5411"`
 	Merchant    string          `json:"merchant" validate:"required,min=3,max=255" binding:"required" example:"PADARIA DO ZE              SAO PAULO BR"`
 }
 
@@ -21,7 +21,7 @@ type TransactionEntity struct {
 	UID         uuid.UUID
 	AccountID   uint
 	TotalAmount decimal.Decimal
-	MCCcode     string
+	MccCode     string
 	Merchant    string
 }
 

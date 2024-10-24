@@ -12,7 +12,7 @@ import (
 func mapParamsToTransactionDomain(
 	accountID uint,
 	accountUID uuid.UUID,
-	mccCode string,
+	MccCode string,
 	totalAmount decimal.Decimal,
 	merchant string) (*domain.Transaction, error) {
 
@@ -23,7 +23,7 @@ func mapParamsToTransactionDomain(
 	return &domain.Transaction{
 		AccountID:   accountID,
 		AccountUID:  accountUID,
-		MCCcode:     mccCode,
+		MccCode:     MccCode,
 		TotalAmount: totalAmount,
 		Merchant:    merchant,
 	}, nil
@@ -43,7 +43,7 @@ func mapBalanceEntityToDomain(be port.BalanceEntity) (*domain.Balance, error) {
 			ID:       ce.ID,
 			Name:     ce.Category.Name,
 			Amount:   ce.Amount,
-			MCCcodes: ce.Category.MCCcodes,
+			MccCodes: ce.Category.MccCodes,
 			Order:    ce.Category.Order,
 		}
 		categoryItens[ce.Category.Order] = category
@@ -88,7 +88,7 @@ func mapTransactionDomainToEntity(tDomain *domain.Transaction) port.TransactionE
 	return port.TransactionEntity{
 		AccountID:   tDomain.AccountID,
 		TotalAmount: tDomain.TotalAmount,
-		MCCcode:     tDomain.MCCcode,
+		MccCode:     tDomain.MccCode,
 		Merchant:    tDomain.Merchant,
 	}
 }

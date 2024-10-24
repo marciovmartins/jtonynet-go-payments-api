@@ -42,6 +42,7 @@ func New(cfg config.Database) (port.DBConn, error) {
 		db.AutoMigrate(&gormModel.Account{})
 		db.AutoMigrate(&gormModel.Balance{})
 		db.AutoMigrate(&gormModel.Transaction{})
+		db.AutoMigrate(&gormModel.MerchantMap{})
 
 		gConn := GormConn{
 			DB:       db,

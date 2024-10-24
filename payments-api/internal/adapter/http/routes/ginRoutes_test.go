@@ -10,11 +10,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jtonynet/go-payments-api/bootstrap"
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	ginHandler "github.com/jtonynet/go-payments-api/internal/adapter/http/handler"
 	ginMiddleware "github.com/jtonynet/go-payments-api/internal/adapter/http/middleware"
-	"github.com/jtonynet/go-payments-api/internal/bootstrap"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/shopspring/decimal"
 	"github.com/tidwall/gjson"
@@ -31,11 +31,11 @@ var (
 	balanceMealUID, _ = uuid.Parse("19475f4b-ee4c-4bce-add1-df0db5908201")
 	balanceCashUID, _ = uuid.Parse("389e9316-ce28-478e-b14e-f971812de22d")
 
-	balanceFoodAmount, _ = decimal.NewFromString("205.11")
-	balanceMealAmount, _ = decimal.NewFromString("110.22")
-	balanceCashAmount, _ = decimal.NewFromString("115.33")
+	balanceFoodAmount = decimal.NewFromFloat(205.11)
+	balanceMealAmount = decimal.NewFromFloat(110.22)
+	balanceCashAmount = decimal.NewFromFloat(115.33)
 
-	amountFoodTransaction, _ = decimal.NewFromString("100.10")
+	amountFoodTransaction = decimal.NewFromFloat(100.10)
 )
 
 type GinRoutesSuite struct {
@@ -75,6 +75,14 @@ func (suite *GinRoutesSuite) loadDBtestData(conn port.DBConn) {
 		if !ok {
 			log.Fatalf("failure to cast conn.GetDB() as gorm.DB")
 		}
+
+		dbGorm.Exec("TRUNCATE TABLE merchant_maps RESTART IDENTITY CASCADE")
+		insertMerchantMapQuery := `
+			INSERT INTO merchant_maps (uid, merchant_name, mcc_code, mapped_mcc_code, created_at, updated_at)
+			VALUES
+				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', 'UBER EATS                   SAO PAULO BR', '5555', '5412', NOW(), NOW()),
+				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', 'PAG*JoseDaSilva          RIO DE JANEI BR', '5555', '5812', NOW(), NOW())`
+		dbGorm.Exec(insertMerchantMapQuery)
 
 		dbGorm.Exec("TRUNCATE TABLE accounts RESTART IDENTITY CASCADE")
 		insertAccountQuery := fmt.Sprintf(

@@ -7,11 +7,11 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	"github.com/jtonynet/go-payments-api/bootstrap"
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/docs"
 	ginHandler "github.com/jtonynet/go-payments-api/internal/adapter/http/handler"
 	ginMiddleware "github.com/jtonynet/go-payments-api/internal/adapter/http/middleware"
-	"github.com/jtonynet/go-payments-api/internal/bootstrap"
 )
 
 func GinHandleRequests(cfg config.API, app bootstrap.App) {
