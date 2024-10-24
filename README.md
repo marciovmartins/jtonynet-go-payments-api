@@ -469,12 +469,11 @@ erDiagram
 
     transactions {
         int id PK
-        UUID uuid
+        UUID uid
         int account_id FK
         string mcc_code
         string merchant
         numeric total_amount
-        decimal approved_amount
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at
