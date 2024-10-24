@@ -528,10 +528,10 @@ flowchart TD
     D --> E[Registrar Transação Aprovada]
     D --> F[Release Lock em Memória]
     
-    C -- Não --> G[Rejeita Transação <br/> com Código 52]
+    C -- Não --> G[Rejeita Transação <br/> com Código 07]
     
     E --> H[Retorna Código 00 <br/> Aprovada]
-    G --> I[Retorna Código 52 <br/> Rejeitada]
+    G --> I[Retorna Código 07 <br/> Rejeitada]
 ```
 
 #### 📥 Filas
