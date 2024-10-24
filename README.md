@@ -415,7 +415,7 @@ flowchart TD
 
 1. **Recebe Transação JSON**: O sistema recebe o payload de transação.
 
-2. **Mapeia MCC pelo Merchant Name**: Busca um relacionamento entre o `merchant` e uma categoria adequada
+2. **Mapeia MCC pelo Merchant Name**: Busca um relacionamento entre o `merchant` e uma categoria adequada. Caso categoria Não exista segue o fluxo para debitar de CASH
 
 3. **Buscar Saldos da Conta**: A conta e os saldos (FOOD, MEAL, CASH) são buscados no banco de dados 
 
