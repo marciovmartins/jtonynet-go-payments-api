@@ -2,6 +2,7 @@ package gormRepos
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
@@ -67,11 +68,16 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 }
 
 func (b *Balance) UpdateTotalAmount(be port.BalanceEntity) error {
+
+	// TODO: see bulk insert
+	whereIn := ""
 	query := "UPDATE balances SET amount = CASE"
 	for _, balanceCategory := range be.Categories {
 		query += fmt.Sprintf(" WHEN id = %v THEN %v", uint(balanceCategory.ID), decimal.Decimal(balanceCategory.Amount))
+		whereIn += fmt.Sprintf("%v,", uint(balanceCategory.ID))
 	}
-	query += " END "
+	whereIn = strings.TrimSuffix(whereIn, ",")
+	query = fmt.Sprintf("%s END WHERE id IN (%s)", query, whereIn)
 
 	if err := b.db.Exec(query).Error; err != nil {
 		return fmt.Errorf("error performing update balances: %w query: %s", err, query)
