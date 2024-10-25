@@ -187,7 +187,7 @@ Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adota
 <a id="environment"></a>
 #### 🌐 Ambiente
 
-`Docker` e `Docker Compose` são necessários para rodar a aplicação de forma f containerizada, e é fortemente recomendado utilizá-los para rodar o banco de dados localmente.
+`Docker` e `Docker Compose` são necessários para rodar a aplicação de forma containerizada, e é fortemente recomendado utilizá-los para rodar o banco de dados localmente.
 
 Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./payments-api/.env`.
 
