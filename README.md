@@ -539,8 +539,6 @@ flowchart TD
 ```
 
 #### 📥 Filas
-Dependendo do volume das transações podemos usar `Filas` em conjunto a `Locks` para fornecer robustez. Elas possuem garantias adicionais para o controle de concorrência, mas podem acresentar alguma latência.
-
 Dependendo do volume das transações, podemos usar `RabbitMQ` em conjunto com `Redis` para controlar a concorrência. Essa combinação fornece robustez e resiliência, pois `RabbitMQ` organiza o processamento de tarefas e `Redis`, com locks distribuídos, ajuda a evitar condições de corrida. No entanto, essa abordagem pode introduzir alguma latência adicional.
 
 Além de `locks` e `filas`, sugiro testes de carga e performance extras com ferramentas como `JMeter` ou `Gatling`. Eles devem ser incorporados à rotina de desenvolvimento para garantir implantações seguras de nossos serviços em conjunto com o ciclo de CI.
