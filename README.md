@@ -664,7 +664,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - O router (Gin) não está flexível ao modelo hexagonal quanto a `database` e o `repository`. Ele deveria respeitar uma `port` e ser facilmente substituido.
 
-- Testes adicionais poderiam ser criados (multiplos Cenários de erros nas rotas e serviços, teste de carga).
+- Testes adicionais poderiam ser criados (multiplos cenários de erros nas rotas e serviços, teste de carga).
 
 Essas são minhas considerações sobre o que consegui produzir ao longo desse desafio, e continuarei me aplicando aos pontos cegos que não tive tempo ou conhecimento para aprimorar.
 
