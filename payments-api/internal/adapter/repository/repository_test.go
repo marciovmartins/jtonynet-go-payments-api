@@ -31,9 +31,13 @@ var (
 	MccCodeFoodTransaction  = "5411"
 	merchantFoodTransaction = "PADARIA DO ZE               SAO PAULO BR"
 
-	merchantNameToMap         = "UBER EATS                   SAO PAULO BR"
-	MerchantIncorrectMccToMap = "5555"
-	MerchantCorrectMccToMap   = "5412"
+	merchant1NameToMap         = "UBER EATS                   SAO PAULO BR"
+	merchant1IncorrectMccToMap = "5555"
+	merchant1CorrectMccToMap   = "5412"
+
+	merchant2NameToMap         = "PAG*JoseDaSilva          RIO DE JANEI BR"
+	merchant2IncorrectMccToMap = "5555"
+	merchant2CorrectMccToMap   = "5812"
 )
 
 type RepositoriesSuite struct {
@@ -90,10 +94,13 @@ func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
 			INSERT INTO merchant_maps (uid, merchant_name, mcc_code, mapped_mcc_code, created_at, updated_at)
 			VALUES
 				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', '%s', '%s', '%s', NOW(), NOW()),
-				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', 'PAG*JoseDaSilva          RIO DE JANEI BR', '5555', '5812', NOW(), NOW())`,
-			merchantNameToMap,
-			MerchantIncorrectMccToMap,
-			MerchantCorrectMccToMap,
+				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', '%s', '%s', '%s', NOW(), NOW())`,
+			merchant1NameToMap,
+			merchant1IncorrectMccToMap,
+			merchant1CorrectMccToMap,
+			merchant2NameToMap,
+			merchant2IncorrectMccToMap,
+			merchant2CorrectMccToMap,
 		)
 		dbGorm.Exec(insertMerchantMapQuery)
 
@@ -175,9 +182,9 @@ func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
 }
 
 func (suite *RepositoriesSuite) MerchantMapRepositoryFindByMerchantName() {
-	merchantMapEntity, err := suite.MerchantMapRepo.FindByMerchantName(merchantNameToMap)
-	assert.Equal(suite.T(), merchantMapEntity.MccCode, MerchantIncorrectMccToMap)
-	assert.Equal(suite.T(), merchantMapEntity.MappedMccCode, MerchantCorrectMccToMap)
+	merchantMapEntity, err := suite.MerchantMapRepo.FindByMerchantName(merchant1NameToMap)
+	assert.Equal(suite.T(), merchantMapEntity.MccCode, merchant1IncorrectMccToMap)
+	assert.Equal(suite.T(), merchantMapEntity.MappedMccCode, merchant1CorrectMccToMap)
 	assert.NoError(suite.T(), err)
 }
 

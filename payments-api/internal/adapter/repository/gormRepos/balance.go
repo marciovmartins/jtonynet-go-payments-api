@@ -68,18 +68,23 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 }
 
 func (b *Balance) UpdateTotalAmount(be port.BalanceEntity) error {
+	bindParameters := []string{}
+	bindValues := []interface{}{}
 
-	// TODO: see bulk insert
-	whereIn := ""
-	query := "UPDATE balances SET amount = CASE"
 	for _, balanceCategory := range be.Categories {
-		query += fmt.Sprintf(" WHEN id = %v THEN %v", uint(balanceCategory.ID), decimal.Decimal(balanceCategory.Amount))
-		whereIn += fmt.Sprintf("%v,", uint(balanceCategory.ID))
+		bindParameters = append(bindParameters, "(?::int, ?::numeric)")
+		bindValues = append(bindValues, balanceCategory.ID, balanceCategory.Amount)
 	}
-	whereIn = strings.TrimSuffix(whereIn, ",")
-	query = fmt.Sprintf("%s END WHERE id IN (%s)", query, whereIn)
 
-	if err := b.db.Exec(query).Error; err != nil {
+	query := fmt.Sprintf(
+		`UPDATE balances AS b
+		 SET amount = v.new_amount
+		 FROM (VALUES %s) AS v(id, new_amount)
+		 WHERE b.id = v.id`,
+		strings.Join(bindParameters, ","),
+	)
+
+	if err := b.db.Exec(query, bindValues...).Error; err != nil {
 		return fmt.Errorf("error performing update balances: %w query: %s", err, query)
 	}
 

@@ -409,6 +409,7 @@ flowchart TD
     
     J --> N[Retorna Código 51 Rejeitada]
 ```
+_*Diagrama apresenta uma interpretação do sistema_
 
 <a id="diagrams-flowchart-description"></a>
 ##### 📝 Descrição
@@ -517,7 +518,10 @@ _*Por simplicidade para um desenvolvimento mais rapido mantendo foco no Serviço
 > Transações simultâneas: dado que o mesmo cartão de crédito pode ser utilizado em diferentes serviços online, existe uma pequena mas existente probabilidade de ocorrerem duas transações ao mesmo tempo. O que você faria para garantir que apenas uma transação por conta fosse processada em um determinado momento? Esteja ciente do fato de que todas as solicitações de transação são síncronas e devem ser processadas rapidamente (menos de 100 ms), ou a transação atingirá o timeout.
 
 #### 🔒Locks Distribuídos
-Uma abordagem com o uso de `Locks Distribuídos`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esse dado seja distinto. Como o próprio enunciado sugere, a possibilidade de que existam essas colisões seja pequena, um sistema de dados em memória rápido o suficiente para armazenar, resgatar e liberar o processamento das tarefas da aplicação em nós distintos é um aliado. Coordenar o acesso a recursos compartilhados em cenário onde a latência é uma questão, é uma boa opção.
+Utilizaria `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esses dados sejam distintos. Um sistema de dados em memória rápido, como `Redis`, para armazenar e liberar locks. Coordenando o acesso a recursos compartilhados de maneira eficiente.
+
+Como proposto na questão  _"...uma pequena mas existente probabilidade de ocorrerem duas transações ao mesmo tempo"_, a concorrência excessiva por `acount` não deve ocorrer usando essa abordagem.
+
 
 ```mermaid
 flowchart TD
@@ -535,9 +539,9 @@ flowchart TD
 ```
 
 #### 📥 Filas
-Outra abordagem  que pode ser utilizada em conjunto para garantir robustez, ou mesmo de maneira isolada seria o uso de de filas. Possuem garantias adicionais para o controle de concorrência.
+Dependendo do volume das transações podemos usar `Filas` em conjunto a `Locks` para fornecer robustez. Elas possuem garantias adicionais para o controle de concorrência, mas podem acresentar alguma latência.
 
-Adotando qualquer solução, pelo fato de latência e concorrência serem questões de preocupação, testes de carga e performance, levando em conta esses critérios, devem ser criados e adicionados à rotina de desenvolvimento, visando garantir implantações seguras de nossos serviços. Existem várias opções no mercado que podem ser adicionadas ao ciclo de CI (por exemplo: JMeter, Gatling).
+Além de `locks` e `filas`, sugiro testes de carga e performance extras com ferramentas como `JMeter` ou `Gatling`. Eles devem ser incorporados à rotina de desenvolvimento para garantir implantações seguras de nossos serviços em conjunto com o ciclo de CI.
 
 <br/>
 
@@ -650,18 +654,23 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
-- Defini o modelo hexagonal pois sua abordagem de ports and adapters proporciona flexibilidade para que o sistema atenda a chamadas `http`, mas que possa ser facilmente estendido para outras abordagens, como processamento de mensagens e filas, sem alterar o `core` , garantindo um sistema com separação de preocupações.
+- Defini o modelo hexagonal pois sua abordagem de `ports` and `adapters` proporciona flexibilidade para que o sistema atenda a chamadas `http`, e possa ser facilmente estendido para outras abordagens, como processamento de mensagens e filas (solução adicional/alternativa para L4), sem alterar o `core`, garantindo um sistema com separação de responsabilidades.
 
-- Desde o princípio, imaginei um sistema de cache, que infelizmente não implementei, para lidar com os dados que possuem pouca possibilidade de alteração em curto período de tempo (`merchant names`, `mcc` e `categorias`). Essa mesma estrutura poderia ser utilizada para implantar uma versão inicial de `memory lock`.
+- Gostaria de ter adicionado um sistema de cache, para lidar com os dados com pouca possibilidade de alteração em curto período de tempo (`merchant names`, `mcc` e `categorias`). Essa mesma estrutura pode ser utilizada para implantar uma versão inicial de `memory lock` (minha sugestão de solução L4).
 
-- Testes adicionais poderiam ser criados.
+- A estrutura de `category` foi criada diretamente na `port` para acelerar o desenvolvimento. Essa abordagem não é adequada e deve ser removida, sendo adicionada à database. 
+
+- Utilizei o `log` padrao do `Go` para acompanhar o comportamento das `requests` feitas no sistema. Uma abordagem mais robusta seria o uso de logs estruturados com níveis adequados.
+
+- Testes adicionais poderiam ser criados (multiplos Cenário de erros nas rotas e serviços, teste de carga).
+
+Essas são minhas considerações sobre o que consegui produzir ao longo desse desafio, e continuarei me aplicando aos pontos cegos que não tive tempo ou conhecimento para aprimorar.
 
 😊🚀
 
 <br/>
 
 [⤴️ de volta ao índice](#index)
-
 
 <!--
 docker stop $(docker ps -aq)
