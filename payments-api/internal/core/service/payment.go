@@ -12,20 +12,20 @@ type Payment struct {
 	AccountRepository     port.AccountRepository
 	BalanceRepository     port.BalanceRepository
 	TransactionRepository port.TransactionRepository
-	MerchantMapRepository port.MerchantMapRepository
+	MerchantRepository    port.MerchantRepository
 }
 
 func NewPayment(
 	aRepository port.AccountRepository,
 	bRepository port.BalanceRepository,
 	tRepository port.TransactionRepository,
-	mRepository port.MerchantMapRepository,
+	mRepository port.MerchantRepository,
 ) *Payment {
 	return &Payment{
 		AccountRepository:     aRepository,
 		BalanceRepository:     bRepository,
 		TransactionRepository: tRepository,
-		MerchantMapRepository: mRepository,
+		MerchantRepository:    mRepository,
 	}
 }
 
@@ -35,9 +35,24 @@ func (p *Payment) Execute(tRequest port.TransactionPaymentRequest) (string, erro
 		return rejectedCodeError(fmt.Errorf("failed to retrieve account entity: %w", err))
 	}
 
-	merchantMapEntity, err := p.MerchantMapRepository.FindByMerchantName(tRequest.Merchant)
+	//------------------------
+	/*
+		    merchantDomain := mapMerchantEntityToDomain(p.MerchantRepository.FindByName(tRequest.Merchant))
+			if err == nil {
+				return rejectedCodeError(fmt.Errorf("failed to map merchant domain from entity: %w", err))
+			}
+
+			transactionDomain, err := accountEntity.NewTransaction(
+				tRequest.MccCode,
+				tRequest.TotalAmount,
+				merchantDomain
+			)
+	*/
+	//------------------------
+
+	MerchantEntity, err := p.MerchantRepository.FindByName(tRequest.Merchant)
 	if err == nil {
-		tRequest.MccCode = merchantMapEntity.MappedMccCode
+		tRequest.MccCode = MerchantEntity.MappedMccCode
 	}
 
 	tDomain, err := mapParamsToTransactionDomain(

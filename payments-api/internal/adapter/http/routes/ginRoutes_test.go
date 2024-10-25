@@ -76,13 +76,13 @@ func (suite *GinRoutesSuite) loadDBtestData(conn port.DBConn) {
 			log.Fatalf("failure to cast conn.GetDB() as gorm.DB")
 		}
 
-		dbGorm.Exec("TRUNCATE TABLE merchant_maps RESTART IDENTITY CASCADE")
-		insertMerchantMapQuery := `
-			INSERT INTO merchant_maps (uid, merchant_name, mcc_code, mapped_mcc_code, created_at, updated_at)
+		dbGorm.Exec("TRUNCATE TABLE merchants RESTART IDENTITY CASCADE")
+		insertMerchantQuery := `
+			INSERT INTO merchants (uid, name, mcc_code, mapped_mcc_code, created_at, updated_at)
 			VALUES
 				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', 'UBER EATS                   SAO PAULO BR', '5555', '5412', NOW(), NOW()),
 				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', 'PAG*JoseDaSilva          RIO DE JANEI BR', '5555', '5812', NOW(), NOW())`
-		dbGorm.Exec(insertMerchantMapQuery)
+		dbGorm.Exec(insertMerchantQuery)
 
 		dbGorm.Exec("TRUNCATE TABLE accounts RESTART IDENTITY CASCADE")
 		insertAccountQuery := fmt.Sprintf(

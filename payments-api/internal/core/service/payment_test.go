@@ -31,7 +31,7 @@ type DBfake struct {
 	Account     map[uint]port.AccountEntity
 	Balance     map[uint]port.BalanceByCategoryEntity
 	Transaction map[uint]port.TransactionEntity
-	MerchantMap map[uint]port.MerchantMapEntity
+	Merchant    map[uint]port.MerchantEntity
 }
 
 func newDBfake() DBfake {
@@ -46,9 +46,9 @@ func newDBfake() DBfake {
 		},
 	}
 
-	db.MerchantMap = map[uint]port.MerchantMapEntity{
+	db.Merchant = map[uint]port.MerchantEntity{
 		1: {
-			MerchantName:  "UBER EATS                   SAO PAULO BR",
+			Name:          "UBER EATS                   SAO PAULO BR",
 			MccCode:       "5555",
 			MappedMccCode: "5412",
 		},
@@ -127,30 +127,30 @@ func newTransactionRepoFake(db DBfake) port.TransactionRepository {
 	}
 }
 
-type MerchantMapRepoFake struct {
+type MerchantRepoFake struct {
 	db DBfake
 }
 
-func newMerchantMapRepoFake(db DBfake) port.MerchantMapRepository {
-	return &MerchantMapRepoFake{
+func newMerchantRepoFake(db DBfake) port.MerchantRepository {
+	return &MerchantRepoFake{
 		db,
 	}
 }
 
-func (m *MerchantMapRepoFake) FindByMerchantName(merchantName string) (port.MerchantMapEntity, error) {
-	merchantMapEntity, err := m.db.MerchantMapRepoFindByMerchantName(merchantName)
-	return merchantMapEntity, err
+func (m *MerchantRepoFake) FindByName(Name string) (port.MerchantEntity, error) {
+	MerchantEntity, err := m.db.MerchantRepoFindByName(Name)
+	return MerchantEntity, err
 }
 
-func (dbf *DBfake) MerchantMapRepoFindByMerchantName(merchantName string) (port.MerchantMapEntity, error) {
+func (dbf *DBfake) MerchantRepoFindByName(Name string) (port.MerchantEntity, error) {
 
-	for _, m := range dbf.MerchantMap {
-		if m.MerchantName == merchantName {
+	for _, m := range dbf.Merchant {
+		if m.Name == Name {
 			return m, nil
 		}
 	}
 
-	return port.MerchantMapEntity{}, fmt.Errorf("merchantMAp with AccountID %s not found", merchantName)
+	return port.MerchantEntity{}, fmt.Errorf("Merchant with AccountID %s not found", Name)
 }
 
 func (dbf *DBfake) BalanceRepoFindByAccountID(accountID uint) (port.BalanceEntity, error) {
@@ -257,7 +257,7 @@ func (suite *PaymentSuite) getAllRepositories(dbFake *DBfake) *repository.AllRep
 	allRepos.Account = newAccountRepoFake(*dbFake)
 	allRepos.Balance = newBalanceRepoFake(*dbFake)
 	allRepos.Transaction = newTransactionRepoFake(*dbFake)
-	allRepos.MerchanMap = newMerchantMapRepoFake(*dbFake)
+	allRepos.MerchanMap = newMerchantRepoFake(*dbFake)
 
 	return &allRepos
 }
@@ -377,7 +377,7 @@ func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
 	)
 }
 
-func (suite *PaymentSuite) TestL3PaymentExecuteMerchantNameMCCWithFundsApproved() {
+func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
 	//Arrange
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
@@ -419,7 +419,7 @@ func (suite *PaymentSuite) TestL3PaymentExecuteMerchantNameMCCWithFundsApproved(
 	)
 }
 
-func (suite *PaymentSuite) TestL3PaymentExecuteMerchantNameMCCFallbackApproved() {
+func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCFallbackApproved() {
 	//Arrange
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)

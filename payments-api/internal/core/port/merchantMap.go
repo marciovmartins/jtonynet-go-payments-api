@@ -1,11 +1,11 @@
 package port
 
-type MerchantMapEntity struct {
-	MerchantName  string
+type MerchantEntity struct {
+	Name          string
 	MccCode       string
 	MappedMccCode string
 }
 
-type MerchantMapRepository interface {
-	FindByMerchantName(string) (MerchantMapEntity, error)
+type MerchantRepository interface {
+	FindByName(string) (MerchantEntity, error)
 }
