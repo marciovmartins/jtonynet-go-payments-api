@@ -662,7 +662,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Utilizei o `log` padrao do `Go` para acompanhar o comportamento das `requests` feitas no sistema. Uma abordagem mais robusta seria o uso de logs estruturados com níveis adequados.
 
-- Testes adicionais poderiam ser criados (multiplos Cenário de erros nas rotas e serviços, teste de carga).
+- Testes adicionais poderiam ser criados (multiplos Cenários de erros nas rotas e serviços, teste de carga).
 
 Essas são minhas considerações sobre o que consegui produzir ao longo desse desafio, e continuarei me aplicando aos pontos cegos que não tive tempo ou conhecimento para aprimorar.
 
