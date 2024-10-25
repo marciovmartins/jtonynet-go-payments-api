@@ -35,35 +35,17 @@ func (p *Payment) Execute(tRequest port.TransactionPaymentRequest) (string, erro
 		return rejectedCodeError(fmt.Errorf("failed to retrieve account entity: %w", err))
 	}
 
-	//------------------------
-	/*
-		    merchantDomain := mapMerchantEntityToDomain(p.MerchantRepository.FindByName(tRequest.Merchant))
-			if err == nil {
-				return rejectedCodeError(fmt.Errorf("failed to map merchant domain from entity: %w", err))
-			}
-
-			transactionDomain, err := accountEntity.NewTransaction(
-				tRequest.MccCode,
-				tRequest.TotalAmount,
-				merchantDomain
-			)
-	*/
-	//------------------------
-
-	MerchantEntity, err := p.MerchantRepository.FindByName(tRequest.Merchant)
+	mDomain := domain.Merchant{}
+	merchantEntity, err := p.MerchantRepository.FindByName(tRequest.Merchant)
 	if err == nil {
-		tRequest.MccCode = MerchantEntity.MappedMccCode
+		mDomain = mapMerchantEntityToDomain(merchantEntity)
 	}
 
-	tDomain, err := mapParamsToTransactionDomain(
-		accountEntity.ID,
-		tRequest.AccountUID,
+	tDomain := accountEntity.NewTransaction(
 		tRequest.MccCode,
 		tRequest.TotalAmount,
-		tRequest.Merchant)
-	if err != nil {
-		return rejectedCodeError(fmt.Errorf("failed to map transaction domain from request: %w", err))
-	}
+		mDomain,
+	)
 
 	accountDomain, err := mapAccountEntityToDomain(accountEntity)
 	if err != nil {

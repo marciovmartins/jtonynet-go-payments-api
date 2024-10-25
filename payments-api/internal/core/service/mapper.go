@@ -3,30 +3,16 @@ package service
 import (
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
-	"github.com/shopspring/decimal"
 )
 
-func mapParamsToTransactionDomain(
-	accountID uint,
-	accountUID uuid.UUID,
-	MccCode string,
-	totalAmount decimal.Decimal,
-	merchant string) (*domain.Transaction, error) {
-
-	if !totalAmount.GreaterThan(decimal.NewFromInt(0)) {
-		return &domain.Transaction{}, fmt.Errorf("transaction totalAmount must be a positive value %v", totalAmount)
+func mapMerchantEntityToDomain(mEntity port.MerchantEntity) domain.Merchant {
+	return domain.Merchant{
+		Name:          mEntity.Name,
+		MccCode:       mEntity.MccCode,
+		MappedMccCode: mEntity.MappedMccCode,
 	}
-
-	return &domain.Transaction{
-		AccountID:   accountID,
-		AccountUID:  accountUID,
-		MccCode:     MccCode,
-		TotalAmount: totalAmount,
-		Merchant:    merchant,
-	}, nil
 }
 
 func mapAccountEntityToDomain(aEntity port.AccountEntity) (domain.Account, error) {

@@ -480,10 +480,10 @@ erDiagram
         timestamp deleted_at
     }
     
-    merchant_map {
+    merchants {
         int id PK
         UUID uid
-        string merchant_name
+        string name
         string mcc_code
         string mapped_mcc_code
         timestamp created_at
@@ -501,7 +501,7 @@ erDiagram
 **Accounts** é a tabela principal, conectada tanto a **Balances** quanto a **Transactions**, armazenando informações sobre as contas.  
 **Balances** armazena os saldos por categoria.<br/>
 **Transactions** registra o histórico de transações realizadas.<br/>
-**Merchant_Map** ajusta MCCs incorretos de acordo com o nome do comerciante.
+**Merchant** para ajustar MCCs incorretos de acordo com o nome do comerciante.
 
 _*Por simplicidade para um desenvolvimento mais rapido mantendo foco no Serviço, mantive as categorias no projeto e não em uma tabela, elas devem ganhar sua tabela no futuro._
 
@@ -656,11 +656,13 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Defini o modelo hexagonal pois sua abordagem de `ports` and `adapters` proporciona flexibilidade para que o sistema atenda a chamadas `http`, e possa ser facilmente estendido para outras abordagens, como processamento de mensagens e filas (solução adicional/alternativa para L4), sem alterar o `core`, garantindo um sistema com separação de responsabilidades.
 
-- Gostaria de ter adicionado um sistema de cache, para lidar com os dados com pouca possibilidade de alteração em curto período de tempo (`merchant names`, `mcc` e `categorias`). Essa mesma estrutura pode ser utilizada para implantar uma versão inicial de `memory lock` (minha sugestão de solução L4).
+- Gostaria de ter adicionado um sistema de cache, para lidar com os dados com pouca possibilidade de alteração em curto período de tempo (`merchants` e `categories`). Essa mesma estrutura pode ser utilizada para implantar uma versão inicial de `memory lock` (minha sugestão de solução L4).
 
 - A estrutura de `category` foi criada diretamente na `port` para acelerar o desenvolvimento. Essa abordagem não é adequada e deve ser removida, sendo adicionada à database. 
 
 - Utilizei o `log` padrao do `Go` para acompanhar o comportamento das `requests` feitas no sistema. Uma abordagem mais robusta seria o uso de logs estruturados com níveis adequados.
+
+- O router (Gin) não está flexível ao modelo hexagonal quanto a `database` e o `repository`. Ele deveria respeitar uma `port` e ser facilmente substituido.
 
 - Testes adicionais poderiam ser criados (multiplos Cenários de erros nas rotas e serviços, teste de carga).
 
