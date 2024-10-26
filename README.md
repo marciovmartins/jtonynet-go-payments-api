@@ -365,8 +365,7 @@ L3. Merchants com mapeamentos MCC incorretos
 
 
 
-Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como o [Swagger da API](#api-docs) pode ser utilizado para proceder as `requests`
-
+_*Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como o [Swagger da API](#api-docs) pode ser utilizado para proceder as `requests`. <br/> **Utilize o campo `name` real da tabela `merchant`, o github pode formatar de maneira incorreta esse dado no markdown._
 
 <br/>
 
@@ -541,8 +540,6 @@ flowchart TD
 #### 📥 Filas
 Dependendo do volume das transações, podemos usar `RabbitMQ` em conjunto com `Redis` para controlar a concorrência. Essa combinação fornece robustez e resiliência, pois `RabbitMQ` organiza o processamento de tarefas e `Redis`, com locks distribuídos, ajuda a evitar condições de corrida. No entanto, essa abordagem pode introduzir alguma latência adicional.
 
-Além de `locks` e `filas`, sugiro testes de carga e performance extras com ferramentas como `JMeter` ou `Gatling`. Eles devem ser incorporados à rotina de desenvolvimento para garantir implantações seguras de nossos serviços em conjunto com o ciclo de CI.
-
 <br/>
 
 [⤴️ de volta ao índice](#index)
@@ -630,9 +627,7 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
 
 A figura do cabeçalho nesta página foi criada com a ajuda de inteligência artificial e um mínimo de retoques e construção no Gimp [<img src="./docs/assets/images/icons/gimp.svg" width="30" height="30 " title="Gimp" alt="Gimp Logo" />](https://www.gimp.org/)
 
-
 __Os seguintes prompts foram usados para criação no  [Bing IA:](https://www.bing.com/images/create/)__
-
 
 <details>
   <summary><b>Gopher caixa de mercado</b></summary>
@@ -662,9 +657,11 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Utilizei o `log` padrao do `Go` para acompanhar o comportamento das `requests` feitas no sistema. Uma abordagem mais robusta seria o uso de logs estruturados com níveis adequados.
 
-- O router (Gin) não está flexível ao modelo hexagonal quanto a `database` e o `repository`. Ele deveria respeitar uma `port` e ser facilmente substituido.
+- O router (Gin) não está flexível ao modelo hexagonal como a `database` e o `repository`. Ele deveria respeitar uma `port` e ser facilmente substituido.
 
-- Testes adicionais poderiam ser criados (multiplos cenários de erros nas rotas e serviços, teste de carga).
+- Testes adicionais poderiam ser criados (multiplos cenários de erros nas rotas e serviços). 
+
+- Para além de `locks` e `filas`, testes de carga e performance extras devem ser adicionados, com ferramentas como `JMeter` ou `Gatling`. Eles devem ser incorporados à rotina de desenvolvimento para garantir implantações seguras de nossos serviços em conjunto com o ciclo de CI.
 
 Essas são minhas considerações sobre o que consegui produzir ao longo desse desafio, e continuarei me aplicando aos pontos cegos que não tive tempo ou conhecimento para aprimorar.
 

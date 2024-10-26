@@ -182,9 +182,9 @@ func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
 }
 
 func (suite *RepositoriesSuite) MerchantRepositoryFindByName() {
-	MerchantEntity, err := suite.MerchantRepo.FindByName(merchant1NameToMap)
-	assert.Equal(suite.T(), MerchantEntity.MccCode, merchant1IncorrectMccToMap)
-	assert.Equal(suite.T(), MerchantEntity.MappedMccCode, merchant1CorrectMccToMap)
+	merchantEntity, err := suite.MerchantRepo.FindByName(merchant1NameToMap)
+	assert.Equal(suite.T(), merchantEntity.MccCode, merchant1IncorrectMccToMap)
+	assert.Equal(suite.T(), merchantEntity.MappedMccCode, merchant1CorrectMccToMap)
 	assert.NoError(suite.T(), err)
 }
 

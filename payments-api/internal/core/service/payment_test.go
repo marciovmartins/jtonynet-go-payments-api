@@ -137,20 +137,20 @@ func newMerchantRepoFake(db DBfake) port.MerchantRepository {
 	}
 }
 
-func (m *MerchantRepoFake) FindByName(Name string) (port.MerchantEntity, error) {
+func (m *MerchantRepoFake) FindByName(Name string) (*port.MerchantEntity, error) {
 	MerchantEntity, err := m.db.MerchantRepoFindByName(Name)
 	return MerchantEntity, err
 }
 
-func (dbf *DBfake) MerchantRepoFindByName(Name string) (port.MerchantEntity, error) {
+func (dbf *DBfake) MerchantRepoFindByName(Name string) (*port.MerchantEntity, error) {
 
 	for _, m := range dbf.Merchant {
 		if m.Name == Name {
-			return m, nil
+			return &m, nil
 		}
 	}
 
-	return port.MerchantEntity{}, fmt.Errorf("Merchant with AccountID %s not found", Name)
+	return nil, nil
 }
 
 func (dbf *DBfake) BalanceRepoFindByAccountID(accountID uint) (port.BalanceEntity, error) {

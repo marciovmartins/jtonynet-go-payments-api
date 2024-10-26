@@ -7,7 +7,7 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
-func mapMerchantEntityToDomain(mEntity port.MerchantEntity) domain.Merchant {
+func mapMerchantEntityToDomain(mEntity *port.MerchantEntity) domain.Merchant {
 	return domain.Merchant{
 		Name:          mEntity.Name,
 		MccCode:       mEntity.MccCode,
@@ -22,9 +22,9 @@ func mapAccountEntityToDomain(aEntity port.AccountEntity) (domain.Account, error
 	}, nil
 }
 
-func mapBalanceEntityToDomain(be port.BalanceEntity) (*domain.Balance, error) {
+func mapBalanceEntityToDomain(bEntity port.BalanceEntity) (*domain.Balance, error) {
 	categoryItens := make(map[int]domain.Category)
-	for _, ce := range be.Categories {
+	for _, ce := range bEntity.Categories {
 		category := domain.Category{
 			ID:       ce.ID,
 			Name:     ce.Category.Name,
@@ -36,14 +36,14 @@ func mapBalanceEntityToDomain(be port.BalanceEntity) (*domain.Balance, error) {
 	}
 
 	if len(categoryItens) == 0 {
-		return &domain.Balance{}, fmt.Errorf("failed to map Balance with AccountID %v, Cotegories not found", be.AccountID)
+		return &domain.Balance{}, fmt.Errorf("failed to map Balance with AccountID %v, Cotegories not found", bEntity.AccountID)
 	}
 
 	categories := domain.Categories{Itens: categoryItens}
 
 	b := &domain.Balance{
-		AccountID:   be.AccountID,
-		AmountTotal: be.AmountTotal,
+		AccountID:   bEntity.AccountID,
+		AmountTotal: bEntity.AmountTotal,
 		Categories:  categories,
 	}
 

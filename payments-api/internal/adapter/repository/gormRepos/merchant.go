@@ -1,6 +1,7 @@
 package gormRepos
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
@@ -26,13 +27,17 @@ func NewMerchant(conn port.DBConn) (port.MerchantRepository, error) {
 	}, nil
 }
 
-func (m *Merchant) FindByName(Name string) (port.MerchantEntity, error) {
+func (m *Merchant) FindByName(Name string) (*port.MerchantEntity, error) {
 	MerchantModel := gormModel.Merchant{}
-	if err := m.db.Where(&gormModel.Merchant{Name: Name}).First(&MerchantModel).Error; err != nil {
-		return port.MerchantEntity{}, fmt.Errorf("Merchant with uid: %s not found", Name)
+
+	result := m.db.Where(&gormModel.Merchant{Name: Name}).First(&MerchantModel)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	} else if result.Error != nil {
+		return nil, result.Error
 	}
 
-	return port.MerchantEntity{
+	return &port.MerchantEntity{
 		Name:          MerchantModel.Name,
 		MccCode:       MerchantModel.MccCode,
 		MappedMccCode: MerchantModel.MappedMccCode,

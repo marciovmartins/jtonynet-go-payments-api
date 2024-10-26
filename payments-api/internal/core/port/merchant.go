@@ -7,5 +7,5 @@ type MerchantEntity struct {
 }
 
 type MerchantRepository interface {
-	FindByName(string) (MerchantEntity, error)
+	FindByName(string) (*MerchantEntity, error)
 }
