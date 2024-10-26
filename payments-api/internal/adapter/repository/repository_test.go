@@ -46,7 +46,7 @@ type RepositoriesSuite struct {
 	AccountRepo     port.AccountRepository
 	BalanceRepo     port.BalanceRepository
 	TransactionRepo port.TransactionRepository
-	MerchantMapRepo port.MerchantMapRepository
+	MerchantRepo    port.MerchantRepository
 
 	AccountEntity port.AccountEntity
 	BalanceEntity port.BalanceEntity
@@ -75,7 +75,7 @@ func (suite *RepositoriesSuite) SetupSuite() {
 	suite.AccountRepo = repositories.Account
 	suite.BalanceRepo = repositories.Balance
 	suite.TransactionRepo = repositories.Transaction
-	suite.MerchantMapRepo = repositories.MerchanMap
+	suite.MerchantRepo = repositories.MerchanMap
 
 	suite.loadDBtestData(conn)
 }
@@ -89,9 +89,9 @@ func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
 			log.Fatalf("failure to cast conn.GetDB() as gorm.DB")
 		}
 
-		dbGorm.Exec("TRUNCATE TABLE merchant_maps RESTART IDENTITY CASCADE")
-		insertMerchantMapQuery := fmt.Sprintf(`
-			INSERT INTO merchant_maps (uid, merchant_name, mcc_code, mapped_mcc_code, created_at, updated_at)
+		dbGorm.Exec("TRUNCATE TABLE merchants RESTART IDENTITY CASCADE")
+		insertMerchantQuery := fmt.Sprintf(`
+			INSERT INTO merchants (uid, name, mcc_code, mapped_mcc_code, created_at, updated_at)
 			VALUES
 				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', '%s', '%s', '%s', NOW(), NOW()),
 				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', '%s', '%s', '%s', NOW(), NOW())`,
@@ -102,7 +102,7 @@ func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
 			merchant2IncorrectMccToMap,
 			merchant2CorrectMccToMap,
 		)
-		dbGorm.Exec(insertMerchantMapQuery)
+		dbGorm.Exec(insertMerchantQuery)
 
 		dbGorm.Exec("TRUNCATE TABLE accounts RESTART IDENTITY CASCADE")
 		insertAccountQuery := fmt.Sprintf(
@@ -181,10 +181,10 @@ func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
 
 }
 
-func (suite *RepositoriesSuite) MerchantMapRepositoryFindByMerchantName() {
-	merchantMapEntity, err := suite.MerchantMapRepo.FindByMerchantName(merchant1NameToMap)
-	assert.Equal(suite.T(), merchantMapEntity.MccCode, merchant1IncorrectMccToMap)
-	assert.Equal(suite.T(), merchantMapEntity.MappedMccCode, merchant1CorrectMccToMap)
+func (suite *RepositoriesSuite) MerchantRepositoryFindByName() {
+	merchantEntity, err := suite.MerchantRepo.FindByName(merchant1NameToMap)
+	assert.Equal(suite.T(), merchantEntity.MccCode, merchant1IncorrectMccToMap)
+	assert.Equal(suite.T(), merchantEntity.MappedMccCode, merchant1CorrectMccToMap)
 	assert.NoError(suite.T(), err)
 }
 
@@ -208,7 +208,7 @@ func (suite *RepositoriesSuite) TestCases() {
 		suite.TransactionRepositorySaveSuccess()
 	})
 
-	suite.T().Run("TestMerchantMapRepositoryFindByMerchantName", func(t *testing.T) {
-		suite.MerchantMapRepositoryFindByMerchantName()
+	suite.T().Run("TestMerchantRepositoryFindByName", func(t *testing.T) {
+		suite.MerchantRepositoryFindByName()
 	})
 }

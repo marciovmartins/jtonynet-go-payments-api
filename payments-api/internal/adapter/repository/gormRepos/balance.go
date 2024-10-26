@@ -68,8 +68,8 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 }
 
 func (b *Balance) UpdateTotalAmount(be port.BalanceEntity) error {
-	bindParameters := []string{}
-	bindValues := []interface{}{}
+	var bindParameters []string
+	var bindValues []interface{}
 
 	for _, balanceCategory := range be.Categories {
 		bindParameters = append(bindParameters, "(?::int, ?::numeric)")

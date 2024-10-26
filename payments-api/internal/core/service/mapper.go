@@ -3,30 +3,16 @@ package service
 import (
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
-	"github.com/shopspring/decimal"
 )
 
-func mapParamsToTransactionDomain(
-	accountID uint,
-	accountUID uuid.UUID,
-	MccCode string,
-	totalAmount decimal.Decimal,
-	merchant string) (*domain.Transaction, error) {
-
-	if !totalAmount.GreaterThan(decimal.NewFromInt(0)) {
-		return &domain.Transaction{}, fmt.Errorf("transaction totalAmount must be a positive value %v", totalAmount)
+func mapMerchantEntityToDomain(mEntity *port.MerchantEntity) domain.Merchant {
+	return domain.Merchant{
+		Name:          mEntity.Name,
+		MccCode:       mEntity.MccCode,
+		MappedMccCode: mEntity.MappedMccCode,
 	}
-
-	return &domain.Transaction{
-		AccountID:   accountID,
-		AccountUID:  accountUID,
-		MccCode:     MccCode,
-		TotalAmount: totalAmount,
-		Merchant:    merchant,
-	}, nil
 }
 
 func mapAccountEntityToDomain(aEntity port.AccountEntity) (domain.Account, error) {
@@ -36,9 +22,9 @@ func mapAccountEntityToDomain(aEntity port.AccountEntity) (domain.Account, error
 	}, nil
 }
 
-func mapBalanceEntityToDomain(be port.BalanceEntity) (*domain.Balance, error) {
+func mapBalanceEntityToDomain(bEntity port.BalanceEntity) (*domain.Balance, error) {
 	categoryItens := make(map[int]domain.Category)
-	for _, ce := range be.Categories {
+	for _, ce := range bEntity.Categories {
 		category := domain.Category{
 			ID:       ce.ID,
 			Name:     ce.Category.Name,
@@ -50,14 +36,14 @@ func mapBalanceEntityToDomain(be port.BalanceEntity) (*domain.Balance, error) {
 	}
 
 	if len(categoryItens) == 0 {
-		return &domain.Balance{}, fmt.Errorf("failed to map Balance with AccountID %v, Cotegories not found", be.AccountID)
+		return &domain.Balance{}, fmt.Errorf("failed to map Balance with AccountID %v, Cotegories not found", bEntity.AccountID)
 	}
 
 	categories := domain.Categories{Itens: categoryItens}
 
 	b := &domain.Balance{
-		AccountID:   be.AccountID,
-		AmountTotal: be.AmountTotal,
+		AccountID:   bEntity.AccountID,
+		AmountTotal: bEntity.AmountTotal,
 		Categories:  categories,
 	}
 

@@ -12,79 +12,84 @@ type Payment struct {
 	AccountRepository     port.AccountRepository
 	BalanceRepository     port.BalanceRepository
 	TransactionRepository port.TransactionRepository
-	MerchantMapRepository port.MerchantMapRepository
+	MerchantRepository    port.MerchantRepository
 }
 
 func NewPayment(
 	aRepository port.AccountRepository,
 	bRepository port.BalanceRepository,
 	tRepository port.TransactionRepository,
-	mRepository port.MerchantMapRepository,
+	mRepository port.MerchantRepository,
 ) *Payment {
 	return &Payment{
 		AccountRepository:     aRepository,
 		BalanceRepository:     bRepository,
 		TransactionRepository: tRepository,
-		MerchantMapRepository: mRepository,
+		MerchantRepository:    mRepository,
 	}
 }
 
-func (p *Payment) Execute(tRequest port.TransactionPaymentRequest) (string, error) {
-	accountEntity, err := p.AccountRepository.FindByUID(tRequest.AccountUID)
+func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
+	accountEntity, err := p.AccountRepository.FindByUID(tpr.AccountUID)
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("failed to retrieve account entity: %w", err))
+		return rejectedGenericErr(fmt.Errorf("failed to retrieve account entity: %w", err))
 	}
 
-	merchantMapEntity, err := p.MerchantMapRepository.FindByMerchantName(tRequest.Merchant)
-	if err == nil {
-		tRequest.MccCode = merchantMapEntity.MappedMccCode
-	}
-
-	tDomain, err := mapParamsToTransactionDomain(
-		accountEntity.ID,
-		tRequest.AccountUID,
-		tRequest.MccCode,
-		tRequest.TotalAmount,
-		tRequest.Merchant)
+	account, err := mapAccountEntityToDomain(accountEntity)
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("failed to map transaction domain from request: %w", err))
+		return rejectedGenericErr(fmt.Errorf("failed to map account domain from entity: %w", err))
 	}
 
-	accountDomain, err := mapAccountEntityToDomain(accountEntity)
+	var merchant domain.Merchant
+	merchantEntity, err := p.MerchantRepository.FindByName(tpr.Merchant)
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("failed to map account domain from entity: %w", err))
+		return rejectedGenericErr(fmt.Errorf("failed to retrieve merchant entity with name %s", tpr.Merchant))
 	}
 
-	balanceEntity, err := p.BalanceRepository.FindByAccountID(accountDomain.ID)
+	if merchantEntity != nil {
+		merchant = mapMerchantEntityToDomain(merchantEntity)
+	}
+
+	transaction := account.NewTransaction(
+		tpr.MccCode,
+		tpr.TotalAmount,
+		merchant,
+	)
+
+	balanceEntity, err := p.BalanceRepository.FindByAccountID(account.ID)
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("failed to retrieve balance entity: %w", err))
+		return rejectedGenericErr(fmt.Errorf("failed to retrieve balance entity: %w", err))
 	}
 
-	balanceDomain, err := mapBalanceEntityToDomain(balanceEntity)
+	balance, err := mapBalanceEntityToDomain(balanceEntity)
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("failed to map balance domain from entity: %w", err))
+		return rejectedGenericErr(fmt.Errorf("failed to map balance domain from entity: %w", err))
 	}
 
-	approvedBalance, cErr := balanceDomain.ApproveTransaction(tDomain)
+	approvedBalance, cErr := balance.ApproveTransaction(transaction)
 	if cErr != nil {
-		log.Println(cErr)
-		return cErr.Code, fmt.Errorf("failed to approve balance domain: %s", cErr.Message)
+		return rejectedCustomErr(cErr)
 	}
 
 	err = p.BalanceRepository.UpdateTotalAmount(mapBalanceDomainToEntity(approvedBalance))
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("failed to update balance entity: %w", err))
+		return rejectedGenericErr(fmt.Errorf("failed to update balance entity: %w", err))
 	}
 
-	err = p.TransactionRepository.Save(mapTransactionDomainToEntity(tDomain))
+	err = p.TransactionRepository.Save(mapTransactionDomainToEntity(transaction))
 	if err != nil {
-		return rejectedCodeError(fmt.Errorf("failed to save transaction entity: %w", err))
+		return rejectedGenericErr(fmt.Errorf("failed to save transaction entity: %w", err))
 	}
 
 	return domain.CODE_APPROVED, nil
 }
 
-func rejectedCodeError(err error) (string, error) {
+func rejectedGenericErr(err error) (string, error) {
 	log.Println(err)
 	return domain.CODE_REJECTED_GENERIC, err
+}
+
+func rejectedCustomErr(cErr *domain.CustomError) (string, error) {
+	log.Println(cErr)
+	return cErr.Code, fmt.Errorf("failed to approve balance domain: %s", cErr.Message)
 }
