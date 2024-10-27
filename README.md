@@ -254,7 +254,7 @@ Com a aplicação em execução, a rota de documentação Swagger fica disponív
 
 <img src="./docs/assets/images/screen_captures/swagger.png">
 
-A interface do [Swagger pode executar testes manuais](#test-manual) a partir de `requests` no endpoint `POST: /payment` 
+A interface do Swagger pode executar [Testes Manuais](#test-manual) a partir de `requests` no endpoint `POST: /payment` 
 
 <br/>
 
@@ -365,7 +365,7 @@ L3. Merchants com mapeamentos MCC incorretos
 
 
 
-_*Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como o [Swagger da API](#api-docs) pode ser utilizado para proceder as `requests`. <br/> **Utilize o campo `name` real da tabela `merchant`, o github pode formatar de maneira incorreta esse dado no markdown._
+_*Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como a [Documentação da API](#api-docs) (Swagger) pode ser utilizado para proceder as `requests`. <br/> **Utilize o campo `name` real da tabela `merchant`, o github pode formatar de maneira incorreta esse dado no markdown._
 
 <br/>
 
@@ -460,7 +460,7 @@ erDiagram
         int id PK
         UUID uid
         int account_id FK
-        string category_name
+        int category_id FK
         numeric amount
         timestamp created_at
         timestamp updated_at
@@ -490,19 +490,36 @@ erDiagram
         timestamp deleted_at
     }
 
+    categories {
+        int id PK
+        UUID uid
+        string name
+        int priority
+    }
+
+    mcc_codes {
+        int id PK
+        string mcc_code
+        int category_id FK
+    }
+
     accounts ||--o{ balances : has
     accounts ||--o{ transactions : performs
+    categories ||--o{ mcc_codes : has
+    categories ||--o{ balances : defines
+
     
 ```
 <a id="diagrams-erchart-description"></a>
 ##### 📝 Descrição
 
-**Accounts** é a tabela principal, conectada tanto a **Balances** quanto a **Transactions**, armazenando informações sobre as contas.  
-**Balances** armazena os saldos por categoria.<br/>
-**Transactions** registra o histórico de transações realizadas.<br/>
-**Merchant** para ajustar MCCs incorretos de acordo com o nome do comerciante.
+**accounts** Tabela principal, conectada tanto a **Balances** quanto a **Transactions**, armazenando informações sobre as contas.  
+**balances** Armazena os saldos por categoria.<br/>
+**transactions** Registra o histórico de transações realizadas.<br/>
+**categories**: Cada categoria (FOOD, MEAL, CASH...) é armazenada. O campo order permite definir a prioridade ou a sequência da categoria<br/>
+**mcc_codes** Contém uma lista dos MCCs (códigos de quatro dígitos) e uma category_id correspondente, associada a categoria.<br/>
+**merchant** para ajustar MCCs incorretos de acordo com o nome do comerciante.
 
-_*Por simplicidade para um desenvolvimento mais rapido mantendo foco no Serviço, mantive as categorias no projeto e não em uma tabela, elas devem ganhar sua tabela no futuro._
 
 
 <br/>
@@ -653,8 +670,6 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Gostaria de ter adicionado um sistema de cache, para lidar com os dados com pouca possibilidade de alteração em curto período de tempo (`merchants` e `categories`). Essa mesma estrutura pode ser utilizada para implantar uma versão inicial de `memory lock` (minha sugestão de solução L4).
 
-- A estrutura de `category` foi criada diretamente na `port` para acelerar o desenvolvimento. Essa abordagem não é adequada e deve ser removida, sendo adicionada à database. 
-
 - Utilizei o `log` padrao do `Go` para acompanhar o comportamento das `requests` feitas no sistema. Uma abordagem mais robusta seria o uso de logs estruturados com níveis adequados.
 
 - O router (Gin) não está flexível ao modelo hexagonal como a `database` e o `repository`. Ele deveria respeitar uma `port` e ser facilmente substituido.
@@ -681,5 +696,24 @@ docker network prune -f
 docker system prune -a --volumes
 
 sudo systemctl restart docker
+
+# Balance Categories By AccountID
+select
+   b.account_id, 
+   b.id AS balance_id,
+   b.uid AS balance_uid, 
+   b.amount, 
+   c.name AS category_name, 
+   c.priority, STRING_AGG(mc.mcc_code, ',') AS codes 
+FROM 
+	balances AS b 
+JOIN 
+	categories AS c ON b.category_id = c.id 
+LEFT JOIN 
+	mcc_codes AS mc ON c.id = mc.category_id 
+where
+	b.account_id = 1 
+GROUP by
+	b.account_id, b.id, b.uid, b.amount, c.name, c.priority
 -->
 

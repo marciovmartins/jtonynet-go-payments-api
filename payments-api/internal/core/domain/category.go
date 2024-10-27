@@ -11,7 +11,7 @@ type Category struct {
 	Name     string
 	Amount   decimal.Decimal
 	MccCodes []string
-	Order    int
+	Priority int
 }
 
 type Categories struct {

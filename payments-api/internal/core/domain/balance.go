@@ -18,8 +18,8 @@ func (b *Balance) ApproveTransaction(tDomain *Transaction) (*Balance, *CustomErr
 		return b, err
 	}
 
-	for order, balanceCategory := range debitedBalanceCategories {
-		b.Categories.Itens[order] = balanceCategory
+	for priority, balanceCategory := range debitedBalanceCategories {
+		b.Categories.Itens[priority] = balanceCategory
 	}
 
 	return b, nil
@@ -39,7 +39,7 @@ func (b *Balance) getDebitedBalanceCategories(tDomain *Transaction) (map[int]Cat
 		amountDebtRemaining = decimal.NewFromFloat(0)
 
 		bCategoryMCC.Amount = bCategoryMCC.Amount.Sub(tDomain.TotalAmount)
-		debitedBalanceCategories[bCategoryMCC.Order] = bCategoryMCC
+		debitedBalanceCategories[bCategoryMCC.Priority] = bCategoryMCC
 
 	} else if bCategoryMCC.Amount.IsPositive() {
 		log.Printf("Category '%s' has a positive balance but insufficient funds for the transaction. Debiting the entire amount and checking fallback category.\n", bCategoryMCC.Name)
@@ -47,7 +47,7 @@ func (b *Balance) getDebitedBalanceCategories(tDomain *Transaction) (map[int]Cat
 		amountDebtRemaining = amountDebtRemaining.Sub(bCategoryMCC.Amount)
 
 		bCategoryMCC.Amount = decimal.NewFromFloat(0)
-		debitedBalanceCategories[bCategoryMCC.Order] = bCategoryMCC
+		debitedBalanceCategories[bCategoryMCC.Priority] = bCategoryMCC
 	}
 
 	if amountDebtRemaining.GreaterThan(decimal.Zero) {
@@ -61,7 +61,7 @@ func (b *Balance) getDebitedBalanceCategories(tDomain *Transaction) (map[int]Cat
 			log.Println("Fallback category has sufficient funds available for the transaction.")
 
 			bCategoryFallback.Amount = bCategoryFallback.Amount.Sub(amountDebtRemaining)
-			debitedBalanceCategories[bCategoryFallback.Order] = bCategoryFallback
+			debitedBalanceCategories[bCategoryFallback.Priority] = bCategoryFallback
 
 			amountDebtRemaining = decimal.NewFromFloat(0)
 		} else {

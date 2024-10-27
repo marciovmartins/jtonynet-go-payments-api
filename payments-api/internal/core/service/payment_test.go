@@ -59,19 +59,19 @@ func newDBfake() DBfake {
 			ID:        1,
 			AccountID: 1,
 			Amount:    balanceFoodAmount,
-			Category:  port.CategoryFood,
+			Category:  port.CategoryEntity{Name: "FOOD", MccCodes: []string{"5411", "5412"}, Priority: 1},
 		},
 		2: {
 			ID:        2,
 			AccountID: 1,
 			Amount:    balanceMealAmount,
-			Category:  port.CategoryMeal,
+			Category:  port.CategoryEntity{Name: "MEAL", MccCodes: []string{"5811", "5812"}, Priority: 2},
 		},
 		3: {
 			ID:        3,
 			AccountID: 1,
 			Amount:    balanceCashAmount,
-			Category:  port.CategoryCash,
+			Category:  port.CategoryEntity{Name: "CASH", Priority: 3},
 		},
 	}
 
@@ -160,7 +160,7 @@ func (dbf *DBfake) BalanceRepoFindByAccountID(accountID uint) (port.BalanceEntit
 	for _, be := range dbf.Balance {
 		if be.AccountID == accountID {
 			amountTotal = amountTotal.Add(be.Amount)
-			categories[be.Category.Order] = be
+			categories[be.Category.Priority] = be
 		}
 	}
 
