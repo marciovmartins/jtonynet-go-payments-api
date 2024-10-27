@@ -1,6 +1,7 @@
 package gormRepos
 
 import (
+	"database/sql"
 	"fmt"
 	"strings"
 
@@ -9,6 +10,16 @@ import (
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 )
+
+type BalanceResult struct {
+	AccountID  uint
+	BalanceID  uint
+	BalanceUID uuid.UUID
+	Amount     decimal.Decimal
+	Name       string
+	Priority   int
+	Codes      sql.NullString
+}
 
 type Balance struct {
 	gormConn port.DBConn
@@ -26,16 +37,6 @@ func NewBalance(conn port.DBConn) (port.BalanceRepository, error) {
 		gormConn: conn,
 		db:       &dbGorm,
 	}, nil
-}
-
-type BalanceResult struct {
-	AccountID  uint
-	BalanceID  uint
-	BalanceUID uuid.UUID
-	Amount     decimal.Decimal
-	Name       string
-	Priority   int
-	Codes      string
 }
 
 func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
@@ -59,8 +60,12 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 
 		for _, bResult := range bResults {
 			mccCodes := []string{}
-			if bResult.Codes != "" {
-				mccCodes = strings.Split(bResult.Codes, ",")
+			if bResult.Codes.Valid {
+				mccCodes = strings.Split(bResult.Codes.String, ",")
+			}
+
+			if be.AccountID == 0 {
+				be.AccountID = bResult.AccountID
 			}
 
 			balanceCategories[bResult.Priority] = port.BalanceByCategoryEntity{
@@ -78,7 +83,6 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 		}
 
 		if len(balanceCategories) > 0 {
-			be.AccountID = balanceCategories[1].AccountID
 			be.AmountTotal = amountTotal
 			be.Categories = balanceCategories
 

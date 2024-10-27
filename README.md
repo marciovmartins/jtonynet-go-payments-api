@@ -254,7 +254,7 @@ Com a aplicação em execução, a rota de documentação Swagger fica disponív
 
 <img src="./docs/assets/images/screen_captures/swagger.png">
 
-A interface do [Swagger pode executar testes manuais](#test-manual) a partir de `requests` no endpoint `POST: /payment` 
+A interface do Swagger pode executar [Testes Manuais](#test-manual) a partir de `requests` no endpoint `POST: /payment` 
 
 <br/>
 
@@ -365,7 +365,7 @@ L3. Merchants com mapeamentos MCC incorretos
 
 
 
-_*Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como o [Swagger da API](#api-docs) pode ser utilizado para proceder as `requests`. <br/> **Utilize o campo `name` real da tabela `merchant`, o github pode formatar de maneira incorreta esse dado no markdown._
+_*Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como a [Documentação da API](#api-docs) (Swagger) pode ser utilizado para proceder as `requests`. <br/> **Utilize o campo `name` real da tabela `merchant`, o github pode formatar de maneira incorreta esse dado no markdown._
 
 <br/>
 
