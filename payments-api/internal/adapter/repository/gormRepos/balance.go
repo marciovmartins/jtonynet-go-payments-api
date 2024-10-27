@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
+	"github.com/google/uuid"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
@@ -28,31 +28,55 @@ func NewBalance(conn port.DBConn) (port.BalanceRepository, error) {
 	}, nil
 }
 
+type BalanceResult struct {
+	AccountID  uint
+	BalanceID  uint
+	BalanceUID uuid.UUID
+	Amount     decimal.Decimal
+	Name       string
+	Priority   int
+	Codes      string
+}
+
 func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
-	balanceModelList := []gormModel.Balance{}
-	if err := b.db.Find(&balanceModelList).Where(&gormModel.Balance{AccountID: accountID}).Error; err != nil {
+	var be port.BalanceEntity
+	var bResults []BalanceResult
+
+	err := b.db.Debug().Table("balances AS b").
+		Select("b.account_id, b.id AS balance_id, b.uid AS balance_uid, b.amount, c.name AS category_name, c.priority, STRING_AGG(mc.mcc_code, ',') AS codes").
+		Joins("JOIN categories AS c ON b.category_id = c.id").
+		Joins("LEFT JOIN mcc_codes AS mc ON c.id = mc.category_id").
+		Where("b.account_id = ?", accountID).
+		Group("b.account_id, b.id, b.uid, b.amount, c.name, c.priority").
+		Scan(&bResults).Error
+	if err != nil {
 		return port.BalanceEntity{}, fmt.Errorf("error retrying balance with id: %v", accountID)
 	}
 
-	be := port.BalanceEntity{}
-
-	if len(balanceModelList) > 0 {
+	if len(bResults) > 0 {
 		amountTotal := decimal.NewFromInt(0)
 		balanceCategories := make(map[int]port.BalanceByCategoryEntity)
 
-		for _, balanceModel := range balanceModelList {
-			balanceCategory, exists := port.Categories[balanceModel.CategoryName]
-			if !exists {
-				continue
+		for _, bResult := range bResults {
+			mccCodes := []string{}
+			if bResult.Codes != "" {
+				mccCodes = strings.Split(bResult.Codes, ",")
 			}
 
-			balanceCategories[balanceCategory.Order] = port.BalanceByCategoryEntity{
-				ID:       balanceModel.ID,
-				Amount:   balanceModel.Amount,
-				Category: balanceCategory,
+			balanceCategories[bResult.Priority] = port.BalanceByCategoryEntity{
+				ID:     bResult.BalanceID,
+				UID:    bResult.BalanceUID,
+				Amount: bResult.Amount,
+				Category: port.CategoryEntity{
+					Name:     bResult.Name,
+					MccCodes: mccCodes,
+
+					Order:    bResult.Priority,
+					Priority: bResult.Priority,
+				},
 			}
 
-			amountTotal = amountTotal.Add(balanceModel.Amount)
+			amountTotal = amountTotal.Add(bResult.Amount)
 		}
 
 		be.AccountID = accountID
@@ -62,9 +86,11 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 		if len(be.Categories) > 0 {
 			return be, nil
 		}
+
+		return port.BalanceEntity{}, fmt.Errorf("balance with id: %v not found", accountID)
 	}
 
-	return port.BalanceEntity{}, fmt.Errorf("balance with id: %v not found", accountID)
+	return port.BalanceEntity{}, nil
 }
 
 func (b *Balance) UpdateTotalAmount(be port.BalanceEntity) error {

@@ -59,19 +59,19 @@ func newDBfake() DBfake {
 			ID:        1,
 			AccountID: 1,
 			Amount:    balanceFoodAmount,
-			Category:  port.CategoryFood,
+			Category:  port.CategoryEntity{Name: "FOOD", MccCodes: []string{"5411", "5412"}, Order: 1},
 		},
 		2: {
 			ID:        2,
 			AccountID: 1,
 			Amount:    balanceMealAmount,
-			Category:  port.CategoryMeal,
+			Category:  port.CategoryEntity{Name: "MEAL", MccCodes: []string{"5811", "5812"}, Order: 2},
 		},
 		3: {
 			ID:        3,
 			AccountID: 1,
 			Amount:    balanceCashAmount,
-			Category:  port.CategoryCash,
+			Category:  port.CategoryEntity{Name: "CASH", Order: 3},
 		},
 	}
 

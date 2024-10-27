@@ -57,7 +57,13 @@ func mapBalanceDomainToEntity(dBalance *domain.Balance) port.BalanceEntity {
 			ID:        categoryItem.ID,
 			AccountID: dBalance.AccountID,
 			Amount:    categoryItem.Amount,
-			Category:  port.Categories[categoryItem.Name],
+			Category: port.CategoryEntity{
+				Name:     categoryItem.Name,
+				MccCodes: categoryItem.MccCodes,
+				Order:    categoryItem.Order,
+				Priority: categoryItem.Priority,
+			},
+			//Category:  port.Categories[categoryItem.Name],
 		}
 
 		bCategories[categoryItem.Order] = bCategory
