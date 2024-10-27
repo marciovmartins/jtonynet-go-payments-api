@@ -134,11 +134,11 @@ func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
 
 		dbGorm.Exec("TRUNCATE TABLE balances RESTART IDENTITY CASCADE")
 		insertBalancesQuery := fmt.Sprintf(`
-			INSERT INTO balances (uid, account_id, amount, category_name, category_id, created_at, updated_at)
+			INSERT INTO balances (uid, account_id, amount, category_id, created_at, updated_at)
 			VALUES
-				('%s', 1, %v, 'FOOD', 1, NOW(), NOW()),
-				('%s', 1, %v, 'MEAL', 2, NOW(), NOW()),
-				('%s', 1, %v, 'CASH', 3, NOW(), NOW())`,
+				('%s', 1, %v, 1, NOW(), NOW()),
+				('%s', 1, %v, 2, NOW(), NOW()),
+				('%s', 1, %v, 3, NOW(), NOW())`,
 			balanceFoodUID, balanceFoodAmount,
 			balanceMealUID, balanceMealAmount,
 			balanceCashUID, balanceCashAmount,
