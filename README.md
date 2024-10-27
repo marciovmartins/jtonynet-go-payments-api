@@ -697,7 +697,7 @@ docker system prune -a --volumes
 
 sudo systemctl restart docker
 
-# Balance CAtegories By AccountID
+# Balance Categories By AccountID
 select
    b.account_id, 
    b.id AS balance_id,
