@@ -30,9 +30,9 @@ func mapBalanceEntityToDomain(bEntity port.BalanceEntity) (*domain.Balance, erro
 			Name:     ce.Category.Name,
 			Amount:   ce.Amount,
 			MccCodes: ce.Category.MccCodes,
-			Order:    ce.Category.Order,
+			Priority: ce.Category.Priority,
 		}
-		categoryItens[ce.Category.Order] = category
+		categoryItens[category.Priority] = category
 	}
 
 	if len(categoryItens) == 0 {
@@ -60,13 +60,11 @@ func mapBalanceDomainToEntity(dBalance *domain.Balance) port.BalanceEntity {
 			Category: port.CategoryEntity{
 				Name:     categoryItem.Name,
 				MccCodes: categoryItem.MccCodes,
-				Order:    categoryItem.Order,
 				Priority: categoryItem.Priority,
 			},
-			//Category:  port.Categories[categoryItem.Name],
 		}
 
-		bCategories[categoryItem.Order] = bCategory
+		bCategories[categoryItem.Priority] = bCategory
 	}
 
 	return port.BalanceEntity{

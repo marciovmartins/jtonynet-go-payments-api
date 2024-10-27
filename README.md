@@ -494,7 +494,7 @@ erDiagram
         int id PK
         UUID uid
         string name
-        int order
+        int priority
     }
 
     mcc_codes {
@@ -697,24 +697,23 @@ docker system prune -a --volumes
 
 sudo systemctl restart docker
 
-
-
-SELECT 
-    b.account_id, 
-    b.id AS balance_id, 
-    b.uid AS balance_uid, 
-    b.amount, 
-    c.name AS category_name, 
-    ARRAY_AGG(mc.mcc_code) AS codes
+# Balance CAtegories By AccountID
+select
+   b.account_id, 
+   b.id AS balance_id,
+   b.uid AS balance_uid, 
+   b.amount, 
+   c.name AS category_name, 
+   c.priority, STRING_AGG(mc.mcc_code, ',') AS codes 
 FROM 
-    balances b
+	balances AS b 
 JOIN 
-    categories c ON b.category_id = c.id
+	categories AS c ON b.category_id = c.id 
 LEFT JOIN 
-    mcc_codes mc ON c.id = mc.category_id
-WHERE 
-    b.account_id = '123e4567-e89b-12d3-a456-426614174000'
-GROUP BY 
-    b.account_id, b.id, b.uid, b.amount, c.name;
+	mcc_codes AS mc ON c.id = mc.category_id 
+where
+	b.account_id = 1 
+GROUP by
+	b.account_id, b.id, b.uid, b.amount, c.name, c.priority
 -->
 
