@@ -28,14 +28,14 @@ type Balance struct {
 
 func NewBalance(conn port.DBConn) (port.BalanceRepository, error) {
 	db := conn.GetDB()
-	dbGorm, ok := db.(gorm.DB)
+	dbGorm, ok := db.(*gorm.DB)
 	if !ok {
 		return nil, fmt.Errorf("balance repository failure to cast conn.GetDB() as gorm.DB")
 	}
 
 	return &Balance{
 		gormConn: conn,
-		db:       &dbGorm,
+		db:       dbGorm,
 	}, nil
 }
 

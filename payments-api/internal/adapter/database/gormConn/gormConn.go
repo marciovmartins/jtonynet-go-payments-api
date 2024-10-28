@@ -73,7 +73,7 @@ func (gConn GormConn) Readiness() error {
 }
 
 func (gConn GormConn) GetDB() interface{} {
-	return *gConn.DB
+	return gConn.DB
 }
 
 func (gConn GormConn) GetStrategy() string {

@@ -16,14 +16,14 @@ type Merchant struct {
 
 func NewMerchant(conn port.DBConn) (port.MerchantRepository, error) {
 	db := conn.GetDB()
-	dbGorm, ok := db.(gorm.DB)
+	dbGorm, ok := db.(*gorm.DB)
 	if !ok {
-		return nil, fmt.Errorf("account repository failure to cast conn.GetDB() as gorm.DB")
+		return nil, fmt.Errorf("merchant repository failure to cast conn.GetDB() as gorm.DB")
 	}
 
 	return &Merchant{
 		gormConn: conn,
-		db:       &dbGorm,
+		db:       dbGorm,
 	}, nil
 }
 

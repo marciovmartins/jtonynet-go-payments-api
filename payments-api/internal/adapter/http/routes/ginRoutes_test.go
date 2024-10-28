@@ -71,7 +71,7 @@ func (suite *GinRoutesSuite) loadDBtestData(conn port.DBConn) {
 	switch conn.GetStrategy() {
 	case "gorm":
 		db := conn.GetDB()
-		dbGorm, ok := db.(gorm.DB)
+		dbGorm, ok := db.(*gorm.DB)
 		if !ok {
 			log.Fatalf("failure to cast conn.GetDB() as gorm.DB")
 		}

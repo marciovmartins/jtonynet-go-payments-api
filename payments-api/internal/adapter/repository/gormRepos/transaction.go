@@ -16,14 +16,14 @@ type Transaction struct {
 
 func NewTransaction(conn port.DBConn) (port.TransactionRepository, error) {
 	db := conn.GetDB()
-	dbGorm, ok := db.(gorm.DB)
+	dbGorm, ok := db.(*gorm.DB)
 	if !ok {
-		return nil, fmt.Errorf("balance repository failure to cast conn.GetDB() as gorm.DB")
+		return nil, fmt.Errorf("transaction repository failure to cast conn.GetDB() as gorm.DB")
 	}
 
 	return &Transaction{
 		gormConn: conn,
-		db:       &dbGorm,
+		db:       dbGorm,
 	}, nil
 }
 
