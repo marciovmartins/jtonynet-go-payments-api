@@ -42,6 +42,7 @@ func NewBalance(conn port.DBConn) (port.BalanceRepository, error) {
 func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 	var be port.BalanceEntity
 	var bResults []BalanceResult
+	firstFound := false
 
 	err := b.db.Table("balances AS b").
 		Select("b.id AS balance_id, b.uid AS balance_uid, b.amount, c.name AS category_name, c.priority, STRING_AGG(mc.mcc_code, ',') AS codes").
@@ -64,7 +65,8 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 				mccCodes = strings.Split(bResult.Codes.String, ",")
 			}
 
-			if be.AccountID == 0 {
+			if !firstFound {
+				firstFound = true
 				be.AccountID = bResult.AccountID
 			}
 

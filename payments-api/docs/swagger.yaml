@@ -16,8 +16,8 @@ definitions:
         type: string
       mcc:
         example: "5411"
-        maxLength: 255
-        minLength: 1
+        maxLength: 4
+        minLength: 4
         type: string
       merchant:
         example: PADARIA DO ZE              SAO PAULO BR

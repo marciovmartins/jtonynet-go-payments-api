@@ -102,8 +102,8 @@ const docTemplate = `{
                 },
                 "mcc": {
                     "type": "string",
-                    "maxLength": 255,
-                    "minLength": 1,
+                    "maxLength": 4,
+                    "minLength": 4,
                     "example": "5411"
                 },
                 "merchant": {
