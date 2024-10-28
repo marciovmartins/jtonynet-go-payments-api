@@ -267,7 +267,7 @@ A interface do Swagger pode executar [Testes Manuais](#test-manual) a partir de 
 
 <a id="test-containerized"></a>
 #### 🐋 Conteinerizado 
-Para rodar os testes [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Conteinerizado](#run-containerized).
+Para rodar os [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Conteinerizado](#run-containerized).
 
 As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _containerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `teste`.
 
@@ -275,7 +275,7 @@ As configurações para executar os testes de repositório e integração (depen
 
 <a id="test-locally"></a>
 #### 🏠 Local
-Para rodar os testes [Testes Automatizados](#test-auto) com a API fora do container, de maneira _local_, é necessário editar seu `/.env.TEST`.
+Para rodar os [Testes Automatizados](#test-auto) com a API fora do container, de maneira _local_, é necessário editar seu `/.env.TEST`.
 
 No arquivo `/.env.TEST`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
@@ -577,7 +577,7 @@ flowchart TD
     F --> H[Retorna Código **00** <br/> Aprovada]
     
     C -- Lock Ocupado --> I[Retorna para Fila]
-    I -->|Timer 100ms| J{Tempo Expirado?}
+    I -->|Verifica Timer 100ms| J{Tempo Expirado?}
     
     J -- Não --> B
     J -- Sim --> K[Descarta Mensagem]
