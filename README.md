@@ -550,12 +550,41 @@ flowchart TD
     
     C -- Não --> G[Rejeita Transação <br/> com Código 07]
     
-    E --> H[Retorna Código 00 <br/> Aprovada]
-    G --> I[Retorna Código 07 <br/> Rejeitada]
+    E --> H[Retorna Código **00** <br/> Aprovada]
+    G --> I[Retorna Código **07** <br/> Rejeitada]
+
+    style H fill:#009933,stroke:#000
+    style I fill:#cc0000,stroke:#000
 ```
 
 #### 📥 Filas
 Dependendo do volume das transações, podemos usar `RabbitMQ` em conjunto com `Redis` para controlar a concorrência. Essa combinação fornece robustez e resiliência, pois `RabbitMQ` organiza o processamento de tarefas e `Redis`, com locks distribuídos, ajuda a evitar condições de corrida. No entanto, essa abordagem pode introduzir alguma latência adicional.
+
+
+```mermaid
+flowchart TD
+    A[Recebe Transação JSON] -->|Envia para Fila| B[Fila por MCC]
+    B -->|Entrega Mensagem| C{Consumidor Verifica Lock}
+    
+    C -- Lock Disponível --> D[Obter Lock]
+    D --> E[Processa Transação]
+    E --> F[Registrar Transação Aprovada]
+    E --> G[Libera Lock]
+    
+    F --> H[Retorna Código **00** <br/> Aprovada]
+    
+    C -- Lock Ocupado --> I[Retorna para Fila]
+    I -->|Timer 100ms| J{Tempo Expirado?}
+    
+    J -- Não --> B
+    J -- Sim --> K[Descarta Mensagem]
+    K --> L[Retorna Código **07**  <br/> Rejeitada Timeout]
+    
+    style H fill:#009933,stroke:#000
+    style L fill:#cc0000,stroke:#000
+```
+
+Nessa sugestão, conseguimos obter o melhor dos dois mundos.
 
 <br/>
 
@@ -666,13 +695,13 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
-- Defini o modelo hexagonal pois sua abordagem de `ports` and `adapters` proporciona flexibilidade para que o sistema atenda a chamadas `http`, e possa ser facilmente estendido para outras abordagens, como processamento de mensagens e filas (solução adicional/alternativa para L4), sem alterar o `core`, garantindo um sistema com separação de responsabilidades.
+- Defini o modelo hexagonal pois sua abordagem de `ports` and `adapters` proporciona flexibilidade para que o sistema atenda a chamadas `http`, e possa ser facilmente estendido para outras abordagens, como processamento de `mensagens` e `filas` (sugestão de solução L4), sem alterar o `core`, garantindo um sistema com separação de responsabilidades.
 
-- Gostaria de ter adicionado um sistema de cache, para lidar com os dados com pouca possibilidade de alteração em curto período de tempo (`merchants` e `categories`). Essa mesma estrutura pode ser utilizada para implantar uma versão inicial de `memory lock` (minha sugestão de solução L4).
+- Gostaria de ter adicionado um sistema de `cache`, para lidar com os dados com pouca possibilidade de alteração em curto período de tempo (`merchants`). Essa mesma estrutura pode ser utilizada para implantar uma versão inicial de `memory lock` (sugestão de solução L4).
 
 - Utilizei o `log` padrao do `Go` para acompanhar o comportamento das `requests` feitas no sistema. Uma abordagem mais robusta seria o uso de logs estruturados com níveis adequados.
 
-- O router (Gin) não está flexível ao modelo hexagonal como a `database` e o `repository`. Ele deveria respeitar uma `port` e ser facilmente substituido.
+- O router (`Gin`) não está flexível ao modelo hexagonal como a `database` e o `repository`. Ele deveria respeitar uma `port` e ser facilmente substituido.
 
 - Testes adicionais poderiam ser criados (multiplos cenários de erros nas rotas e serviços). 
 

@@ -153,23 +153,16 @@ func (suite *GinRoutesSuite) TestPaymentExecuteTransactionApproved() {
 
 	transactionJSON := fmt.Sprintf(
 		`{
-  			"account": "%s",
-  			"mcc": "5411",
-  			"merchant": "PADARIA DO ZE              SAO PAULO BR",
-  			"totalAmount": %v
-		}`,
+	  			"account": "%s",
+	  			"mcc": "5411",
+	  			"merchant": "PADARIA DO ZE              SAO PAULO BR",
+	  			"totalAmount": %v
+			}`,
 		accountUID,
 		amountFoodTransaction,
 	)
-	reqPaymentExecution, err := http.NewRequest("POST", "/payment", bytes.NewBuffer([]byte(transactionJSON)))
-	assert.NoError(suite.T(), err)
 
-	respPaymentExecution := httptest.NewRecorder()
-	suite.router.ServeHTTP(respPaymentExecution, reqPaymentExecution)
-	assert.Equal(suite.T(), http.StatusOK, respPaymentExecution.Code)
-
-	bodyRespPaymentExecution := respPaymentExecution.Body.String()
-	assert.Equal(suite.T(), gjson.Get(bodyRespPaymentExecution, "code").String(), codeApproved)
+	suite.paymentExecuteTransactionTest(transactionJSON, codeApproved)
 }
 
 func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInsufficientFunds() {
@@ -177,14 +170,82 @@ func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInsufficientFu
 
 	transactionJSON := fmt.Sprintf(
 		`{
+	  			"account": "%s",
+	  			"mcc": "5411",
+	  			"merchant": "PADARIA DO ZE              SAO PAULO BR",
+	  			"totalAmount": 9999.99
+			}`,
+		accountUID,
+	)
+
+	suite.paymentExecuteTransactionTest(transactionJSON, codeRejectedInsufficientFunds)
+}
+
+func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidAccountUID() {
+	codeRejectedInsufficientFunds := "07" // domain.CODE_REJECTED_GENERIC
+
+	transactionJSON :=
+		`{
+			    "account": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+	  			"mcc": "5411",
+	  			"merchant": "PADARIA DO ZE              SAO PAULO BR",
+	  			"totalAmount": 0.01
+			}`
+
+	suite.paymentExecuteTransactionTest(transactionJSON, codeRejectedInsufficientFunds)
+}
+
+func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidMCC() {
+	codeRejectedInsufficientFunds := "07" // domain.CODE_REJECTED_GENERIC
+
+	transactionJSON := fmt.Sprintf(
+		`{
   			"account": "%s",
-  			"mcc": "5411",
+  			"mcc": "0",
   			"merchant": "PADARIA DO ZE              SAO PAULO BR",
-  			"totalAmount": 9999.99
+  			"totalAmount": 0.01
 		}`,
 		accountUID,
 	)
-	reqPaymentExecution, err := http.NewRequest("POST", "/payment", bytes.NewBuffer([]byte(transactionJSON)))
+
+	suite.paymentExecuteTransactionTest(transactionJSON, codeRejectedInsufficientFunds)
+}
+
+func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidMerchant() {
+	codeRejectedInsufficientFunds := "07" // domain.CODE_REJECTED_GENERIC
+
+	transactionJSON := fmt.Sprintf(
+		`{
+  			"account": "%s",
+  			"mcc": "5411",
+  			"merchant": "PA",
+  			"totalAmount": 0.01
+		}`,
+		accountUID,
+	)
+
+	suite.paymentExecuteTransactionTest(transactionJSON, codeRejectedInsufficientFunds)
+}
+
+func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidAmount() {
+	codeRejectedInsufficientFunds := "07" // domain.CODE_REJECTED_GENERIC
+
+	transactionJSON := fmt.Sprintf(
+		`{
+  			"account": "%s",
+  			"mcc": "5411",
+  			"merchant": "PADARIA DO ZE              SAO PAULO BR",
+  			"totalAmount": 00.01
+		}`,
+		accountUID,
+	)
+
+	suite.paymentExecuteTransactionTest(transactionJSON, codeRejectedInsufficientFunds)
+}
+
+func (suite *GinRoutesSuite) paymentExecuteTransactionTest(reqBody string, returnCode string) {
+
+	reqPaymentExecution, err := http.NewRequest("POST", "/payment", bytes.NewBuffer([]byte(reqBody)))
 	assert.NoError(suite.T(), err)
 
 	respPaymentExecution := httptest.NewRecorder()
@@ -192,5 +253,6 @@ func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInsufficientFu
 	assert.Equal(suite.T(), http.StatusOK, respPaymentExecution.Code)
 
 	bodyRespPaymentExecution := respPaymentExecution.Body.String()
-	assert.Equal(suite.T(), gjson.Get(bodyRespPaymentExecution, "code").String(), codeRejectedInsufficientFunds)
+	assert.Equal(suite.T(), gjson.Get(bodyRespPaymentExecution, "code").String(), returnCode)
+
 }

@@ -262,6 +262,33 @@ func (suite *PaymentSuite) getAllRepositories(dbFake *DBfake) *repository.AllRep
 	return &allRepos
 }
 
+func (suite *PaymentSuite) TestL1PaymentExecuteGenericRejected() {
+	//Arrange
+	dbFake := DBfake{}
+	allRepos := suite.getAllRepositories(&dbFake)
+
+	tRequest := port.TransactionPaymentRequest{
+		AccountUID:  accountUIDtoTransact,
+		TotalAmount: amountFoodFundsApproved,
+		MccCode:     correctFoodMCC,
+		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
+	}
+
+	//Act
+	paymentService := NewPayment(
+		allRepos.Account,
+		allRepos.Balance,
+		allRepos.Transaction,
+		allRepos.MerchanMap,
+	)
+
+	returnCode, _ := paymentService.Execute(tRequest)
+
+	//Assert
+	codeRejected := "07" // domain.CODE_REJECTED_GENERIC
+	assert.Equal(suite.T(), returnCode, codeRejected)
+}
+
 func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 	//Arrange
 	dbFake := suite.getDBfake()
@@ -285,7 +312,6 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 	returnCode, err := paymentService.Execute(tRequest)
 
 	//Assert
-	// - Payment execution with received transaction has been rejected
 	codeRejected := "51" // domain.CODE_REJECTED_INSUFICIENT_FUNDS
 	insuficientFundsError := "failed to approve balance domain: balance category has insuficient funds"
 
