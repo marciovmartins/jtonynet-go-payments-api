@@ -404,9 +404,12 @@ flowchart TD
     G --> K[Registrar Transação Aprovada]
     I --> K[Registrar Transação Aprovada]
     
-    K --> M[Retorna Código 00 - Aprovada]
+    K --> M[Retorna Código **00** <br/> Aprovada]
     
-    J --> N[Retorna Código 51 Rejeitada]
+    J --> N[Retorna Código **51** <br/> Rejeitada]
+
+    style M fill:#009933,stroke:#000
+    style N fill:#cc0000,stroke:#000
 ```
 _*Diagrama apresenta uma interpretação do sistema_
 
