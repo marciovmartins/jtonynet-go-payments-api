@@ -498,12 +498,18 @@ erDiagram
         UUID uid
         string name
         int priority
+        datetime created_at
+        datetime updated_at
+        timestamp deleted_at
     }
 
     mcc_codes {
         int id PK
         string mcc_code
         int category_id FK
+        datetime created_at
+        datetime updated_at
+        timestamp deleted_at
     }
 
     accounts ||--o{ balances : has
