@@ -5,15 +5,7 @@ import (
 
 	"github.com/jtonynet/go-payments-api/bootstrap"
 	"github.com/jtonynet/go-payments-api/config"
-
-	/*
-		TODO:
-		In the hexagonal approach I could use echoRoutes, muxRoutes and others  with  correct  adapters.
-		I decided to use Gin because the router engine is less sensitive to changes (but can be changed)
-		Common sense indicates that agnostic databases/sources/queues and memory banks are changed more
-		frequently, taking better advantage of hexagonal
-	*/
-	ginRoutes "github.com/jtonynet/go-payments-api/internal/adapter/http/routes"
+	"github.com/jtonynet/go-payments-api/internal/adapter/http/router"
 )
 
 func main() {
@@ -27,8 +19,10 @@ func main() {
 		log.Fatal("cannot initiate app: ", err)
 	}
 
-	ginRoutes.GinHandleRequests(
-		cfg.API,
-		app,
-	)
+	routes, err := router.New(cfg.Router, app)
+	if err != nil {
+		log.Fatal("cannot initiate routes: ", err)
+	}
+	routes.HandleRequests(cfg.API)
+
 }

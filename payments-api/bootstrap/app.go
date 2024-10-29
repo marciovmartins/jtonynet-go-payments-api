@@ -6,12 +6,11 @@ import (
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
-	"github.com/jtonynet/go-payments-api/internal/core/port"
+
 	"github.com/jtonynet/go-payments-api/internal/core/service"
 )
 
 type App struct {
-	Conn           port.DBConn
 	PaymentService *service.Payment
 }
 

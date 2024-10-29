@@ -1,7 +1,7 @@
 package database
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/internal/adapter/database/gormConn"
@@ -13,6 +13,6 @@ func NewConn(cfg config.Database) (port.DBConn, error) {
 	case "gorm":
 		return gormConn.New(cfg)
 	default:
-		return nil, errors.New("database conn strategy not suported: " + cfg.Strategy)
+		return nil, fmt.Errorf("database conn strategy not suported: %s", cfg.Strategy)
 	}
 }

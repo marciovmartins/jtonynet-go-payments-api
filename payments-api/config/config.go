@@ -11,6 +11,10 @@ type API struct {
 	Env        string `mapstructure:"ENV"`
 }
 
+type Router struct {
+	Strategy string `mapstructure:"ROUTER_STRATEGY"`
+}
+
 type Database struct {
 	Strategy string `mapstructure:"DATABASE_STRATEGY"`
 	Driver   string `mapstructure:"DATABASE_DRIVER"`
@@ -26,6 +30,7 @@ type Database struct {
 type Config struct {
 	API      API      `mapstructure:",squash"`
 	Database Database `mapstructure:",squash"`
+	Router   Router   `mapstructure:",squash"`
 }
 
 func LoadConfig(path string) (*Config, error) {
