@@ -702,8 +702,6 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Gostaria de ter adicionado um sistema de `cache`, para lidar com os dados com pouca possibilidade de alteração em curto período de tempo (`merchants`). Essa mesma estrutura pode ser utilizada para implantar uma versão inicial de `memory lock` (sugestão de solução L4).
 
-- Utilizei o `log` padrao do `Go` para acompanhar o comportamento das `requests` feitas no sistema. Uma abordagem mais robusta seria o uso de logs estruturados com níveis adequados.
-
 - Testes adicionais poderiam ser criados (multiplos cenários de erros nas rotas e serviços). 
 
 - Para além de `locks` e `filas`, testes de carga e performance extras devem ser adicionados, com ferramentas como `JMeter` ou `Gatling`. Eles devem ser incorporados à rotina de desenvolvimento para garantir implantações seguras de nossos serviços em conjunto com o ciclo de CI.
@@ -728,7 +726,7 @@ docker system prune -a --volumes
 sudo systemctl restart docker
 
 # Balance Categories By AccountID
-select
+SELECT
    b.account_id, 
    b.id AS balance_id,
    b.uid AS balance_uid, 
@@ -741,7 +739,7 @@ JOIN
 	categories AS c ON b.category_id = c.id 
 LEFT JOIN 
 	mcc_codes AS mc ON c.id = mc.category_id 
-where
+WHERE
 	b.account_id = 1 
 GROUP by
 	b.account_id, b.id, b.uid, b.amount, c.name, c.priority

@@ -45,7 +45,7 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 	firstFound := false
 
 	err := b.db.Table("balances AS b").
-		Select("b.id AS balance_id, b.uid AS balance_uid, b.amount, c.name AS category_name, c.priority, STRING_AGG(mc.mcc_code, ',') AS codes").
+		Select("b.id AS balance_id, b.uid AS balance_uid, b.amount, c.name, c.priority, STRING_AGG(mc.mcc_code, ',') AS codes").
 		Joins("JOIN categories AS c ON b.category_id = c.id").
 		Joins("LEFT JOIN mcc_codes AS mc ON c.id = mc.category_id").
 		Where("b.account_id = ?", accountID).
