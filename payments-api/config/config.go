@@ -34,11 +34,23 @@ type Database struct {
 	SSLmode string `mapstructure:"DATABASE_SSLMODE"`
 }
 
+type Cache struct {
+	Strategy string `mapstructure:"CACHE_STRATEGY"` // redis
+
+	Pass       string `mapstructure:"REDIS_PASSWORD"`
+	Port       string `mapstructure:"REDIS_PORT"`
+	Host       string `mapstructure:"REDIS_HOST"`
+	DB         int    `mapstructure:"REDIS_DB"`
+	Protocol   int    `mapstructure:"REDIS_PROTOCOL"`
+	Expiration int    `mapstructure:"REDIS_EXPIRATION_DEFAULT_IN_MS"`
+}
+
 type Config struct {
 	API      API      `mapstructure:",squash"`
 	Database Database `mapstructure:",squash"`
 	Router   Router   `mapstructure:",squash"`
 	Logger   Logger   `mapstructure:",squash"`
+	Cache    Cache    `mapstructure:",squash"`
 }
 
 func LoadConfig(path string) (*Config, error) {

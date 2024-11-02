@@ -13,7 +13,7 @@ import (
 )
 
 type GormConn struct {
-	DB       *gorm.DB
+	db       *gorm.DB
 	strategy string
 	driver   string
 }
@@ -48,7 +48,7 @@ func New(cfg config.Database) (port.DBConn, error) {
 		db.AutoMigrate(&gormModel.Merchant{})
 
 		gConn := GormConn{
-			DB:       db,
+			db:       db,
 			strategy: cfg.Strategy,
 			driver:   cfg.Driver,
 		}
@@ -61,7 +61,7 @@ func New(cfg config.Database) (port.DBConn, error) {
 }
 
 func (gConn GormConn) Readiness() error {
-	rawDB, err := gConn.DB.DB()
+	rawDB, err := gConn.db.DB()
 	if err != nil {
 		return fmt.Errorf("failed to get database instance: %w", err)
 	}
@@ -74,7 +74,7 @@ func (gConn GormConn) Readiness() error {
 }
 
 func (gConn GormConn) GetDB() interface{} {
-	return gConn.DB
+	return gConn.db
 }
 
 func (gConn GormConn) GetStrategy() string {

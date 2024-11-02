@@ -208,7 +208,7 @@ docker compose up postgres-payments -d
 # Rodar a API
 docker compose up payments-api
 ```
- A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executada.
+ A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executados.
 
 <br/>
 
@@ -237,7 +237,7 @@ go mod download
 # Rodar a API
 go run cmd/http/main.go
 ```
- A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executada.
+ A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executados.
 
 <br/>
 
