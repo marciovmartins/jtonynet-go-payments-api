@@ -18,6 +18,14 @@ env:
   DATABASE_PORT: 5432
   DATABASE_SSLMODE: disable
 
+  CACHE_STRATEGY: redis
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  REDIS_PASSWORD: admin
+  REDIS_DB: 0
+  REDIS_PROTOCOL: 3
+  REDIS_EXPIRATION_DEFAULT_IN_MS: 10000
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -39,6 +47,14 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
     - name: Check out repository code
