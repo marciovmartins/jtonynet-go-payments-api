@@ -15,14 +15,14 @@ import (
 	font: https://github.com/redis/go-redis
 */
 
-type Client struct {
+type RedisConn struct {
 	db  *redis.Client
 	ctx context.Context
 
 	Expiration time.Duration
 }
 
-func New(cfg config.Cache) (*Client, error) {
+func New(cfg config.Cache) (*RedisConn, error) {
 	strAddr := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
 
 	db := redis.NewClient(&redis.Options{
@@ -34,7 +34,7 @@ func New(cfg config.Cache) (*Client, error) {
 
 	Expiration := time.Duration(cfg.Expiration * int(time.Millisecond))
 
-	return &Client{
+	return &RedisConn{
 		db:  db,
 		ctx: context.Background(),
 
@@ -42,7 +42,7 @@ func New(cfg config.Cache) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) Set(key string, value interface{}, expiration time.Duration) error {
+func (c *RedisConn) Set(key string, value interface{}, expiration time.Duration) error {
 	err := c.db.Set(c.ctx, key, value, expiration).Err()
 	if err != nil {
 		return err
@@ -50,7 +50,7 @@ func (c *Client) Set(key string, value interface{}, expiration time.Duration) er
 	return nil
 }
 
-func (c *Client) Get(key string) (string, error) {
+func (c *RedisConn) Get(key string) (string, error) {
 	val, err := c.db.Get(c.ctx, key).Result()
 	if err != nil {
 		slog.Error("cannot get key: %v, CacheClient error: %v ", key, err)
@@ -63,7 +63,7 @@ func (c *Client) Get(key string) (string, error) {
 	return val, nil
 }
 
-func (c *Client) Delete(key string) error {
+func (c *RedisConn) Delete(key string) error {
 	err := c.db.Del(c.ctx, key).Err()
 	if err != nil {
 		slog.Error("cannot delete key: %v, cache client error: %v", key, err)
@@ -72,11 +72,11 @@ func (c *Client) Delete(key string) error {
 	return nil
 }
 
-func (c *Client) IsConnected() bool {
+func (c *RedisConn) Readiness() bool {
 	_, err := c.db.Ping(c.ctx).Result()
 	return err == nil
 }
 
-func (c *Client) GetDefaultExpiration() time.Duration {
+func (c *RedisConn) GetDefaultExpiration() time.Duration {
 	return c.Expiration
 }
