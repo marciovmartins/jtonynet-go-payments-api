@@ -267,7 +267,7 @@ A interface do Swagger pode executar [Testes Manuais](#test-manual) a partir de 
 
 <a id="test-containerized"></a>
 #### 🐋 Conteinerizado 
-Para rodar os testes [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Conteinerizado](#run-containerized).
+Para rodar os [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Conteinerizado](#run-containerized).
 
 As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _containerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `teste`.
 
@@ -275,7 +275,7 @@ As configurações para executar os testes de repositório e integração (depen
 
 <a id="test-locally"></a>
 #### 🏠 Local
-Para rodar os testes [Testes Automatizados](#test-auto) com a API fora do container, de maneira _local_, é necessário editar seu `/.env.TEST`.
+Para rodar os [Testes Automatizados](#test-auto) com a API fora do container, de maneira _local_, é necessário editar seu `/.env.TEST`.
 
 No arquivo `/.env.TEST`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
@@ -498,12 +498,18 @@ erDiagram
         UUID uid
         string name
         int priority
+        datetime created_at
+        datetime updated_at
+        timestamp deleted_at
     }
 
     mcc_codes {
         int id PK
         string mcc_code
         int category_id FK
+        datetime created_at
+        datetime updated_at
+        timestamp deleted_at
     }
 
     accounts ||--o{ balances : has
@@ -519,8 +525,8 @@ erDiagram
 **accounts** Tabela principal, conectada tanto a **Balances** quanto a **Transactions**, armazenando informações sobre as contas.  
 **balances** Armazena os saldos por categoria.<br/>
 **transactions** Registra o histórico de transações realizadas.<br/>
-**categories**: Cada categoria (FOOD, MEAL, CASH...) é armazenada. O campo order permite definir a prioridade ou a sequência da categoria<br/>
-**mcc_codes** Contém uma lista dos MCCs (códigos de quatro dígitos) e uma category_id correspondente, associada a categoria.<br/>
+**categories**: Cada categoria (FOOD, MEAL, CASH...) é armazenada. O campo `priority` permite definir a prioridade ou a sequência da categoria<br/>
+**mcc_codes** Contém MCCs (códigos de quatro dígitos) e uma `category_id` correspondente, associada a categoria.<br/>
 **merchant** para ajustar MCCs incorretos de acordo com o nome do comerciante.
 
 
@@ -577,7 +583,7 @@ flowchart TD
     F --> H[Retorna Código **00** <br/> Aprovada]
     
     C -- Lock Ocupado --> I[Retorna para Fila]
-    I -->|Timer 100ms| J{Tempo Expirado?}
+    I -->|Verifica Timer 100ms| J{Tempo Expirado?}
     
     J -- Não --> B
     J -- Sim --> K[Descarta Mensagem]
