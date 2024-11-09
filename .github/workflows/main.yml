@@ -55,5 +55,5 @@ jobs:
 
     - name: Test
       working-directory: ./payments-api
-      run: ENV=test go test -v ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/routes
+      run: ENV=test go test -v ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/router/ginStrategy
 

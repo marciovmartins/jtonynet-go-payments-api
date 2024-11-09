@@ -17,14 +17,14 @@ type Account struct {
 
 func NewAccount(conn port.DBConn) (port.AccountRepository, error) {
 	db := conn.GetDB()
-	dbGorm, ok := db.(gorm.DB)
+	dbGorm, ok := db.(*gorm.DB)
 	if !ok {
 		return nil, fmt.Errorf("account repository failure to cast conn.GetDB() as gorm.DB")
 	}
 
 	return &Account{
 		gormConn: conn,
-		db:       &dbGorm,
+		db:       dbGorm,
 	}, nil
 }
 

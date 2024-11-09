@@ -11,6 +11,17 @@ type API struct {
 	Env        string `mapstructure:"ENV"`
 }
 
+type Router struct {
+	Strategy string `mapstructure:"HTTP_ROUTER_STRATEGY"` // gin
+}
+
+type Logger struct {
+	Strategy  string `mapstructure:"LOG_STRATEGY"`   // slog
+	Level     string `mapstructure:"LOG_LEVEL"`      // debug | info | warn | error
+	Format    string `mapstructure:"LOG_OPT_FORMAT"` // text | json
+	AddSource bool   `mapstructure:"LOG_OPT_ADD_SOURCE"`
+}
+
 type Database struct {
 	Strategy string `mapstructure:"DATABASE_STRATEGY"`
 	Driver   string `mapstructure:"DATABASE_DRIVER"`
@@ -26,6 +37,8 @@ type Database struct {
 type Config struct {
 	API      API      `mapstructure:",squash"`
 	Database Database `mapstructure:",squash"`
+	Router   Router   `mapstructure:",squash"`
+	Logger   Logger   `mapstructure:",squash"`
 }
 
 func LoadConfig(path string) (*Config, error) {

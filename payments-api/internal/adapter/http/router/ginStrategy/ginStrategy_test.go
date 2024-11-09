@@ -1,4 +1,4 @@
-package ginRoutes
+package ginStrategy
 
 import (
 	"bytes"
@@ -10,18 +10,21 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/jtonynet/go-payments-api/bootstrap"
-	"github.com/jtonynet/go-payments-api/config"
-	"github.com/jtonynet/go-payments-api/internal/adapter/database"
-	ginHandler "github.com/jtonynet/go-payments-api/internal/adapter/http/handler"
-	ginMiddleware "github.com/jtonynet/go-payments-api/internal/adapter/http/middleware"
-	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/shopspring/decimal"
 	"github.com/tidwall/gjson"
 	"gorm.io/gorm"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/jtonynet/go-payments-api/bootstrap"
+	"github.com/jtonynet/go-payments-api/config"
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
+
+	ginHandler "github.com/jtonynet/go-payments-api/internal/adapter/http/handler"
+	ginMiddleware "github.com/jtonynet/go-payments-api/internal/adapter/http/middleware"
+
+	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
 var (
@@ -38,15 +41,15 @@ var (
 	amountFoodTransaction = decimal.NewFromFloat(100.10)
 )
 
-type GinRoutesSuite struct {
+type GinRouterSuite struct {
 	suite.Suite
 
 	router   *gin.Engine
 	apiGroup *gin.RouterGroup
 }
 
-func (suite *GinRoutesSuite) SetupSuite() {
-	cfg, err := config.LoadConfig("./../../../../")
+func (suite *GinRouterSuite) SetupSuite() {
+	cfg, err := config.LoadConfig("./../../../../../")
 	if err != nil {
 		log.Fatalf("cannot load config: %v", err)
 	}
@@ -67,11 +70,11 @@ func (suite *GinRoutesSuite) SetupSuite() {
 	suite.apiGroup.POST("/payment", ginHandler.PaymentExecution)
 }
 
-func (suite *GinRoutesSuite) loadDBtestData(conn port.DBConn) {
+func (suite *GinRouterSuite) loadDBtestData(conn port.DBConn) {
 	switch conn.GetStrategy() {
 	case "gorm":
 		db := conn.GetDB()
-		dbGorm, ok := db.(gorm.DB)
+		dbGorm, ok := db.(*gorm.DB)
 		if !ok {
 			log.Fatalf("failure to cast conn.GetDB() as gorm.DB")
 		}
@@ -144,11 +147,11 @@ func setupRouterAndGroup(cfg config.API, app bootstrap.App) (*gin.Engine, *gin.R
 	return router, router.Group(basePath)
 }
 
-func TestGinRoutesSuite(t *testing.T) {
-	suite.Run(t, new(GinRoutesSuite))
+func TestGinRouterSuite(t *testing.T) {
+	suite.Run(t, new(GinRouterSuite))
 }
 
-func (suite *GinRoutesSuite) TestPaymentExecuteTransactionApproved() {
+func (suite *GinRouterSuite) TestPaymentExecuteTransactionApproved() {
 	codeApproved := "00" // domain.CODE_APPROVED
 
 	transactionJSON := fmt.Sprintf(
@@ -165,7 +168,7 @@ func (suite *GinRoutesSuite) TestPaymentExecuteTransactionApproved() {
 	suite.paymentExecuteTransactionTest(transactionJSON, codeApproved)
 }
 
-func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInsufficientFunds() {
+func (suite *GinRouterSuite) TestPaymentExecuteTransactionRejectedInsufficientFunds() {
 	codeRejectedInsufficientFunds := "51" // domain.CODE_REJECTED_INSUFICIENT_FUNDS
 
 	transactionJSON := fmt.Sprintf(
@@ -181,7 +184,7 @@ func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInsufficientFu
 	suite.paymentExecuteTransactionTest(transactionJSON, codeRejectedInsufficientFunds)
 }
 
-func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidAccountUID() {
+func (suite *GinRouterSuite) TestPaymentExecuteTransactionRejectedInvalidAccountUID() {
 	codeRejectedInsufficientFunds := "07" // domain.CODE_REJECTED_GENERIC
 
 	transactionJSON :=
@@ -195,7 +198,7 @@ func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidAccount
 	suite.paymentExecuteTransactionTest(transactionJSON, codeRejectedInsufficientFunds)
 }
 
-func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidMCC() {
+func (suite *GinRouterSuite) TestPaymentExecuteTransactionRejectedInvalidMCC() {
 	codeRejectedInsufficientFunds := "07" // domain.CODE_REJECTED_GENERIC
 
 	transactionJSON := fmt.Sprintf(
@@ -211,7 +214,7 @@ func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidMCC() {
 	suite.paymentExecuteTransactionTest(transactionJSON, codeRejectedInsufficientFunds)
 }
 
-func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidMerchant() {
+func (suite *GinRouterSuite) TestPaymentExecuteTransactionRejectedInvalidMerchant() {
 	codeRejectedInsufficientFunds := "07" // domain.CODE_REJECTED_GENERIC
 
 	transactionJSON := fmt.Sprintf(
@@ -227,7 +230,7 @@ func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidMerchan
 	suite.paymentExecuteTransactionTest(transactionJSON, codeRejectedInsufficientFunds)
 }
 
-func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidAmount() {
+func (suite *GinRouterSuite) TestPaymentExecuteTransactionRejectedInvalidAmount() {
 	codeRejectedInsufficientFunds := "07" // domain.CODE_REJECTED_GENERIC
 
 	transactionJSON := fmt.Sprintf(
@@ -243,8 +246,7 @@ func (suite *GinRoutesSuite) TestPaymentExecuteTransactionRejectedInvalidAmount(
 	suite.paymentExecuteTransactionTest(transactionJSON, codeRejectedInsufficientFunds)
 }
 
-func (suite *GinRoutesSuite) paymentExecuteTransactionTest(reqBody string, returnCode string) {
-
+func (suite *GinRouterSuite) paymentExecuteTransactionTest(reqBody string, returnCode string) {
 	reqPaymentExecution, err := http.NewRequest("POST", "/payment", bytes.NewBuffer([]byte(reqBody)))
 	assert.NoError(suite.T(), err)
 

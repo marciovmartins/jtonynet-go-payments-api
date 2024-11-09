@@ -7,6 +7,7 @@ import (
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -29,7 +30,7 @@ func New(cfg config.Database) (port.DBConn, error) {
 			cfg.SSLmode)
 		db, err := gorm.Open(postgres.Open(strConn), &gorm.Config{})
 		if err != nil {
-			return GormConn{}, fmt.Errorf("failure on database connection: %w", err)
+			return nil, fmt.Errorf("failure on database connection: %w", err)
 		}
 
 		/*
@@ -55,7 +56,7 @@ func New(cfg config.Database) (port.DBConn, error) {
 		return gConn, nil
 
 	default:
-		return GormConn{}, errors.New("database conn driver not suported: " + cfg.Driver)
+		return nil, errors.New("database conn driver not suported: " + cfg.Driver)
 	}
 }
 
@@ -73,7 +74,7 @@ func (gConn GormConn) Readiness() error {
 }
 
 func (gConn GormConn) GetDB() interface{} {
-	return *gConn.DB
+	return gConn.DB
 }
 
 func (gConn GormConn) GetStrategy() string {

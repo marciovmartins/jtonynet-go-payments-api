@@ -2,7 +2,6 @@ package ginHandler
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/jtonynet/go-payments-api/bootstrap"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
+	"github.com/jtonynet/go-payments-api/internal/support"
 )
 
 // @Summary Payment Execute Transaction
@@ -27,15 +27,24 @@ import (
 func PaymentExecution(ctx *gin.Context) {
 	startTime := time.Now()
 
+	app := ctx.MustGet("app").(bootstrap.App)
+	logger := app.Logger
+
 	defer func() {
 		elapsedTime := time.Since(startTime).Milliseconds()
-		log.Printf("Execution time: %d ms\n", elapsedTime)
+		debugLog(
+			logger,
+			fmt.Sprintf("Execution time: %d ms\n", elapsedTime),
+		)
 	}()
-
-	app := ctx.MustGet("app").(bootstrap.App)
 
 	var transactionRequest port.TransactionPaymentRequest
 	if err := ctx.ShouldBindBodyWith(&transactionRequest, binding.JSON); err != nil {
+		debugLog(
+			logger,
+			fmt.Sprintf("rejected: %s, error:%s ms\n", port.CODE_REJECTED_GENERIC, err.Error()),
+		)
+
 		ctx.JSON(http.StatusOK, port.TransactionPaymentResponse{
 			Code: port.CODE_REJECTED_GENERIC,
 		})
@@ -45,7 +54,7 @@ func PaymentExecution(ctx *gin.Context) {
 
 	validationErrors, ok := dtoIsValid(transactionRequest)
 	if !ok {
-		log.Println(validationErrors)
+		debugLog(logger, validationErrors)
 
 		ctx.JSON(http.StatusOK, port.TransactionPaymentResponse{
 			Code: port.CODE_REJECTED_GENERIC,
@@ -60,6 +69,12 @@ func PaymentExecution(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, port.TransactionPaymentResponse{
 		Code: returnCode,
 	})
+}
+
+func debugLog(logger support.Logger, msg string) {
+	if logger != nil {
+		logger.Debug(msg)
+	}
 }
 
 func validateUUID(fl validator.FieldLevel) bool {
