@@ -299,18 +299,14 @@ docker compose up test-postgres-payments -d
 Comando para executar o teste _conteinerizado_ com a API levantada
 ```bash
 # Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
-docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/router/ginStrategy
+docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
 ```
-<!-- ./internal/adapter/cachedRepository/redisRepos -->
-
 
 Comando para executar o teste _local_ em `payments-api`
 ```bash
 # Executa Testes Localmente com ENV test (PostgreSQL de Testes na Integração)
-ENV=test go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/router/ginStrategy
+ENV=test go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
 ```
-<!-- ./internal/adapter/cachedRepository/redisRepos -->
-
 
 <br/>
 
@@ -323,7 +319,7 @@ _*Saída esperada do comando_
 
 <br/>
 
-Os testes também são executados como parte da rotina minima de `CI` do <a href="https://github.com/jtonynet/go-payments-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge `TESTS_CI` no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
+Os testes também são executados como parte da rotina minima de `CI` do <a href="https://github.com/jtonynet/go-payments-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge `CI` no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
 
 <img src="./docs/assets/images/screen_captures/githubactions_tests_run.png">
 
@@ -339,9 +335,8 @@ Como as `migrations` e `seeds` ainda não foram adicionadas ao projeto, você po
 
 ```bash
 # Executa Testes no Docker com ENV dev (PostgreSQL de Desenvolvimento na Integração)
-docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
+docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
 ```
-<!-- ./internal/adapter/cachedRepository/redisRepos -->
 
 <br/>
 
