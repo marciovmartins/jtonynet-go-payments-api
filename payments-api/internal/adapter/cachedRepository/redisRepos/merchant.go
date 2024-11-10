@@ -1,37 +1,35 @@
-package cachedRepository
+package redisRepos
 
 import (
-	"log"
-
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 
 	"github.com/tidwall/gjson"
 )
 
 type Merchant struct {
-	cacheConn          port.Cache
+	redisConn port.Cache
+
 	merchantRepository port.MerchantRepository
 }
 
-func NewMerchant(cacheConn port.Cache, mRepository port.MerchantRepository) *Merchant {
+func NewMerchant(conn port.Cache, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
 	return &Merchant{
-		cacheConn:          cacheConn,
+		redisConn:          conn,
 		merchantRepository: mRepository,
-	}
+	}, nil
 }
 
 func (m *Merchant) FindByName(name string) (*port.MerchantEntity, error) {
 	var mEntity *port.MerchantEntity
 
-	merchantCached, err := m.cacheConn.Get(name)
+	merchantCached, err := m.redisConn.Get(name)
 	if err != nil {
 		mEntity, err = m.merchantRepository.FindByName(name)
 		if err != nil {
 			return mEntity, err
 		}
-		m.cacheConn.Set(name, mEntity, m.cacheConn.GetDefaultExpiration())
+		m.redisConn.Set(name, mEntity, m.redisConn.GetDefaultExpiration())
 
-		log.Printf("MISS CACHE. RETRIEVE FROM DB `%s`", name)
 	} else {
 		mEntity = &port.MerchantEntity{
 			Name:          gjson.Get(merchantCached, "Name").String(),
@@ -39,7 +37,6 @@ func (m *Merchant) FindByName(name string) (*port.MerchantEntity, error) {
 			MappedMccCode: gjson.Get(merchantCached, "MappedMccCode").String(),
 		}
 
-		log.Printf("CACHED! RETRIEVE FROM CACHE  `%s`", name)
 	}
 
 	return mEntity, nil

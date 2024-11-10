@@ -219,6 +219,7 @@ func (suite *RepositoriesSuite) TestCases() {
 	suite.T().Run("TestAccountRepositoryFindByUIDSuccess", func(t *testing.T) {
 		suite.AccountRepositoryFindByUIDsuccess()
 	})
+
 	suite.T().Run("TestBalanceRepositoryFindByAccountIDSuccess", func(t *testing.T) {
 		suite.BalanceRepositoryFindByAccountIDsuccess()
 	})

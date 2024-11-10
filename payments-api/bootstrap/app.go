@@ -9,11 +9,10 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/support"
 	"github.com/jtonynet/go-payments-api/internal/support/logger"
 
-	"github.com/jtonynet/go-payments-api/internal/adapter/database"
-	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
-
 	"github.com/jtonynet/go-payments-api/internal/adapter/cache"
 	"github.com/jtonynet/go-payments-api/internal/adapter/cachedRepository"
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
+	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 
 	"github.com/jtonynet/go-payments-api/internal/core/service"
 )
@@ -35,10 +34,14 @@ func NewApp(cfg *config.Config) (App, error) {
 
 	cacheConn, err := cache.New(cfg.Cache)
 	if err != nil {
-		return App{}, fmt.Errorf("error: dont initialize cache client: %v", err)
+		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
 	}
 
-	if cacheConn.Readiness() && logger != nil {
+	if cacheConn.Readiness() != nil {
+		return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
+	}
+
+	if logger != nil {
 		logger.Debug("successfully: connected to the cache!")
 	}
 
@@ -60,10 +63,13 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate repositories: %v", err)
 	}
 
-	cachedMerchantRepo := cachedRepository.NewMerchant(
+	cachedMerchantRepo, err := cachedRepository.NewMerchant(
 		cacheConn,
 		allRepos.Merchant,
 	)
+	if err != nil {
+		return App{}, fmt.Errorf("error: dont instantiate merchant cached repository: %v", err)
+	}
 
 	app.PaymentService = service.NewPayment(
 		allRepos.Account,

@@ -2,9 +2,9 @@ package redisStrategy
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"github.com/jtonynet/go-payments-api/config"
@@ -16,10 +16,11 @@ import (
 */
 
 type RedisConn struct {
-	db  *redis.Client
 	ctx context.Context
 
-	Expiration time.Duration
+	db         *redis.Client
+	strategy   string
+	expiration time.Duration
 }
 
 func New(cfg config.Cache) (*RedisConn, error) {
@@ -35,25 +36,49 @@ func New(cfg config.Cache) (*RedisConn, error) {
 	Expiration := time.Duration(cfg.Expiration * int(time.Millisecond))
 
 	return &RedisConn{
-		db:  db,
 		ctx: context.Background(),
 
-		Expiration: Expiration,
+		db:         db,
+		strategy:   cfg.Strategy,
+		expiration: Expiration,
 	}, nil
 }
 
-func (c *RedisConn) Set(key string, value interface{}, expiration time.Duration) error {
-	err := c.db.Set(c.ctx, key, value, expiration).Err()
+func (c *RedisConn) GetDB() interface{} {
+	return c.db
+}
+
+func (c *RedisConn) Readiness() error {
+	_, err := c.db.Ping(c.ctx).Result()
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func (c *RedisConn) GetStrategy() string {
+	return c.strategy
+}
+
+func (c *RedisConn) Set(key string, value interface{}, expiration time.Duration) error {
+	data, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+
+	err = c.db.Set(c.ctx, key, data, expiration).Err()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (c *RedisConn) Get(key string) (string, error) {
 	val, err := c.db.Get(c.ctx, key).Result()
 	if err != nil {
-		slog.Error("cannot get key: %v, CacheClient error: %v ", key, err)
+		// slog.Error("cannot get key: %v, CacheClient error: %v ", key, err)
 		return "", err
 	}
 	if val == "" {
@@ -66,17 +91,12 @@ func (c *RedisConn) Get(key string) (string, error) {
 func (c *RedisConn) Delete(key string) error {
 	err := c.db.Del(c.ctx, key).Err()
 	if err != nil {
-		slog.Error("cannot delete key: %v, cache client error: %v", key, err)
+		// slog.Error("cannot get key", "key", key, "CacheClient error", err)
 		return err
 	}
 	return nil
 }
 
-func (c *RedisConn) Readiness() bool {
-	_, err := c.db.Ping(c.ctx).Result()
-	return err == nil
-}
-
 func (c *RedisConn) GetDefaultExpiration() time.Duration {
-	return c.Expiration
+	return c.expiration
 }

@@ -4,7 +4,9 @@ import (
 	"fmt"
 
 	"github.com/jtonynet/go-payments-api/config"
+
 	"github.com/jtonynet/go-payments-api/internal/adapter/cache/redisStrategy"
+
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
