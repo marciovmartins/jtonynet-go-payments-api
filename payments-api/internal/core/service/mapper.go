@@ -9,9 +9,8 @@ import (
 
 func mapMerchantEntityToDomain(mEntity *port.MerchantEntity) domain.Merchant {
 	return domain.Merchant{
-		Name:          mEntity.Name,
-		MccCode:       mEntity.MccCode,
-		MappedMccCode: mEntity.MappedMccCode,
+		Name: mEntity.Name,
+		MCC:  mEntity.MCC,
 	}
 }
 
@@ -29,7 +28,7 @@ func mapBalanceEntityToDomain(bEntity port.BalanceEntity) (*domain.Balance, erro
 			ID:       ce.ID,
 			Name:     ce.Category.Name,
 			Amount:   ce.Amount,
-			MccCodes: ce.Category.MccCodes,
+			MCCs:     ce.Category.MCCs,
 			Priority: ce.Category.Priority,
 		}
 		categoryItens[category.Priority] = category
@@ -59,7 +58,7 @@ func mapBalanceDomainToEntity(dBalance *domain.Balance) port.BalanceEntity {
 			Amount:    categoryItem.Amount,
 			Category: port.CategoryEntity{
 				Name:     categoryItem.Name,
-				MccCodes: categoryItem.MccCodes,
+				MCCs:     categoryItem.MCCs,
 				Priority: categoryItem.Priority,
 			},
 		}
@@ -78,7 +77,7 @@ func mapTransactionDomainToEntity(tDomain *domain.Transaction) port.TransactionE
 	return port.TransactionEntity{
 		AccountID:   tDomain.AccountID,
 		TotalAmount: tDomain.TotalAmount,
-		MccCode:     tDomain.MccCode,
+		MCC:         tDomain.MCC,
 		Merchant:    tDomain.Merchant,
 	}
 }

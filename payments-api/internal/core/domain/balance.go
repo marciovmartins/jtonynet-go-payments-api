@@ -32,7 +32,7 @@ func (b *Balance) getDebitedBalanceCategories(tDomain *Transaction) (map[int]Cat
 	amountDebtRemaining := tDomain.TotalAmount
 	debitedBalanceCategories := make(map[int]Category)
 
-	bCategoryMCC, err := b.Categories.GetByMCC(tDomain.MccCode)
+	bCategoryMCC, err := b.Categories.GetByMCC(tDomain.MCC)
 	if err != nil {
 		b.debugLog(
 			fmt.Sprintf(

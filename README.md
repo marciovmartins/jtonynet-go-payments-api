@@ -369,6 +369,28 @@ L3. Merchants com mapeamentos MCC incorretos
 > | UBER EATS                   SAO PAULO BR | 5555               | FOOD                       |
 > | PAG*JoseDaSilva          RIO DE JANEI BR | 5555               | MEAL                       |
 
+<br/>
+
+Query Consulta Balances por Account:
+```sql
+SELECT
+   b.account_id, 
+   b.id AS balance_id,
+   b.uid AS balance_uid, 
+   b.amount, 
+   c.name, 
+   c.priority, STRING_AGG(mc.mcc, ',') AS codes 
+FROM 
+	balances AS b 
+JOIN 
+	categories AS c ON b.category_id = c.id 
+LEFT JOIN 
+	mccs AS mc ON c.id = mc.category_id 
+WHERE
+	b.account_id = 1 
+GROUP by
+	b.account_id, b.id, b.uid, b.amount, c.name, c.priority;
+```
 
 
 _*Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como a [Documentação da API](#api-docs) (Swagger) pode ser utilizado para proceder as `requests`. <br/> **Utilize o campo `name` real da tabela `merchant`, o github pode formatar de maneira incorreta esse dado no markdown._
@@ -480,7 +502,7 @@ erDiagram
         int id PK
         UUID uid
         int account_id FK
-        string mcc_code
+        string mcc
         string merchant
         numeric total_amount
         timestamp created_at
@@ -492,10 +514,18 @@ erDiagram
         int id PK
         UUID uid
         string name
-        string mcc_code
-        string mapped_mcc_code
+        int mcc_id FK
         timestamp created_at
         timestamp updated_at
+        timestamp deleted_at
+    }
+
+   mccs {
+        int id PK
+        string mcc
+        int category_id FK
+        datetime created_at
+        datetime updated_at
         timestamp deleted_at
     }
 
@@ -509,19 +539,12 @@ erDiagram
         timestamp deleted_at
     }
 
-    mcc_codes {
-        int id PK
-        string mcc_code
-        int category_id FK
-        datetime created_at
-        datetime updated_at
-        timestamp deleted_at
-    }
-
-    accounts ||--o{ balances : has
-    accounts ||--o{ transactions : performs
-    categories ||--o{ mcc_codes : has
     categories ||--o{ balances : defines
+    accounts ||--o{ transactions : performs
+    categories ||--o{ mccs : has
+    accounts ||--o{ balances : has
+    mccs ||--o{ merchants : has
+    
 
     
 ```
@@ -552,24 +575,24 @@ erDiagram
 
 Utilizaria `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esses dados sejam distintos. Um sistema de dados em memória rápido, como `Redis`, seria utilizado para armazenar e liberar locks, coordenando o acesso a recursos compartilhados de maneira eficiente.
 
-O `lock` deve inserir no banco em memória a `account` que está sendo processada pela instância da aplicação no momento. Caso outra instância esteja processando uma transação diferente da mesma `account`, a aplicação se subscreve em um canal onde deve receber uma mensagem de desbloqueio antes de 100 ms. Isso evita concorrência
+O processamento da transação deve verificar se a `account` já está registrada no `lock`. Se não estiver, a aplicação deve inseri-la no banco em memória e iniciar as tarefas. Caso outra instância esteja processando uma transação diferente para a mesma `account` (ou seja, se estiver bloqueada), a aplicação se inscreve em um canal onde aguarda uma mensagem de desbloqueio por até 100 ms menos o tempo médio de processo. Essa abordagem evita concorrência.
+
 
 Utilizando o recurso de [`Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/), assim que o processamento da instância terminar, no momento em que a chave `account` for removida (pelo processo ou por `ttl`), uma mensagem será publicada informando a quem se subscreveu que aquele `lock` foi removido.
 
 Como proposto na questão _"...uma pequena, mas existente probabilidade de ocorrerem duas transações ao mesmo tempo"_, a concorrência excessiva por `account` não deve ocorrer utilizando essa abordagem.
 
 
-
 ```mermaid
 flowchart TD
     A[Recebe Transação JSON] --> B[Inicia Processamento de Transação]
-    B --> C{Account da Transação Bloqueado em <b>Lock Distribuído</b>?}
+    B --> C{Account da Transação está Bloqueado no <b>Lock Distribuído</b>?}
     
     C -- Não --> D[Bloqueia Account da Transação]
     D  --> E[Processa Transação]
 
-    C -- Sim --> M[Subscreve para receber Mensagem de desbloqueio da Account]
-    M --> N{Recebi Mensagem de desbloqueio em tempo útil <i>t<i><100 ms}
+    C -- Sim --> M[Subscreve para receber Mensagem de desbloqueio da Account do <b>Lock Distribuído</b>]
+    M --> N{Recebi Mensagem de desbloqueio em tempo útil? <br/> <b><i>t<i> < 100 ms - tempo médio de processo</b>}
     N -- Sim --> D
     N -- Não --> O[Retorna Código <b>07<br/> Rejeitada por Falha Genérica</b>]
 
@@ -585,14 +608,14 @@ flowchart TD
     G -- Não --> L[Retorna Código <b>51 <br/> Rejeitada por Saldo Insuficiente</b>]
     L --> J
 
-
-    style D fill:#A0522D,stroke:#000
+    style D fill:#78771b,stroke:#000
     style I fill:#009933,stroke:#000
 
     style L fill:#cc0000,stroke:#000
     style K fill:#cc0000,stroke:#000
     style O fill:#cc0000,stroke:#000
 
+    style M fill:#007bff,stroke:#000
     style J fill:#007bff,stroke:#000,stroke-width:4px
 
 ```
@@ -743,16 +766,16 @@ SELECT
    b.uid AS balance_uid, 
    b.amount, 
    c.name, 
-   c.priority, STRING_AGG(mc.mcc_code, ',') AS codes 
+   c.priority, STRING_AGG(mc.mcc, ',') AS codes 
 FROM 
 	balances AS b 
 JOIN 
 	categories AS c ON b.category_id = c.id 
 LEFT JOIN 
-	mcc_codes AS mc ON c.id = mc.category_id 
+	mccs AS mc ON c.id = mc.category_id 
 WHERE
 	b.account_id = 1 
 GROUP by
-	b.account_id, b.id, b.uid, b.amount, c.name, c.priority
+	b.account_id, b.id, b.uid, b.amount, c.name, c.priority;
 -->
 

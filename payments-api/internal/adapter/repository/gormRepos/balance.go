@@ -45,9 +45,9 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 	firstFound := false
 
 	err := b.db.Table("balances AS b").
-		Select("b.id AS balance_id, b.uid AS balance_uid, b.amount, c.name, c.priority, STRING_AGG(mc.mcc_code, ',') AS codes").
+		Select("b.id AS balance_id, b.uid AS balance_uid, b.amount, c.name, c.priority, STRING_AGG(mc.mcc, ',') AS codes").
 		Joins("JOIN categories AS c ON b.category_id = c.id").
-		Joins("LEFT JOIN mcc_codes AS mc ON c.id = mc.category_id").
+		Joins("LEFT JOIN mccs AS mc ON c.id = mc.category_id").
 		Where("b.account_id = ?", accountID).
 		Group("b.account_id, b.id, b.uid, b.amount, c.name, c.priority").
 		Scan(&bResults).Error
@@ -60,9 +60,9 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 		balanceCategories := make(map[int]port.BalanceByCategoryEntity)
 
 		for _, bResult := range bResults {
-			mccCodes := []string{}
+			mccs := []string{}
 			if bResult.Codes.Valid {
-				mccCodes = strings.Split(bResult.Codes.String, ",")
+				mccs = strings.Split(bResult.Codes.String, ",")
 			}
 
 			if !firstFound {
@@ -76,7 +76,7 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 				Amount: bResult.Amount,
 				Category: port.CategoryEntity{
 					Name:     bResult.Name,
-					MccCodes: mccCodes,
+					MCCs:     mccs,
 					Priority: bResult.Priority,
 				},
 			}

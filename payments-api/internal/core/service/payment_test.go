@@ -48,9 +48,8 @@ func newDBfake() DBfake {
 
 	db.Merchant = map[uint]port.MerchantEntity{
 		1: {
-			Name:          "UBER EATS                   SAO PAULO BR",
-			MccCode:       "5555",
-			MappedMccCode: "5412",
+			Name: "UBER EATS                   SAO PAULO BR",
+			MCC:  "5412",
 		},
 	}
 
@@ -59,13 +58,13 @@ func newDBfake() DBfake {
 			ID:        1,
 			AccountID: 1,
 			Amount:    balanceFoodAmount,
-			Category:  port.CategoryEntity{Name: "FOOD", MccCodes: []string{"5411", "5412"}, Priority: 1},
+			Category:  port.CategoryEntity{Name: "FOOD", MCCs: []string{"5411", "5412"}, Priority: 1},
 		},
 		2: {
 			ID:        2,
 			AccountID: 1,
 			Amount:    balanceMealAmount,
-			Category:  port.CategoryEntity{Name: "MEAL", MccCodes: []string{"5811", "5812"}, Priority: 2},
+			Category:  port.CategoryEntity{Name: "MEAL", MCCs: []string{"5811", "5812"}, Priority: 2},
 		},
 		3: {
 			ID:        3,
@@ -270,7 +269,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteGenericRejected() {
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsApproved,
-		MccCode:     correctFoodMCC,
+		MCC:         correctFoodMCC,
 		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
 	}
 
@@ -298,7 +297,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsRejected,
-		MccCode:     correctFoodMCC,
+		MCC:         correctFoodMCC,
 		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
 	}
 
@@ -329,7 +328,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsApproved() {
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsApproved,
-		MccCode:     correctFoodMCC,
+		MCC:         correctFoodMCC,
 		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
 	}
 
@@ -372,7 +371,7 @@ func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsFallbackApproved,
-		MccCode:     correctFoodMCC,
+		MCC:         correctFoodMCC,
 		Merchant:    "PADARIA DO ZE               SAO PAULO BR",
 	}
 
@@ -415,7 +414,7 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsApproved,
-		MccCode:     "5555",
+		MCC:         "5555",
 		Merchant:    "UBER EATS                   SAO PAULO BR",
 	}
 
@@ -458,7 +457,7 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCFallbackApproved() {
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsFallbackApproved,
-		MccCode:     "5555",
+		MCC:         "5555",
 		Merchant:    "UBER EATS                   SAO PAULO BR",
 	}
 
