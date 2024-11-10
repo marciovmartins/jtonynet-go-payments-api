@@ -1,6 +1,7 @@
 package gormRepos
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"strings"
@@ -39,7 +40,7 @@ func NewBalance(conn port.DBConn) (port.BalanceRepository, error) {
 	}, nil
 }
 
-func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
+func (b *Balance) FindByAccountID(_ context.Context, accountID uint) (port.BalanceEntity, error) {
 	var be port.BalanceEntity
 	var bResults []BalanceResult
 	firstFound := false
@@ -97,7 +98,7 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 	return port.BalanceEntity{}, nil
 }
 
-func (b *Balance) UpdateTotalAmount(be port.BalanceEntity) error {
+func (b *Balance) UpdateTotalAmount(_ context.Context, be port.BalanceEntity) error {
 	var bindParameters []string
 	var bindValues []interface{}
 

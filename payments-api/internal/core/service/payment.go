@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
@@ -37,7 +38,7 @@ func NewPayment(
 }
 
 func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
-	accountEntity, err := p.accountRepository.FindByUID(tpr.AccountUID)
+	accountEntity, err := p.accountRepository.FindByUID(context.Background(), tpr.AccountUID)
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to retrieve account entity: %w", err))
 	}
@@ -64,7 +65,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 		account,
 	)
 
-	balanceEntity, err := p.balanceRepository.FindByAccountID(account.ID)
+	balanceEntity, err := p.balanceRepository.FindByAccountID(context.Background(), account.ID)
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to retrieve balance entity: %w", err))
 	}
@@ -80,7 +81,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 		return p.rejectedCustomErr(cErr)
 	}
 
-	err = p.balanceRepository.UpdateTotalAmount(mapBalanceDomainToEntity(approvedBalance))
+	err = p.balanceRepository.UpdateTotalAmount(context.Background(), mapBalanceDomainToEntity(approvedBalance))
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to update balance entity: %w", err))
 	}

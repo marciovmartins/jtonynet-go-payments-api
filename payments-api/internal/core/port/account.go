@@ -1,6 +1,8 @@
 package port
 
 import (
+	"context"
+
 	"github.com/google/uuid"
 )
 
@@ -10,5 +12,5 @@ type AccountEntity struct {
 }
 
 type AccountRepository interface {
-	FindByUID(uuid.UUID) (AccountEntity, error)
+	FindByUID(ctx context.Context, uid uuid.UUID) (AccountEntity, error)
 }

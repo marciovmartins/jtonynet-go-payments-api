@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"context"
 	"fmt"
 	"log"
 
@@ -37,7 +38,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
 	}
 
-	if cacheConn.Readiness() != nil {
+	if cacheConn.Readiness(context.Background()) != nil {
 		return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
 	}
 

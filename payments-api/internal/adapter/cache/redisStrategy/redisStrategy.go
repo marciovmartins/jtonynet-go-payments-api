@@ -44,11 +44,7 @@ func New(cfg config.Cache) (*RedisConn, error) {
 	}, nil
 }
 
-func (c *RedisConn) GetDB() interface{} {
-	return c.db
-}
-
-func (c *RedisConn) Readiness() error {
+func (c *RedisConn) Readiness(_ context.Context) error {
 	_, err := c.db.Ping(c.ctx).Result()
 	if err != nil {
 		return err
@@ -57,11 +53,11 @@ func (c *RedisConn) Readiness() error {
 	return nil
 }
 
-func (c *RedisConn) GetStrategy() string {
-	return c.strategy
+func (c *RedisConn) GetStrategy(_ context.Context) (string, error) {
+	return c.strategy, nil
 }
 
-func (c *RedisConn) Set(key string, value interface{}, expiration time.Duration) error {
+func (c *RedisConn) Set(_ context.Context, key string, value interface{}, expiration time.Duration) error {
 	data, err := json.Marshal(value)
 	if err != nil {
 		return err
@@ -75,7 +71,7 @@ func (c *RedisConn) Set(key string, value interface{}, expiration time.Duration)
 	return nil
 }
 
-func (c *RedisConn) Get(key string) (string, error) {
+func (c *RedisConn) Get(_ context.Context, key string) (string, error) {
 	val, err := c.db.Get(c.ctx, key).Result()
 	if err != nil {
 		return "", err
@@ -87,7 +83,7 @@ func (c *RedisConn) Get(key string) (string, error) {
 	return val, nil
 }
 
-func (c *RedisConn) Delete(key string) error {
+func (c *RedisConn) Delete(_ context.Context, key string) error {
 	err := c.db.Del(c.ctx, key).Err()
 	if err != nil {
 		return err
@@ -95,6 +91,6 @@ func (c *RedisConn) Delete(key string) error {
 	return nil
 }
 
-func (c *RedisConn) GetDefaultExpiration() time.Duration {
-	return c.expiration
+func (c *RedisConn) GetDefaultExpiration(_ context.Context) (time.Duration, error) {
+	return c.expiration, nil
 }

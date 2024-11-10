@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"testing"
@@ -152,7 +153,7 @@ func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
 }
 
 func (suite *RepositoriesSuite) AccountRepositoryFindByUIDsuccess() {
-	accountEntity, err := suite.AccountRepo.FindByUID(accountUID)
+	accountEntity, err := suite.AccountRepo.FindByUID(context.Background(), accountUID)
 	assert.Equal(suite.T(), accountEntity.ID, uint(1))
 	assert.NoError(suite.T(), err)
 
@@ -168,7 +169,7 @@ func (suite *RepositoriesSuite) BalanceRepositoryFindByAccountIDsuccess() {
 
 	accountEntity := suite.AccountEntity
 
-	balanceEntity, err := suite.BalanceRepo.FindByAccountID(accountEntity.ID)
+	balanceEntity, err := suite.BalanceRepo.FindByAccountID(context.Background(), accountEntity.ID)
 	assert.Equal(suite.T(), balanceEntity.AmountTotal, amountTotal)
 	assert.NoError(suite.T(), err)
 
@@ -184,7 +185,7 @@ func (suite *RepositoriesSuite) BalanceRepositoryUpdateTotalAmountSuccess() {
 	foodBalanceCategory.Amount = foodBalanceCategory.Amount.Sub(amountFoodTransaction)
 	balanceEntity.Categories[foodCategoryPriority] = foodBalanceCategory
 
-	balanceEntityUpdateErr := suite.BalanceRepo.UpdateTotalAmount(balanceEntity)
+	balanceEntityUpdateErr := suite.BalanceRepo.UpdateTotalAmount(context.Background(), balanceEntity)
 	assert.NoError(suite.T(), balanceEntityUpdateErr)
 }
 
