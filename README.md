@@ -16,7 +16,7 @@
  <!-- [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="grpc Logo" title="grpc">](https://grpc.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/)  [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/rabbitmq.svg" width="25px" height="25px" alt="RabbitMQ Logo" title="RabbitMQ">](https://rabbitmq.com/) -->
 
 
-[![Badge Status](https://img.shields.io/badge/STATUS-AGUARDANDO-yellow)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW%20KANBAN-GITHUB-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions)
+[![Badge Status](https://img.shields.io/badge/STATUS-EM_DESENVOLVIMENTO-green)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-KANBAN-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions)
 >
 
 
@@ -60,6 +60,10 @@ __[Go Payments API](#header)__<br/>
 
 <a id="about"></a>
 ### 📖 Sobre
+
+> Projeto já finalizado como `Desafio` e atendendo aos requisitos. Porém, o considerei tão interessante que decidi continuar seu desenvolvimento para aplicar outros pontos que julguei relevantes e que já foram discutidos. Pretendo, ainda que de maneira local, atender ao requisito L4, embora tenha sido levantado apenas para esclarecimento, além de outros tópicos interessantes.
+> 
+> 
 
 Acompanhe as tarefas pelo __[Kanban](https://github.com/users/jtonynet/projects/7/views/1)__
 
@@ -221,7 +225,7 @@ Com o `Golang 1.23` instalado e após ter renomeado a copia de `.env.SAMPLE` par
 
 No arquivo `.env`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
-DATABASE_HOST=localhost # local: localhost | conteinerized: postgres-payments
+DATABASE_HOST=localhost ### local: localhost | conteinerized: postgres-payments
 ```
 
 Após editar o arquivo, suba apenas o banco de dados com o comando:
@@ -281,8 +285,8 @@ Para rodar os [Testes Automatizados](#test-auto) com a API fora do container, de
 
 No arquivo `/.env.TEST`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
-DATABASE_HOST=localhost # local: localhost | conteinerized: test-postgres-payments
-DATABASE_PORT=5433 # local: 5433 | conteinerized: 5432
+DATABASE_HOST=localhost ### local: localhost | conteinerized: test-postgres-payments
+DATABASE_PORT=5433 ### local: 5433 | conteinerized: 5432
 ```
 <br/>
 
@@ -544,58 +548,54 @@ erDiagram
 
 > Transações simultâneas: dado que o mesmo cartão de crédito pode ser utilizado em diferentes serviços online, existe uma pequena mas existente probabilidade de ocorrerem duas transações ao mesmo tempo. O que você faria para garantir que apenas uma transação por conta fosse processada em um determinado momento? Esteja ciente do fato de que todas as solicitações de transação são síncronas e devem ser processadas rapidamente (menos de 100 ms), ou a transação atingirá o timeout.
 
-#### 🔒Locks Distribuídos
-Utilizaria `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esses dados sejam distintos. Um sistema de dados em memória rápido, como `Redis`, para armazenar e liberar locks. Coordenando o acesso a recursos compartilhados de maneira eficiente.
+#### 🔒 Locks Distribuídos com Pub/Sub disparado por Banco em Memória
 
-Como proposto na questão  _"...uma pequena mas existente probabilidade de ocorrerem duas transações ao mesmo tempo"_, a concorrência excessiva por `acount` não deve ocorrer usando essa abordagem.
+Utilizaria `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esses dados sejam distintos. Um sistema de dados em memória rápido, como `Redis`, seria utilizado para armazenar e liberar locks, coordenando o acesso a recursos compartilhados de maneira eficiente.
 
+O `lock` deve inserir no banco em memória a `account` que está sendo processada pela instância da aplicação no momento. Caso outra instância esteja processando uma transação diferente da mesma `account`, a aplicação se subscreve em um canal onde deve receber uma mensagem de desbloqueio antes de 100 ms. Isso evita concorrência
 
-```mermaid
-flowchart TD
-    A[Recebe Transação JSON] --> B[Gerar Lock em Memória]
-    B --> C{Lock Obtido?}
-    
-    C -- Sim --> D[Processa Transação]
-    D --> E[Registrar Transação Aprovada]
-    D --> F[Release Lock em Memória]
-    
-    C -- Não --> G[Rejeita Transação <br/> com Código 07]
-    
-    E --> H[Retorna Código **00** <br/> Aprovada]
-    G --> I[Retorna Código **07** <br/> Rejeitada]
+Utilizando o recurso de [`Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/), assim que o processamento da instância terminar, no momento em que a chave `account` for removida (pelo processo ou por `ttl`), uma mensagem será publicada informando a quem se subscreveu que aquele `lock` foi removido.
 
-    style H fill:#009933,stroke:#000
-    style I fill:#cc0000,stroke:#000
-```
+Como proposto na questão _"...uma pequena, mas existente probabilidade de ocorrerem duas transações ao mesmo tempo"_, a concorrência excessiva por `account` não deve ocorrer utilizando essa abordagem.
 
-#### 📥 Filas
-Dependendo do volume das transações, podemos usar `RabbitMQ` em conjunto com `Redis` para controlar a concorrência. Essa combinação fornece robustez e resiliência, pois `RabbitMQ` organiza o processamento de tarefas e `Redis`, com locks distribuídos, ajuda a evitar condições de corrida. No entanto, essa abordagem pode introduzir alguma latência adicional.
 
 
 ```mermaid
 flowchart TD
-    A[Recebe Transação JSON] -->|Envia para Fila| B[Fila por MCC]
-    B -->|Entrega Mensagem| C{Consumidor Verifica Lock}
+    A[Recebe Transação JSON] --> B[Inicia Processamento de Transação]
+    B --> C{Account da Transação Bloqueado em <b>Lock Distribuído</b>?}
     
-    C -- Lock Disponível --> D[Obter Lock]
-    D --> E[Processa Transação]
-    E --> F[Registrar Transação Aprovada]
-    E --> G[Libera Lock]
+    C -- Não --> D[Bloqueia Account da Transação]
+    D  --> E[Processa Transação]
+
+    C -- Sim --> M[Subscreve para receber Mensagem de desbloqueio da Account]
+    M --> N{Recebi Mensagem de desbloqueio em tempo útil <i>t<i><100 ms}
+    N -- Sim --> D
+    N -- Não --> O[Retorna Código <b>07<br/> Rejeitada por Falha Genérica</b>]
+
+    E --> F{Ocorreu Erro no Processo da Transação?}
+    F -- Não --> G{Saldo é Suficiente?}
+    F -- Sim --> K[Retorna Código <b>07<br/> Rejeitada por Falha Genérica</b>]
+    K --> J
     
-    F --> H[Retorna Código **00** <br/> Aprovada]
-    
-    C -- Lock Ocupado --> I[Retorna para Fila]
-    I -->|Verifica Timer 100ms| J{Tempo Expirado?}
-    
-    J -- Não --> B
-    J -- Sim --> K[Descarta Mensagem]
-    K --> L[Retorna Código **07**  <br/> Rejeitada Timeout]
-    
-    style H fill:#009933,stroke:#000
+    G -- Sim --> H[Atualiza Saldo e Registra Transação Aprovada]
+    H --> I[Retorna Código <b>00 <br/> Aprovada</b>]
+    I --> J([Desbloqueia Account <br> <b>Publica mensagem de desbloqueio</b>])
+
+    G -- Não --> L[Retorna Código <b>51 <br/> Rejeitada por Saldo Insuficiente</b>]
+    L --> J
+
+
+    style D fill:#A0522D,stroke:#000
+    style I fill:#009933,stroke:#000
+
     style L fill:#cc0000,stroke:#000
-```
+    style K fill:#cc0000,stroke:#000
+    style O fill:#cc0000,stroke:#000
 
-Nessa sugestão, conseguimos obter o melhor dos dois mundos.
+    style J fill:#007bff,stroke:#000,stroke-width:4px
+
+```
 
 <br/>
 
@@ -707,9 +707,11 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
-- Defini o modelo hexagonal pois sua abordagem de `ports` and `adapters` proporciona flexibilidade para que o sistema atenda a chamadas `http`, e possa ser facilmente estendido para outras abordagens, como processamento de `mensagens` e `filas` (sugestão de solução L4), sem alterar o `core`, garantindo um sistema com separação de responsabilidades.
+- Defini o modelo hexagonal pois sua abordagem de `ports` and `adapters` proporciona flexibilidade para que o sistema atenda a chamadas `http`, e possa ser facilmente estendido para outras abordagens, como processamento de `mensagens` e `pub/sub` (sugestão de solução L4), sem alterar o `core`, garantindo um sistema com separação de responsabilidades.
 
 - Implantar uma versão inicial de `memory lock` (sugestão de solução L4).
+
+- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada em uma sessão no `Miro Board`, que em breve deve ser convertida em um `ADR` e em tarefas no `Kanban` a serem executadas conforme eu tenha disponibilidade.
 
 - Testes adicionais poderiam ser criados (multiplos cenários de erros nas rotas e serviços). 
 
