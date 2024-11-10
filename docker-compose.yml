@@ -9,6 +9,8 @@ volumes:
     external: false
   test-postgres-payments-data:
     external: false
+  redis-payments-data:
+    external: false
 
 services:
   postgres-payments:
@@ -21,6 +23,11 @@ services:
       POSTGRES_DB: payments_db
       PGTZ: America/Sao_Paulo
       TZ: America/Sao_Paulo
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U username" ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
     ports:
       - "5432:5432"
     volumes:
@@ -39,11 +46,32 @@ services:
       POSTGRES_DB: test_payments_db
       PGTZ: America/Sao_Paulo
       TZ: America/Sao_Paulo
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U username" ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
     ports:
       - "5433:5432"
     volumes:
       - test-postgres-payments-data:/var/lib/postgresql/data
     command: postgres -c timezone=America/Sao_Paulo
+    networks:
+      - payments-network
+
+  redis-payments:
+    container_name: redis-payments
+    hostname: redis-payments
+    image: redis:6.2-alpine
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 30s
+      retries: 50
+    volumes:
+      - redis-payments-data:/data
     networks:
       - payments-network
 
@@ -53,6 +81,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - postgres-payments
+      - redis-payments
     container_name: payments-api
     hostname: payments-api
     ports:

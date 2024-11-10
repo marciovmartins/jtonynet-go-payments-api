@@ -27,10 +27,10 @@ func NewMerchant(conn port.DBConn) (port.MerchantRepository, error) {
 	}, nil
 }
 
-func (m *Merchant) FindByName(Name string) (*port.MerchantEntity, error) {
-	MerchantModel := gormModel.Merchant{}
+func (m *Merchant) FindByName(name string) (*port.MerchantEntity, error) {
+	merchantModel := gormModel.Merchant{}
 
-	result := m.db.Where(&gormModel.Merchant{Name: Name}).First(&MerchantModel)
+	result := m.db.Where(&gormModel.Merchant{Name: name}).First(&merchantModel)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, nil
 	} else if result.Error != nil {
@@ -38,8 +38,8 @@ func (m *Merchant) FindByName(Name string) (*port.MerchantEntity, error) {
 	}
 
 	return &port.MerchantEntity{
-		Name:          MerchantModel.Name,
-		MccCode:       MerchantModel.MccCode,
-		MappedMccCode: MerchantModel.MappedMccCode,
+		Name:          merchantModel.Name,
+		MccCode:       merchantModel.MccCode,
+		MappedMccCode: merchantModel.MappedMccCode,
 	}, nil
 }

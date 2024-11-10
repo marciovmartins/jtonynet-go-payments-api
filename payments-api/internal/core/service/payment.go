@@ -5,6 +5,7 @@ import (
 
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
+
 	"github.com/jtonynet/go-payments-api/internal/support"
 )
 
@@ -22,6 +23,7 @@ func NewPayment(
 	bRepository port.BalanceRepository,
 	tRepository port.TransactionRepository,
 	mRepository port.MerchantRepository,
+
 	logger support.Logger,
 ) *Payment {
 	return &Payment{
@@ -29,7 +31,8 @@ func NewPayment(
 		balanceRepository:     bRepository,
 		transactionRepository: tRepository,
 		merchantRepository:    mRepository,
-		logger:                logger,
+
+		logger: logger,
 	}
 }
 
@@ -54,10 +57,10 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 		merchant = mapMerchantEntityToDomain(merchantEntity)
 	}
 
-	transaction := account.NewTransaction(
+	transaction := merchant.NewTransaction(
 		tpr.MccCode,
 		tpr.TotalAmount,
-		merchant,
+		account,
 	)
 
 	balanceEntity, err := p.balanceRepository.FindByAccountID(account.ID)

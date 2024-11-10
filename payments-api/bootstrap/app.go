@@ -2,18 +2,24 @@ package bootstrap
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/jtonynet/go-payments-api/config"
-	"github.com/jtonynet/go-payments-api/internal/adapter/database"
-	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
+
 	"github.com/jtonynet/go-payments-api/internal/support"
 	"github.com/jtonynet/go-payments-api/internal/support/logger"
+
+	"github.com/jtonynet/go-payments-api/internal/adapter/cache"
+	"github.com/jtonynet/go-payments-api/internal/adapter/cachedRepository"
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
+	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 
 	"github.com/jtonynet/go-payments-api/internal/core/service"
 )
 
 type App struct {
-	Logger         support.Logger
+	Logger support.Logger
+
 	PaymentService *service.Payment
 }
 
@@ -22,31 +28,54 @@ func NewApp(cfg *config.Config) (App, error) {
 
 	logger, err := logger.New(cfg.Logger)
 	if err != nil {
-		return App{}, fmt.Errorf("error when instantiate logger: %v", err)
+		log.Printf("warning: dont instantiate logger: %v", err)
 	}
 	app.Logger = logger
 
-	conn, err := database.NewConn(cfg.Database)
+	cacheConn, err := cache.New(cfg.Cache)
 	if err != nil {
-		return App{}, fmt.Errorf("error connecting to database: %v", err)
+		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
 	}
 
-	if conn.Readiness() != nil {
-		return App{}, fmt.Errorf("error connecting to database: %v", err)
+	if cacheConn.Readiness() != nil {
+		return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
 	}
 
-	logger.Debug("successfully connected to the database!")
+	if logger != nil {
+		logger.Debug("successfully: connected to the cache!")
+	}
 
-	allRepos, err := repository.GetAll(conn)
+	dbConn, err := database.NewConn(cfg.Database)
 	if err != nil {
-		return App{}, fmt.Errorf("error when instantiate repositories: %v", err)
+		return App{}, fmt.Errorf("error: dont instantiate database: %v", err)
+	}
+
+	if dbConn.Readiness() != nil {
+		return App{}, fmt.Errorf("error: dont connecting to database: %v", err)
+	}
+
+	if logger != nil {
+		logger.Debug("successfully: connected to the database!")
+	}
+
+	allRepos, err := repository.GetAll(dbConn)
+	if err != nil {
+		return App{}, fmt.Errorf("error: dont instantiate repositories: %v", err)
+	}
+
+	cachedMerchantRepo, err := cachedRepository.NewMerchant(
+		cacheConn,
+		allRepos.Merchant,
+	)
+	if err != nil {
+		return App{}, fmt.Errorf("error: dont instantiate merchant cached repository: %v", err)
 	}
 
 	app.PaymentService = service.NewPayment(
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
-		allRepos.MerchanMap,
+		cachedMerchantRepo,
 		logger,
 	)
 

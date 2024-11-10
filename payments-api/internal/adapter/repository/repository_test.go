@@ -75,7 +75,7 @@ func (suite *RepositoriesSuite) SetupSuite() {
 	suite.AccountRepo = repositories.Account
 	suite.BalanceRepo = repositories.Balance
 	suite.TransactionRepo = repositories.Transaction
-	suite.MerchantRepo = repositories.MerchanMap
+	suite.MerchantRepo = repositories.Merchant
 
 	suite.loadDBtestData(conn)
 }
@@ -219,6 +219,7 @@ func (suite *RepositoriesSuite) TestCases() {
 	suite.T().Run("TestAccountRepositoryFindByUIDSuccess", func(t *testing.T) {
 		suite.AccountRepositoryFindByUIDsuccess()
 	})
+
 	suite.T().Run("TestBalanceRepositoryFindByAccountIDSuccess", func(t *testing.T) {
 		suite.BalanceRepositoryFindByAccountIDsuccess()
 	})

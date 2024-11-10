@@ -12,7 +12,7 @@ type AllRepos struct {
 	Account     port.AccountRepository
 	Balance     port.BalanceRepository
 	Transaction port.TransactionRepository
-	MerchanMap  port.MerchantRepository
+	Merchant    port.MerchantRepository
 }
 
 func GetAll(conn port.DBConn) (AllRepos, error) {
@@ -41,9 +41,9 @@ func GetAll(conn port.DBConn) (AllRepos, error) {
 
 		Merchant, err := gormRepos.NewMerchant(conn)
 		if err != nil {
-			return AllRepos{}, fmt.Errorf("error when instantiating Merchant repository: %v", err)
+			return AllRepos{}, fmt.Errorf("error when instantiating merchant repository: %v", err)
 		}
-		repos.MerchanMap = Merchant
+		repos.Merchant = Merchant
 
 		return repos, nil
 	default:
