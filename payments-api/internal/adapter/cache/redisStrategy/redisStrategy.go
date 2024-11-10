@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/jtonynet/go-payments-api/config"
@@ -78,7 +79,7 @@ func (c *RedisConn) Set(key string, value interface{}, expiration time.Duration)
 func (c *RedisConn) Get(key string) (string, error) {
 	val, err := c.db.Get(c.ctx, key).Result()
 	if err != nil {
-		// slog.Error("cannot get key: %v, CacheClient error: %v ", key, err)
+		slog.Error("cannot get key: %v, CacheClient error: %v ", key, err)
 		return "", err
 	}
 	if val == "" {
@@ -91,7 +92,7 @@ func (c *RedisConn) Get(key string) (string, error) {
 func (c *RedisConn) Delete(key string) error {
 	err := c.db.Del(c.ctx, key).Err()
 	if err != nil {
-		// slog.Error("cannot get key", "key", key, "CacheClient error", err)
+		slog.Error("cannot get key", "key", key, "CacheClient error", err)
 		return err
 	}
 	return nil

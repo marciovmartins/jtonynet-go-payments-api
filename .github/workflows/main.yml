@@ -28,6 +28,7 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: golang:1.23-alpine
 
     services:
       postgres:
@@ -54,6 +55,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 6379:6379
 
     steps:
     - name: Check out repository code
@@ -70,4 +73,4 @@ jobs:
 
     - name: Test
       working-directory: ./payments-api
-      run: ENV=test go test -v ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/router/ginStrategy
+      run: ENV=test go test -v ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
