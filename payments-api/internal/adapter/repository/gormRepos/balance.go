@@ -60,9 +60,9 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 		balanceCategories := make(map[int]port.BalanceByCategoryEntity)
 
 		for _, bResult := range bResults {
-			mccCodes := []string{}
+			mccs := []string{}
 			if bResult.Codes.Valid {
-				mccCodes = strings.Split(bResult.Codes.String, ",")
+				mccs = strings.Split(bResult.Codes.String, ",")
 			}
 
 			if !firstFound {
@@ -76,7 +76,7 @@ func (b *Balance) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
 				Amount: bResult.Amount,
 				Category: port.CategoryEntity{
 					Name:     bResult.Name,
-					MCCs:     mccCodes,
+					MCCs:     mccs,
 					Priority: bResult.Priority,
 				},
 			}

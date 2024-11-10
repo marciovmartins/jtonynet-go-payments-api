@@ -9,5 +9,6 @@ type MCC struct {
 	CategoryID uint      `json:"category_id" binding:"required" example:"1"`
 	MCC        string    `json:"mcc" binding:"required" example:"5411" gorm:"type:varchar(5);column:mcc"`
 
-	Category Category `gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Category  Category   `gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Merchants []Merchant `gorm:"foreignKey:MccID"`
 }

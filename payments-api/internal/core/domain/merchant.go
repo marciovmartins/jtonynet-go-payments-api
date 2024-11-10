@@ -3,26 +3,26 @@ package domain
 import "github.com/shopspring/decimal"
 
 type Merchant struct {
-	Name          string
-	MCC           string
-	MappedMccCode string
+	Name string
+	MCC  string
 }
 
 func (m *Merchant) NewTransaction(
 	mcc string,
 	totalAmount decimal.Decimal,
+	name string,
 	account Account,
 ) *Transaction {
-	correctMccCode := mcc
-	if m.MappedMccCode != "" {
-		correctMccCode = m.MappedMccCode
+	correctMCC := mcc
+	if m.MCC != "" {
+		correctMCC = m.MCC
 	}
 
 	return &Transaction{
 		AccountID:   account.ID,
 		AccountUID:  account.UID,
-		MCC:         correctMccCode,
+		MCC:         correctMCC,
 		TotalAmount: totalAmount,
-		Merchant:    m.Name,
+		Merchant:    name,
 	}
 }

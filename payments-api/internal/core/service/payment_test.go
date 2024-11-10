@@ -48,9 +48,8 @@ func newDBfake() DBfake {
 
 	db.Merchant = map[uint]port.MerchantEntity{
 		1: {
-			Name:          "UBER EATS                   SAO PAULO BR",
-			MCC:           "5555",
-			MappedMccCode: "5412",
+			Name: "UBER EATS                   SAO PAULO BR",
+			MCC:  "5412",
 		},
 	}
 

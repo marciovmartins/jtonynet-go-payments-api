@@ -60,6 +60,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 	transaction := merchant.NewTransaction(
 		tpr.MCC,
 		tpr.TotalAmount,
+		tpr.Merchant,
 		account,
 	)
 

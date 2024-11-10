@@ -9,9 +9,8 @@ import (
 
 func mapMerchantEntityToDomain(mEntity *port.MerchantEntity) domain.Merchant {
 	return domain.Merchant{
-		Name:          mEntity.Name,
-		MCC:           mEntity.MCC,
-		MappedMccCode: mEntity.MappedMccCode,
+		Name: mEntity.Name,
+		MCC:  mEntity.MCC,
 	}
 }
 
