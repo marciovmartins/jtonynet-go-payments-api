@@ -339,7 +339,7 @@ Como as `migrations` e `seeds` ainda não foram adicionadas ao projeto, você po
 
 ```bash
 # Executa Testes no Docker com ENV dev (PostgreSQL de Desenvolvimento na Integração)
-docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/core/service ./internal/adapter/http/router/ginStrategy
+docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
 ```
 <!-- ./internal/adapter/cachedRepository/redisRepos -->
 

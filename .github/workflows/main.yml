@@ -11,7 +11,7 @@ env:
   ENV: test
   DATABASE_STRATEGY: gorm
   DATABASE_DRIVER: postgres
-  DATABASE_HOST: localhost
+  DATABASE_HOST: postgres
   DATABASE_USER: test_api_user
   DATABASE_PASSWORD: test_api_pass
   DATABASE_DB: test_payments_db
