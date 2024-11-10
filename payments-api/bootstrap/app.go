@@ -9,6 +9,8 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/support"
 	"github.com/jtonynet/go-payments-api/internal/support/logger"
 
+	"github.com/jtonynet/go-payments-api/internal/adapter/cache"
+	"github.com/jtonynet/go-payments-api/internal/adapter/cachedRepository"
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 
@@ -30,21 +32,18 @@ func NewApp(cfg *config.Config) (App, error) {
 	}
 	app.Logger = logger
 
-	/*
-		TODO: fix cached CI Tests
-		cacheConn, err := cache.New(cfg.Cache)
-		if err != nil {
-			return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
-		}
+	cacheConn, err := cache.New(cfg.Cache)
+	if err != nil {
+		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
+	}
 
-		if cacheConn.Readiness() != nil {
-			return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
-		}
+	if cacheConn.Readiness() != nil {
+		return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
+	}
 
-		if logger != nil {
-			logger.Debug("successfully: connected to the cache!")
-		}
-	*/
+	if logger != nil {
+		logger.Debug("successfully: connected to the cache!")
+	}
 
 	dbConn, err := database.NewConn(cfg.Database)
 	if err != nil {
@@ -64,22 +63,19 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate repositories: %v", err)
 	}
 
-	/*
-		TODO: fix cached CI Tests
-		cachedMerchantRepo, err := cachedRepository.NewMerchant(
-			cacheConn,
-			allRepos.Merchant,
-		)
-		if err != nil {
-			return App{}, fmt.Errorf("error: dont instantiate merchant cached repository: %v", err)
-		}
-	*/
+	cachedMerchantRepo, err := cachedRepository.NewMerchant(
+		cacheConn,
+		allRepos.Merchant,
+	)
+	if err != nil {
+		return App{}, fmt.Errorf("error: dont instantiate merchant cached repository: %v", err)
+	}
 
 	app.PaymentService = service.NewPayment(
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
-		allRepos.Merchant,
+		cachedMerchantRepo,
 		logger,
 	)
 
