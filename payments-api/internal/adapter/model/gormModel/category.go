@@ -11,6 +11,6 @@ type Category struct {
 	Name     string    `json:"name" binding:"required" example:"CASH" gorm:"type:varchar(255)"`
 	Priority int       `json:"priority" binding:"required" example:"1"`
 
-	MccCodes []MccCode `gorm:"foreignKey:CategoryID"`
+	MCCs     []MCC     `gorm:"foreignKey:CategoryID"`
 	Balances []Balance `gorm:"foreignKey:CategoryID"`
 }

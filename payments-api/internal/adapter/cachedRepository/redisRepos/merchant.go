@@ -33,7 +33,7 @@ func (m *Merchant) FindByName(name string) (*port.MerchantEntity, error) {
 	} else {
 		mEntity = &port.MerchantEntity{
 			Name:          gjson.Get(merchantCached, "Name").String(),
-			MccCode:       gjson.Get(merchantCached, "MccCode").String(),
+			MCC:           gjson.Get(merchantCached, "MccCode").String(),
 			MappedMccCode: gjson.Get(merchantCached, "MappedMccCode").String(),
 		}
 

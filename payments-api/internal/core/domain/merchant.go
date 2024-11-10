@@ -4,7 +4,7 @@ import "github.com/shopspring/decimal"
 
 type Merchant struct {
 	Name          string
-	MccCode       string
+	MCC           string
 	MappedMccCode string
 }
 
@@ -21,7 +21,7 @@ func (m *Merchant) NewTransaction(
 	return &Transaction{
 		AccountID:   account.ID,
 		AccountUID:  account.UID,
-		MccCode:     correctMccCode,
+		MCC:         correctMccCode,
 		TotalAmount: totalAmount,
 		Merchant:    m.Name,
 	}

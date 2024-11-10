@@ -42,7 +42,7 @@ func New(cfg config.Database) (port.DBConn, error) {
 		*/
 		db.AutoMigrate(&gormModel.Account{})
 		db.AutoMigrate(&gormModel.Category{})
-		db.AutoMigrate(&gormModel.MccCode{})
+		db.AutoMigrate(&gormModel.MCC{})
 		db.AutoMigrate(&gormModel.Balance{})
 		db.AutoMigrate(&gormModel.Transaction{})
 		db.AutoMigrate(&gormModel.Merchant{})

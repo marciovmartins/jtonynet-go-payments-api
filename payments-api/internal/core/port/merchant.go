@@ -2,7 +2,7 @@ package port
 
 type MerchantEntity struct {
 	Name          string
-	MccCode       string
+	MCC           string
 	MappedMccCode string
 }
 

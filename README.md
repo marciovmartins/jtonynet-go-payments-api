@@ -492,10 +492,18 @@ erDiagram
         int id PK
         UUID uid
         string name
-        string mcc_code
-        string mapped_mcc_code
+        int mcc_id FK
         timestamp created_at
         timestamp updated_at
+        timestamp deleted_at
+    }
+
+   mccs {
+        int id PK
+        string mcc
+        int category_id FK
+        datetime created_at
+        datetime updated_at
         timestamp deleted_at
     }
 
@@ -509,18 +517,10 @@ erDiagram
         timestamp deleted_at
     }
 
-    mcc_codes {
-        int id PK
-        string mcc_code
-        int category_id FK
-        datetime created_at
-        datetime updated_at
-        timestamp deleted_at
-    }
-
     accounts ||--o{ balances : has
     accounts ||--o{ transactions : performs
-    categories ||--o{ mcc_codes : has
+    categories ||--o{ mccs : has
+    mccs ||--o{ merchants : has
     categories ||--o{ balances : defines
 
     

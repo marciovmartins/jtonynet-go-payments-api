@@ -39,7 +39,7 @@ func (m *Merchant) FindByName(name string) (*port.MerchantEntity, error) {
 
 	return &port.MerchantEntity{
 		Name:          merchantModel.Name,
-		MccCode:       merchantModel.MccCode,
-		MappedMccCode: merchantModel.MappedMccCode,
+		MCC:           merchantModel.MccCode,
+		MappedMccCode: merchantModel.MCC,
 	}, nil
 }

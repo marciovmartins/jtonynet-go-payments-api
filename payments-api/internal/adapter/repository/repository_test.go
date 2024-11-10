@@ -34,10 +34,12 @@ var (
 	merchant1NameToMap         = "UBER EATS                   SAO PAULO BR"
 	merchant1IncorrectMccToMap = "5555"
 	merchant1CorrectMccToMap   = "5412"
+	merchant1CorrectMccIdToMap = 2
 
 	merchant2NameToMap         = "PAG*JoseDaSilva          RIO DE JANEI BR"
 	merchant2IncorrectMccToMap = "5555"
 	merchant2CorrectMccToMap   = "5812"
+	merchant2CorrectMccIdToMap = 4
 )
 
 type RepositoriesSuite struct {
@@ -89,18 +91,31 @@ func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
 			log.Fatalf("failure to cast conn.GetDB() as gorm.DB")
 		}
 
+		dbGorm.Exec("TRUNCATE TABLE mccs RESTART IDENTITY CASCADE")
+		insertMccCodeQuery := `
+			INSERT INTO mccs (uid, mcc, category_id, created_at, updated_at)
+			VALUES
+				('11f0c06e-0dff-4643-86bf-998d11e9374f', '5411', 1, NOW(), NOW()),
+				('fe5a4c17-a7cd-4072-a793-e99e2642e21a', '5412', 1, NOW(), NOW()),
+				('5268ec2b-aa14-4d55-906a-13c91d89826c', '5811', 2, NOW(), NOW()),
+				('6179e57c-e630-4e2f-a5db-d153e0cdb9a9', '5812', 2, NOW(), NOW())
+		`
+		dbGorm.Exec(insertMccCodeQuery)
+
 		dbGorm.Exec("TRUNCATE TABLE merchants RESTART IDENTITY CASCADE")
 		insertMerchantQuery := fmt.Sprintf(`
-			INSERT INTO merchants (uid, name, mcc_code, mapped_mcc_code, created_at, updated_at)
+			INSERT INTO merchants (uid, name, mcc_code, mcc, mcc_id, created_at, updated_at)
 			VALUES
-				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', '%s', '%s', '%s', NOW(), NOW()),
-				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', '%s', '%s', '%s', NOW(), NOW())`,
+				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', '%s', '%s', '%s', %v, NOW(), NOW()),
+				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', '%s', '%s', '%s', %v, NOW(), NOW())`,
 			merchant1NameToMap,
 			merchant1IncorrectMccToMap,
 			merchant1CorrectMccToMap,
+			merchant1CorrectMccIdToMap,
 			merchant2NameToMap,
 			merchant2IncorrectMccToMap,
 			merchant2CorrectMccToMap,
+			merchant2CorrectMccIdToMap,
 		)
 		dbGorm.Exec(insertMerchantQuery)
 
@@ -120,17 +135,6 @@ func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
 				('056de185-bff0-4c4a-93fa-7245f9e72b67', 'CASH', 3, NOW(), NOW())
 		`
 		dbGorm.Exec(insertCategoryQuery)
-
-		dbGorm.Exec("TRUNCATE TABLE mcc_codes RESTART IDENTITY CASCADE")
-		insertMccCodeQuery := `
-			INSERT INTO mcc_codes (uid, mcc_code, category_id, created_at, updated_at)
-			VALUES
-				('11f0c06e-0dff-4643-86bf-998d11e9374f', '5411', 1, NOW(), NOW()),
-				('fe5a4c17-a7cd-4072-a793-e99e2642e21a', '5412', 1, NOW(), NOW()),
-				('5268ec2b-aa14-4d55-906a-13c91d89826c', '5811', 2, NOW(), NOW()),
-				('6179e57c-e630-4e2f-a5db-d153e0cdb9a9', '5812', 2, NOW(), NOW())
-		`
-		dbGorm.Exec(insertMccCodeQuery)
 
 		dbGorm.Exec("TRUNCATE TABLE balances RESTART IDENTITY CASCADE")
 		insertBalancesQuery := fmt.Sprintf(`
@@ -194,7 +198,7 @@ func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
 
 	transactionEntity := port.TransactionEntity{
 		AccountID:   accountEntity.ID,
-		MccCode:     MccCodeFoodTransaction,
+		MCC:         MccCodeFoodTransaction,
 		Merchant:    merchantFoodTransaction,
 		TotalAmount: amountFoodTransaction,
 	}
@@ -206,7 +210,7 @@ func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
 
 func (suite *RepositoriesSuite) MerchantRepositoryFindByName() {
 	merchantEntity, err := suite.MerchantRepo.FindByName(merchant1NameToMap)
-	assert.Equal(suite.T(), merchantEntity.MccCode, merchant1IncorrectMccToMap)
+	assert.Equal(suite.T(), merchantEntity.MCC, merchant1IncorrectMccToMap)
 	assert.Equal(suite.T(), merchantEntity.MappedMccCode, merchant1CorrectMccToMap)
 	assert.NoError(suite.T(), err)
 }
