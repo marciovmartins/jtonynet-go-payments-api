@@ -711,7 +711,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Implantar uma versão inicial de `memory lock` (sugestão de solução L4).
 
-- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada em uma sessão no `Miro Board`, que em breve deve ser convertida em um `ADR` e em tarefas no `Kanban` a serem executadas conforme eu tenha disponibilidade.
+- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada em uma sessão no `Miro Board`, que em breve deve ser convertida em um `ADR` e em tarefas no `Kanban` a serem executadas conforme tenha disponibilidade.
 
 - Testes adicionais poderiam ser criados (multiplos cenários de erros nas rotas e serviços). 
 
