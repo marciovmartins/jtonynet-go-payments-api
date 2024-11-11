@@ -366,8 +366,8 @@ L3. Merchants com mapeamentos MCC incorretos
 >
 > | __Merchant__                             | __MCCs__           | __Mapeado para Categoria__ |
 > |------------------------------------------|--------------------|----------------------------|
-> | UBER EATS                   SAO PAULO BR | 5555               | FOOD                       |
-> | PAG*JoseDaSilva          RIO DE JANEI BR | 5555               | MEAL                       |
+> | UBER EATS                   SAO PAULO BR | 5412               | FOOD                       |
+> | PAG*JoseDaSilva          RIO DE JANEI BR | 5812               | MEAL                       |
 
 <br/>
 
