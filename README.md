@@ -415,7 +415,7 @@ _*Diagramas Mermaid podem apresentar problemas de visualização em aplicativos 
 
 ```mermaid
 flowchart TD
-    A[Recebe Transação JSON] --> B[Mapeia Categoria pelo nome do comerciante]
+    A([▶️<br/>Recebe Transação JSON]) --> B[Mapeia Categoria pelo nome do comerciante]
     B --> C[Buscar Saldos da Conta]
     C --> D{Saldo é suficiente <br/> na Categoria?}
     
@@ -432,9 +432,12 @@ flowchart TD
     G --> K[Registrar Transação Aprovada]
     I --> K[Registrar Transação Aprovada]
     
-    K --> M[Retorna Código **00** <br/> Aprovada]
+    K --> M[✅<br/>Retorna Código **00** <br/> Aprovada]
     
-    J --> N[Retorna Código **51** <br/> Rejeitada]
+    J --> N[❌<br/>Retorna Código **51** <br/> Rejeitada]
+
+    N --> O([⏹️<br/>Fim do Processo])
+    M --> O
 
     style M fill:#009933,stroke:#000
     style N fill:#cc0000,stroke:#000
@@ -585,28 +588,31 @@ Como proposto na questão _"...uma pequena, mas existente probabilidade de ocorr
 
 ```mermaid
 flowchart TD
-    A[Recebe Transação JSON] --> B[Inicia Processamento de Transação]
+    A([▶️<br/>Recebe Transação JSON]) --> B[Inicia Processamento de Transação]
     B --> C{Account da Transação está Bloqueado no <b>Lock Distribuído</b>?}
     
-    C -- Não --> D[Bloqueia Account da Transação]
+    C -- Não --> D[🔐<br/>Bloqueia Account da Transação no <b>Lock Distribuído</b>]
     D  --> E[Processa Transação]
 
-    C -- Sim --> M[Subscreve para receber Mensagem de desbloqueio da Account do <b>Lock Distribuído</b>]
+    C -- Sim --> M[✉️⬅️<br/>⏸️<br/><b>Subscreve Redis Keyspace Notification</b> e aguarda receber Mensagem de desbloqueio da Account do <b>Lock Distribuído</b>]
     M --> N{Recebi Mensagem de desbloqueio em tempo útil? <br/> <b><i>t<i> < 100 ms - tempo médio de processo</b>}
     N -- Sim --> D
-    N -- Não --> O[Retorna Código <b>07<br/> Rejeitada por Falha Genérica</b>]
+    N -- Não --> O[❌<br/>Retorna Código <b>07<br/> Rejeitada por Falha Genérica</b>]
 
     E --> F{Ocorreu Erro no Processo da Transação?}
     F -- Não --> G{Saldo é Suficiente?}
-    F -- Sim --> K[Retorna Código <b>07<br/> Rejeitada por Falha Genérica</b>]
+    F -- Sim --> K[❌<br/>Retorna Código <b>07<br/> Rejeitada por Falha Genérica</b>]
     K --> J
     
     G -- Sim --> H[Atualiza Saldo e Registra Transação Aprovada]
-    H --> I[Retorna Código <b>00 <br/> Aprovada</b>]
-    I --> J([Desbloqueia Account <br> <b>Publica mensagem de desbloqueio</b>])
+    H --> I[✅<br>Retorna Código <b>00 <br/> Aprovada</b>]
+    I --> J[🔓<br/>Desbloqueia Account da Transação no <br> <b>Lock Distribuído</b>]
 
-    G -- Não --> L[Retorna Código <b>51 <br/> Rejeitada por Saldo Insuficiente</b>]
+    G -- Não --> L[❌<br/>Retorna Código <b>51 <br/> Rejeitada por Saldo Insuficiente</b>]
     L --> J
+
+    J --> P[✉️➡️<br/><b>Publica mensagem de desbloqueio Redis Keyspace Notification</b>]
+    P --> Q([⏹️<br/>Fim do Processo])
 
     style D fill:#78771b,stroke:#000
     style I fill:#009933,stroke:#000
@@ -616,7 +622,9 @@ flowchart TD
     style O fill:#cc0000,stroke:#000
 
     style M fill:#007bff,stroke:#000
-    style J fill:#007bff,stroke:#000,stroke-width:4px
+
+    style J fill:#78771b,stroke:#000
+    style P fill:#007bff,stroke:#000,stroke-width:4px
 
 ```
 
@@ -734,7 +742,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Implantar uma versão inicial de `memory lock` (sugestão de solução L4).
 
-- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada em uma sessão no `Miro Board`. Pretendo criar um `ADR` e e tarefas no `Kanban` visando implantar parte do que foi discutido no `Miro`.
+- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada em uma sessão no `Miro Board`. Pretendo criar um `ADR` e tarefas no `Kanban` visando implantar parte do que foi discutido no `Miro`.
 
 - Testes adicionais poderiam ser criados (multiplos cenários de erros nas rotas e serviços). 
 
