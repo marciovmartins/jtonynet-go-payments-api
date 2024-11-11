@@ -1,6 +1,7 @@
 package gormRepos
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -16,7 +17,11 @@ type Account struct {
 }
 
 func NewAccount(conn port.DBConn) (port.AccountRepository, error) {
-	db := conn.GetDB()
+	db, err := conn.GetDB(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("account repository failure on conn.GetDB()")
+	}
+
 	dbGorm, ok := db.(*gorm.DB)
 	if !ok {
 		return nil, fmt.Errorf("account repository failure to cast conn.GetDB() as gorm.DB")
@@ -28,7 +33,7 @@ func NewAccount(conn port.DBConn) (port.AccountRepository, error) {
 	}, nil
 }
 
-func (a *Account) FindByUID(uid uuid.UUID) (port.AccountEntity, error) {
+func (a *Account) FindByUID(_ context.Context, uid uuid.UUID) (port.AccountEntity, error) {
 	accountModel := gormModel.Account{}
 	if err := a.db.Where(&gormModel.Account{UID: uid}).First(&accountModel).Error; err != nil {
 		return port.AccountEntity{}, fmt.Errorf("account with uid: %s not found", uid)

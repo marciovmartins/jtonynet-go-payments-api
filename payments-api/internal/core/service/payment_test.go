@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -81,7 +82,7 @@ func (dbf *DBfake) GetDB() *DBfake {
 	return dbf
 }
 
-func (dbf *DBfake) AccountRepoFindByUID(uid uuid.UUID) (port.AccountEntity, error) {
+func (dbf *DBfake) AccountRepoFindByUID(_ context.Context, uid uuid.UUID) (port.AccountEntity, error) {
 	for _, ae := range dbf.Account {
 		if ae.UID == uid {
 			return ae, nil
@@ -101,8 +102,8 @@ func newAccountRepoFake(db DBfake) port.AccountRepository {
 	}
 }
 
-func (arf *AccountRepoFake) FindByUID(uid uuid.UUID) (port.AccountEntity, error) {
-	accountEntity, err := arf.db.AccountRepoFindByUID(uid)
+func (arf *AccountRepoFake) FindByUID(_ context.Context, uid uuid.UUID) (port.AccountEntity, error) {
+	accountEntity, err := arf.db.AccountRepoFindByUID(nil, uid)
 	return accountEntity, err
 }
 
@@ -136,8 +137,8 @@ func newMerchantRepoFake(db DBfake) port.MerchantRepository {
 	}
 }
 
-func (m *MerchantRepoFake) FindByName(Name string) (*port.MerchantEntity, error) {
-	MerchantEntity, err := m.db.MerchantRepoFindByName(Name)
+func (m *MerchantRepoFake) FindByName(_ context.Context, name string) (*port.MerchantEntity, error) {
+	MerchantEntity, err := m.db.MerchantRepoFindByName(name)
 	return MerchantEntity, err
 }
 
@@ -176,7 +177,7 @@ func (dbf *DBfake) BalanceRepoFindByAccountID(accountID uint) (port.BalanceEntit
 	return b, nil
 }
 
-func (brf *BalanceRepoFake) FindByAccountID(accountID uint) (port.BalanceEntity, error) {
+func (brf *BalanceRepoFake) FindByAccountID(_ context.Context, accountID uint) (port.BalanceEntity, error) {
 	balanceEntity, err := brf.db.BalanceRepoFindByAccountID(accountID)
 	return balanceEntity, err
 }
@@ -193,7 +194,7 @@ func (dbf *DBfake) BalanceRepoUpdate(bCategory port.BalanceByCategoryEntity) boo
 	return true
 }
 
-func (brf *BalanceRepoFake) UpdateTotalAmount(be port.BalanceEntity) error {
+func (brf *BalanceRepoFake) UpdateTotalAmount(_ context.Context, be port.BalanceEntity) error {
 	for _, bCategory := range be.Categories {
 		ok := brf.db.BalanceRepoUpdate(bCategory)
 		if !ok {
@@ -233,7 +234,7 @@ func (dbf *DBfake) TransactionRepoFindLastByAcountId(accountID uint) (port.Trans
 	return lastTransaction, nil
 }
 
-func (trf *TransactionRepoFake) Save(te port.TransactionEntity) error {
+func (trf *TransactionRepoFake) Save(_ context.Context, te port.TransactionEntity) error {
 	ok := trf.db.TransactionRepoSave(te)
 	if !ok {
 		return fmt.Errorf("transaction with AccountID %v not save", te.AccountID)
@@ -501,11 +502,11 @@ func (suite *PaymentSuite) assertBalanceAmounts(
 	expectedAmountFallback decimal.Decimal,
 	transactionAmount decimal.Decimal,
 ) {
-	accountEntity, err := allRepos.Account.FindByUID(tRequest.AccountUID)
+	accountEntity, err := allRepos.Account.FindByUID(context.Background(), tRequest.AccountUID)
 	assert.NoError(suite.T(), err)
 
 	// - Balance is updated
-	balanceEntity, err := allRepos.Balance.FindByAccountID(accountEntity.ID)
+	balanceEntity, err := allRepos.Balance.FindByAccountID(context.Background(), accountEntity.ID)
 	assert.Equal(suite.T(), balanceEntity.AmountTotal, expectedAmountTotal)
 	assert.NoError(suite.T(), err)
 

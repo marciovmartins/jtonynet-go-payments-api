@@ -1,10 +1,12 @@
 package port
 
+import "context"
+
 type MerchantEntity struct {
 	Name string
 	MCC  string
 }
 
 type MerchantRepository interface {
-	FindByName(string) (*MerchantEntity, error)
+	FindByName(ctx context.Context, name string) (*MerchantEntity, error)
 }

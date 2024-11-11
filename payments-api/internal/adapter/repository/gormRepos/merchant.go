@@ -1,6 +1,7 @@
 package gormRepos
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -15,7 +16,11 @@ type Merchant struct {
 }
 
 func NewMerchant(conn port.DBConn) (port.MerchantRepository, error) {
-	db := conn.GetDB()
+	db, err := conn.GetDB(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("merchant repository failure on conn.GetDB()")
+	}
+
 	dbGorm, ok := db.(*gorm.DB)
 	if !ok {
 		return nil, fmt.Errorf("merchant repository failure to cast conn.GetDB() as gorm.DB")
@@ -27,7 +32,7 @@ func NewMerchant(conn port.DBConn) (port.MerchantRepository, error) {
 	}, nil
 }
 
-func (m *Merchant) FindByName(name string) (*port.MerchantEntity, error) {
+func (m *Merchant) FindByName(_ context.Context, name string) (*port.MerchantEntity, error) {
 	merchantModel := gormModel.Merchant{}
 
 	result := m.db.Preload("MCC").Where(&gormModel.Merchant{Name: name}).First(&merchantModel)

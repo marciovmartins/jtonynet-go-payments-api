@@ -1,6 +1,8 @@
 package port
 
 import (
+	"context"
+
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
@@ -26,5 +28,5 @@ type TransactionEntity struct {
 }
 
 type TransactionRepository interface {
-	Save(TransactionEntity) error
+	Save(ctx context.Context, te TransactionEntity) error
 }

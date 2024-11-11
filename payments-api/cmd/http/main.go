@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/jtonynet/go-payments-api/config"
@@ -24,6 +25,6 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot initiate routes: ", err)
 	}
-	routes.HandleRequests(cfg.API)
+	routes.HandleRequests(context.Background(), cfg.API)
 
 }

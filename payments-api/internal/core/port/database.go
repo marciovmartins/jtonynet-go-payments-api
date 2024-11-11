@@ -1,8 +1,10 @@
 package port
 
+import "context"
+
 type DBConn interface {
-	GetDB() interface{}
-	Readiness() error
-	GetStrategy() string
-	GetDriver() string
+	GetDB(ctx context.Context) (interface{}, error)
+	Readiness(ctx context.Context) error
+	GetStrategy(ctx context.Context) (string, error)
+	GetDriver(ctx context.Context) (string, error)
 }

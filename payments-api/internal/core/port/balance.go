@@ -1,6 +1,8 @@
 package port
 
 import (
+	"context"
+
 	"github.com/google/uuid"
 
 	"github.com/shopspring/decimal"
@@ -21,6 +23,6 @@ type BalanceEntity struct {
 }
 
 type BalanceRepository interface {
-	FindByAccountID(uint) (BalanceEntity, error)
-	UpdateTotalAmount(BalanceEntity) error
+	FindByAccountID(ctx context.Context, id uint) (BalanceEntity, error)
+	UpdateTotalAmount(ctx context.Context, be BalanceEntity) error
 }
