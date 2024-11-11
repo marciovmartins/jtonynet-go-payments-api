@@ -61,7 +61,7 @@ __[Go Payments API](#header)__<br/>
 <a id="about"></a>
 ### 📖 Sobre
 
-> Projeto já finalizado como `Desafio` e atendendo aos requisitos. Porém, o considerei tão interessante que decidi continuar seu desenvolvimento para aplicar outros pontos que julguei relevantes e que já foram discutidos. Pretendo, ainda que de maneira local, atender ao requisito L4, embora tenha sido levantado apenas para esclarecimento, além de outros tópicos interessantes.
+> Projeto já finalizado como `Desafio` e atendendo aos requisitos. Porém, o considerei tão interessante que decidi continuar seu desenvolvimento. Pretendo, ainda que de maneira local, atender ao requisito L4, embora tenha sido levantado apenas para esclarecimento, além de outros tópicos interessantes.
 > 
 > 
 
