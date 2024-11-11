@@ -577,7 +577,7 @@ Utilizaria `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processa
 
 O processamento da transação verifica se a `account` já está registrada no `lock`. Se não estiver, a aplicação a insere no banco em memória e inicia suas tarefas. Caso já esteja registrada, indicando que outra instância está processando uma transação para a mesma `account`, a aplicação se inscreve em um canal, aguardando uma mensagem de desbloqueio por até 100 ms menos o tempo médio de processamento, evitando concorrência.
 
-Com [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/) (similar a `pub/sub`), quando o processamento terminar e a chave `account` for removida (pelo processo ou `ttl`), uma mensagem deve ser publicada aos inscritos, sinalizando a liberação do `lock`.
+Com [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/) (similar a `pub/sub`), quando o processamento terminar e a chave `account` for removida (pelo processo ou `ttl`), uma mensagem deve ser publicada pelo próprio `Redis` aos inscritos, sinalizando a liberação do `lock`.
 
 
 Como proposto na questão _"...uma pequena, mas existente probabilidade de ocorrerem duas transações ao mesmo tempo"_, a concorrência excessiva por `account` não deve ocorrer utilizando essa abordagem.
