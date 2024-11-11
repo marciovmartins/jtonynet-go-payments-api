@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -18,7 +19,11 @@ type AllRepos struct {
 func GetAll(conn port.DBConn) (AllRepos, error) {
 	repos := AllRepos{}
 
-	strategy := conn.GetStrategy()
+	strategy, err := conn.GetStrategy(context.Background())
+	if err != nil {
+		return AllRepos{}, fmt.Errorf("error when instantiating merchant repository: %v", err)
+	}
+
 	switch strategy {
 	case "gorm":
 		account, err := gormRepos.NewAccount(conn)

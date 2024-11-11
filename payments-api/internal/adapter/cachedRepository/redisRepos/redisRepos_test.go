@@ -48,8 +48,8 @@ func newMerchantRepoFake(db DBfake) port.MerchantRepository {
 	}
 }
 
-func (m *MerchantRepoFake) FindByName(Name string) (*port.MerchantEntity, error) {
-	MerchantEntity, err := m.db.MerchantRepoFindByName(Name)
+func (m *MerchantRepoFake) FindByName(_ context.Context, name string) (*port.MerchantEntity, error) {
+	MerchantEntity, err := m.db.MerchantRepoFindByName(name)
 	return MerchantEntity, err
 }
 
@@ -101,7 +101,7 @@ func (suite *RedisReposSuite) MerchantRepositoryFindByNameNotCached() {
 	_, err := suite.cacheConn.Get(context.Background(), merchantName)
 	assert.EqualError(suite.T(), err, "redis: nil")
 
-	merchantEntity, err := suite.cachedMerchantRepo.FindByName(merchantName)
+	merchantEntity, err := suite.cachedMerchantRepo.FindByName(context.Background(), merchantName)
 	assert.NoError(suite.T(), err)
 	assert.NotNil(suite.T(), merchantEntity)
 
@@ -113,7 +113,7 @@ func (suite *RedisReposSuite) MerchantRepositoryFindByNameCached() {
 	_, err := suite.cacheConn.Get(context.Background(), merchantName)
 	assert.NoError(suite.T(), err)
 
-	merchantEntity, err := suite.cachedMerchantRepo.FindByName(merchantName)
+	merchantEntity, err := suite.cachedMerchantRepo.FindByName(context.Background(), merchantName)
 	assert.NoError(suite.T(), err)
 	assert.NotNil(suite.T(), merchantEntity)
 }

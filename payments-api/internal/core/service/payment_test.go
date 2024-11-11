@@ -137,8 +137,8 @@ func newMerchantRepoFake(db DBfake) port.MerchantRepository {
 	}
 }
 
-func (m *MerchantRepoFake) FindByName(Name string) (*port.MerchantEntity, error) {
-	MerchantEntity, err := m.db.MerchantRepoFindByName(Name)
+func (m *MerchantRepoFake) FindByName(_ context.Context, name string) (*port.MerchantEntity, error) {
+	MerchantEntity, err := m.db.MerchantRepoFindByName(name)
 	return MerchantEntity, err
 }
 
@@ -234,7 +234,7 @@ func (dbf *DBfake) TransactionRepoFindLastByAcountId(accountID uint) (port.Trans
 	return lastTransaction, nil
 }
 
-func (trf *TransactionRepoFake) Save(te port.TransactionEntity) error {
+func (trf *TransactionRepoFake) Save(_ context.Context, te port.TransactionEntity) error {
 	ok := trf.db.TransactionRepoSave(te)
 	if !ok {
 		return fmt.Errorf("transaction with AccountID %v not save", te.AccountID)

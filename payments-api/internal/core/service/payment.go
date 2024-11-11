@@ -49,7 +49,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 	}
 
 	var merchant domain.Merchant
-	merchantEntity, err := p.merchantRepository.FindByName(tpr.Merchant)
+	merchantEntity, err := p.merchantRepository.FindByName(context.Background(), tpr.Merchant)
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to retrieve merchant entity with name %s", tpr.Merchant))
 	}
@@ -86,7 +86,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 		return p.rejectedGenericErr(fmt.Errorf("failed to update balance entity: %w", err))
 	}
 
-	err = p.transactionRepository.Save(mapTransactionDomainToEntity(transaction))
+	err = p.transactionRepository.Save(context.Background(), mapTransactionDomainToEntity(transaction))
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to save transaction entity: %w", err))
 	}

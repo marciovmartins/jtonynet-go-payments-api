@@ -1,7 +1,7 @@
 package gormConn
 
 import (
-	"errors"
+	"context"
 	"fmt"
 
 	"github.com/jtonynet/go-payments-api/config"
@@ -56,11 +56,11 @@ func New(cfg config.Database) (port.DBConn, error) {
 		return gConn, nil
 
 	default:
-		return nil, errors.New("database conn driver not suported: " + cfg.Driver)
+		return nil, fmt.Errorf("database conn driver not suported: %s", cfg.Driver)
 	}
 }
 
-func (gConn GormConn) Readiness() error {
+func (gConn GormConn) Readiness(_ context.Context) error {
 	rawDB, err := gConn.db.DB()
 	if err != nil {
 		return fmt.Errorf("failed to get database instance: %w", err)
@@ -73,14 +73,14 @@ func (gConn GormConn) Readiness() error {
 	return nil
 }
 
-func (gConn GormConn) GetDB() interface{} {
-	return gConn.db
+func (gConn GormConn) GetDB(_ context.Context) (interface{}, error) {
+	return gConn.db, nil
 }
 
-func (gConn GormConn) GetStrategy() string {
-	return gConn.strategy
+func (gConn GormConn) GetStrategy(_ context.Context) (string, error) {
+	return gConn.strategy, nil
 }
 
-func (gConn GormConn) GetDriver() string {
-	return gConn.driver
+func (gConn GormConn) GetDriver(_ context.Context) (string, error) {
+	return gConn.driver, nil
 }

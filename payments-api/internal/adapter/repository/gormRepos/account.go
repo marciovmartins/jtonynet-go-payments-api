@@ -17,7 +17,11 @@ type Account struct {
 }
 
 func NewAccount(conn port.DBConn) (port.AccountRepository, error) {
-	db := conn.GetDB()
+	db, err := conn.GetDB(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("account repository failure on conn.GetDB()")
+	}
+
 	dbGorm, ok := db.(*gorm.DB)
 	if !ok {
 		return nil, fmt.Errorf("account repository failure to cast conn.GetDB() as gorm.DB")

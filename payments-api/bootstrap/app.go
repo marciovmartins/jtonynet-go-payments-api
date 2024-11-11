@@ -51,7 +51,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate database: %v", err)
 	}
 
-	if dbConn.Readiness() != nil {
+	if dbConn.Readiness(context.Background()) != nil {
 		return App{}, fmt.Errorf("error: dont connecting to database: %v", err)
 	}
 

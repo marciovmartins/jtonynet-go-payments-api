@@ -21,12 +21,12 @@ func NewMerchant(conn port.Cache, mRepository port.MerchantRepository) (port.Mer
 	}, nil
 }
 
-func (m *Merchant) FindByName(name string) (*port.MerchantEntity, error) {
+func (m *Merchant) FindByName(_ context.Context, name string) (*port.MerchantEntity, error) {
 	var mEntity *port.MerchantEntity
 
 	merchantCached, err := m.redisConn.Get(context.Background(), name)
 	if err != nil {
-		mEntity, err = m.merchantRepository.FindByName(name)
+		mEntity, err = m.merchantRepository.FindByName(context.Background(), name)
 		if err != nil {
 			return mEntity, err
 		}

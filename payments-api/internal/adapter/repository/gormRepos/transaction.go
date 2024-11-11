@@ -1,6 +1,7 @@
 package gormRepos
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -15,7 +16,11 @@ type Transaction struct {
 }
 
 func NewTransaction(conn port.DBConn) (port.TransactionRepository, error) {
-	db := conn.GetDB()
+	db, err := conn.GetDB(context.Background())
+	if err != nil {
+		return nil, fmt.Errorf("transaction repository failure on conn.GetDB()")
+	}
+
 	dbGorm, ok := db.(*gorm.DB)
 	if !ok {
 		return nil, fmt.Errorf("transaction repository failure to cast conn.GetDB() as gorm.DB")
@@ -27,7 +32,7 @@ func NewTransaction(conn port.DBConn) (port.TransactionRepository, error) {
 	}, nil
 }
 
-func (t *Transaction) Save(tEntity port.TransactionEntity) error {
+func (t *Transaction) Save(_ context.Context, tEntity port.TransactionEntity) error {
 	transactionModel := &gormModel.Transaction{
 		UID:         uuid.New(),
 		AccountID:   tEntity.AccountID,

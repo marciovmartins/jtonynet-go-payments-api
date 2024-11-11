@@ -1,6 +1,7 @@
 package ginStrategy
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -26,7 +27,7 @@ func New(cfg config.Router, app bootstrap.App) (port.Router, error) {
 	return Gin{app}, nil
 }
 
-func (gr Gin) HandleRequests(cfg config.API) {
+func (gr Gin) HandleRequests(_ context.Context, cfg config.API) error {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/"
 
@@ -41,4 +42,6 @@ func (gr Gin) HandleRequests(cfg config.API) {
 
 	port := fmt.Sprintf(":%s", cfg.Port)
 	r.Run(port)
+
+	return nil
 }

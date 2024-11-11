@@ -2,6 +2,7 @@ package ginStrategy
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -71,9 +72,18 @@ func (suite *GinRouterSuite) SetupSuite() {
 }
 
 func (suite *GinRouterSuite) loadDBtestData(conn port.DBConn) {
-	switch conn.GetStrategy() {
+	strategy, err := conn.GetStrategy(context.Background())
+	if err != nil {
+		log.Fatalf("error retrieving database strategy: %v", err)
+	}
+
+	switch strategy {
 	case "gorm":
-		db := conn.GetDB()
+		db, err := conn.GetDB(context.Background())
+		if err != nil {
+			log.Fatalf("error retrieving database conn DB: %v", err)
+		}
+
 		dbGorm, ok := db.(*gorm.DB)
 		if !ok {
 			log.Fatalf("failure to cast conn.GetDB() as gorm.DB")
