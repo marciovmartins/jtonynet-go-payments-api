@@ -575,10 +575,10 @@ erDiagram
 
 Utilizaria `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esses dados sejam distintos. Um sistema de dados em memória rápido, como `Redis`, seria utilizado para armazenar e liberar locks, coordenando o acesso a recursos compartilhados de maneira eficiente.
 
-O processamento da transação deve verificar se a `account` já está registrada no `lock`. Se não estiver, a aplicação deve inseri-la no banco em memória e iniciar as tarefas. Caso outra instância esteja processando uma transação diferente para a mesma `account` (ou seja, se estiver bloqueada), a aplicação se inscreve em um canal onde aguarda uma mensagem de desbloqueio por até 100 ms menos o tempo médio de processo. Essa abordagem evita concorrência.
+O processamento da transação verifica se a `account` já está registrada no `lock`. Se não estiver, a aplicação a insere no banco em memória e inicia suas tarefas. Caso já esteja registrada, indicando que outra instância está processando uma transação para a mesma `account`, a aplicação se inscreve em um canal, aguardando uma mensagem de desbloqueio por até 100 ms menos o tempo médio de processamento, evitando concorrência.
 
+Com [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/) (similar a `pub/sub`), quando o processamento terminar e a chave `account` for removida (pelo processo ou `ttl`), uma mensagem deve ser publicada aos inscritos, sinalizando a liberação do `lock`.
 
-Utilizando o recurso de [`Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/), assim que o processamento da instância terminar, no momento em que a chave `account` for removida (pelo processo ou por `ttl`), uma mensagem será publicada informando a quem se subscreveu que aquele `lock` foi removido.
 
 Como proposto na questão _"...uma pequena, mas existente probabilidade de ocorrerem duas transações ao mesmo tempo"_, a concorrência excessiva por `account` não deve ocorrer utilizando essa abordagem.
 
@@ -734,7 +734,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Implantar uma versão inicial de `memory lock` (sugestão de solução L4).
 
-- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada em uma sessão no `Miro Board`, que em breve deve ser convertida em um `ADR` e em tarefas no `Kanban` a serem executadas conforme tenha disponibilidade.
+- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada em uma sessão no `Miro Board`. Pretendo criar um `ADR` e e tarefas no `Kanban` visando implantar parte do que foi discutido no `Miro`.
 
 - Testes adicionais poderiam ser criados (multiplos cenários de erros nas rotas e serviços). 
 
@@ -758,24 +758,5 @@ docker network prune -f
 docker system prune -a --volumes
 
 sudo systemctl restart docker
-
-# Balance Categories By AccountID
-SELECT
-   b.account_id, 
-   b.id AS balance_id,
-   b.uid AS balance_uid, 
-   b.amount, 
-   c.name, 
-   c.priority, STRING_AGG(mc.mcc, ',') AS codes 
-FROM 
-	balances AS b 
-JOIN 
-	categories AS c ON b.category_id = c.id 
-LEFT JOIN 
-	mccs AS mc ON c.id = mc.category_id 
-WHERE
-	b.account_id = 1 
-GROUP by
-	b.account_id, b.id, b.uid, b.amount, c.name, c.priority;
 -->
 
