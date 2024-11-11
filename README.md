@@ -555,7 +555,7 @@ erDiagram
 **balances** Armazena os saldos por categoria.<br/>
 **transactions** Registra o histórico de transações realizadas.<br/>
 **categories**: Cada categoria (FOOD, MEAL, CASH...) é armazenada. O campo `priority` permite definir a prioridade ou a sequência da categoria<br/>
-**mcc_codes** Contém MCCs (códigos de quatro dígitos) e uma `category_id` correspondente, associada a categoria.<br/>
+**mccs** Contém MCCs (códigos de quatro dígitos) e uma `category_id` correspondente, associada a categoria.<br/>
 **merchant** para ajustar MCCs incorretos de acordo com o nome do comerciante.
 
 
