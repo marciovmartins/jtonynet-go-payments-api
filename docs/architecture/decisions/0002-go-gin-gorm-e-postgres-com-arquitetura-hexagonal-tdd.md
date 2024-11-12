@@ -12,7 +12,7 @@ Precisamos definir o melhor fluxo de trabalho e testes para a go-payments-api.
 
 Existem muitas opções para a arquitetura base, pois elementos cruciais para o projeto foram deixados em aberto (ainda que o desafiante tenha suas __preferências__), conforme descrito na seção [Sobre do arquivo README.md](../../../README.md).
 
-O desafio não cita testes, embora acredite fortemente que a Pirâmide de Testes possa auxiliar no fluxo de desenvolvimento.
+O desafio cita implementação de testes, dos quais utilizarei os `unit tests` e `integration tests` em minhas `services`, `repositories` e `routes` para auxiliar no fluxo de desenvolvimento em `TDD`.
 
 <img src="../../assets/images/layout/graphics/test_pyramid.jpg">
 

@@ -432,9 +432,9 @@ flowchart TD
     G --> K[Registrar Transação Aprovada]
     I --> K[Registrar Transação Aprovada]
     
-    K --> M[✅<br/>Retorna Código **00** <br/> Aprovada]
+    K --> M[✅<br/><b>Aprovada</b><br/> Retorna Código <b>00</b>]
     
-    J --> N[❌<br/>Retorna Código **51** <br/> Rejeitada]
+    J --> N[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>51</b> por Saldo Insuficiente</b>]
 
     N --> O([⏹️<br/>Fim do Processo])
     M --> O
@@ -574,7 +574,7 @@ erDiagram
 
 > Transações simultâneas: dado que o mesmo cartão de crédito pode ser utilizado em diferentes serviços online, existe uma pequena mas existente probabilidade de ocorrerem duas transações ao mesmo tempo. O que você faria para garantir que apenas uma transação por conta fosse processada em um determinado momento? Esteja ciente do fato de que todas as solicitações de transação são síncronas e devem ser processadas rapidamente (menos de 100 ms), ou a transação atingirá o timeout.
 
-#### 🔒 Locks Distribuídos com Pub/Sub disparado por Banco em Memória
+#### 🔒 Locks Distribuídos com Redis e Keyspace Notification
 
 Utilizaria `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esses dados sejam distintos. Um sistema de dados em memória rápido, como `Redis`, seria utilizado para armazenar e liberar locks, coordenando o acesso a recursos compartilhados de maneira eficiente.
 
@@ -591,28 +591,30 @@ flowchart TD
     A([▶️<br/>Recebe Transação JSON]) --> B[Inicia Processamento de Transação]
     B --> C{Account da Transação está Bloqueado no <b>Lock Distribuído</b>?}
     
-    C -- Não --> D[🔐<br/>Bloqueia Account da Transação no <b>Lock Distribuído</b>]
+    C -- Não --> D[🔐<br/><b>Bloqueia</b><br/>Account da Transação no Lock Distribuído]
     D  --> E[Processa Transação]
 
-    C -- Sim --> M[✉️⬅️<br/>⏸️<br/><b>Subscreve Redis Keyspace Notification</b> e aguarda receber Mensagem de desbloqueio da Account do <b>Lock Distribuído</b>]
-    M --> N{Recebi Mensagem de desbloqueio em tempo útil? <br/> <b><i>t<i> < 100 ms - tempo médio de processo</b>}
+    C -- Sim --> M[✉️⬅️<br/><b>Subscreve</b><br/>Redis Keyspace Notification<br/><br/> ]
+    M --> R[⏸️<br/><b>Aguarda</b><br> receber Mensagem de desbloqueio da Account do Redis Keyspace Notification]
+    R --> N{Recebi Mensagem de desbloqueio em tempo útil? <br/> <b><i>t<i> < 100 ms - tempo médio de processo</b>}
     N -- Sim --> D
-    N -- Não --> O[❌<br/>Retorna Código <b>07<br/> Rejeitada por Falha Genérica</b>]
+    N -- Não --> O[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>07</b> por Falha Genérica</b>]
 
     E --> F{Ocorreu Erro no Processo da Transação?}
     F -- Não --> G{Saldo é Suficiente?}
-    F -- Sim --> K[❌<br/>Retorna Código <b>07<br/> Rejeitada por Falha Genérica</b>]
+    F -- Sim --> K[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>07</b> por Falha Genérica</b>]
     K --> J
     
     G -- Sim --> H[Atualiza Saldo e Registra Transação Aprovada]
-    H --> I[✅<br>Retorna Código <b>00 <br/> Aprovada</b>]
-    I --> J[🔓<br/>Desbloqueia Account da Transação no <br> <b>Lock Distribuído</b>]
+    H --> I[✅<br/><b>Aprovada</b><br/> Retorna Código <b>00</b>]
+    I --> J[🔓<br/><b>Desbloqueia</b><br/> Account da Transação no <br> Lock Distribuído]
 
-    G -- Não --> L[❌<br/>Retorna Código <b>51 <br/> Rejeitada por Saldo Insuficiente</b>]
+    G -- Não --> L[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>51</b> por Saldo Insuficiente</b>]
     L --> J
 
-    J --> P[✉️➡️<br/><b>Publica mensagem de desbloqueio Redis Keyspace Notification</b>]
+    J --> P[✉️➡️<br/><b>Publica</b><br/> mensagem de desbloqueio Redis Keyspace Notification]
     P --> Q([⏹️<br/>Fim do Processo])
+    O --> Q
 
     style D fill:#78771b,stroke:#000
     style I fill:#009933,stroke:#000
@@ -622,11 +624,23 @@ flowchart TD
     style O fill:#cc0000,stroke:#000
 
     style M fill:#007bff,stroke:#000
+    style R fill:#007bff,stroke:#000
 
     style J fill:#78771b,stroke:#000
-    style P fill:#007bff,stroke:#000,stroke-width:4px
-
+    style P fill:#007bff,stroke:#000
 ```
+
+<br/>
+<br/>
+
+O diagrama de fluxo acima foi produzido após uma sessão de `Miro Board` conduzida pelos proponentes do desafio. O diagrama Miro da proposta de arquitetura, resultado dessa sessão, pode ser visto abaixo:
+
+<img src="./docs/assets/images/screen_captures/miro/interview_architecture_proposal_v1.jpeg">
+
+A partir desse diagrama, construí uma segunda versão com poucas modificações, acrescentando detalhes e contexto para os que não estiveram presentes nessa sessão. Esse diagrama gerou o ADR __[0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md)__, visando nortear a implementação do requisito L4 neste projeto, com finalidade estritamente de treinamento.
+
+Via de regra, o que foi discutido naquela reunião deve ser implementado.
+
 
 <br/>
 
@@ -656,8 +670,7 @@ flowchart TD
 
 - [0001: Registro de Decisões de Arquitetura (ADR)](./docs/architecture/decisions/0001-registro-de-decisoes-de-arquitetura.md)
 - [0002: Go, Gin, Gorm e PostgreSQL com Arquitetura Hexagonal e TDD](./docs/architecture/decisions/0002-go-gin-gorm-e-postgres-com-arquitetura-hexagonal-tdd.md)
-
-
+- [0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md)
 
 <br/>
 
@@ -755,6 +768,9 @@ Essas são minhas considerações sobre o que consegui produzir ao longo desse d
 <br/>
 
 [⤴️ de volta ao índice](#index)
+
+
+
 
 <!--
 docker stop $(docker ps -aq)
