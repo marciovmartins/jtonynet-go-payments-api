@@ -208,7 +208,7 @@ Após a `.env` renomeada, rode os comandos `docker compose` (de acordo com sua v
 # Construir a imagem
 docker compose build
 
-# Rodar o PostgreSQL de Desenvolvimento
+# Rodar o PostgreSQL e o Redis de Desenvolvimento
 docker compose up postgres-payments redis-payments -d
 
 # Rodar a API
