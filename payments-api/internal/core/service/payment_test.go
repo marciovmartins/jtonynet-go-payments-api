@@ -103,7 +103,7 @@ func newAccountRepoFake(db DBfake) port.AccountRepository {
 }
 
 func (arf *AccountRepoFake) FindByUID(_ context.Context, uid uuid.UUID) (port.AccountEntity, error) {
-	accountEntity, err := arf.db.AccountRepoFindByUID(nil, uid)
+	accountEntity, err := arf.db.AccountRepoFindByUID(context.Background(), uid)
 	return accountEntity, err
 }
 

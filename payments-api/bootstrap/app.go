@@ -10,9 +10,9 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/support"
 	"github.com/jtonynet/go-payments-api/internal/support/logger"
 
-	"github.com/jtonynet/go-payments-api/internal/adapter/cache"
-	"github.com/jtonynet/go-payments-api/internal/adapter/cachedRepository"
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
+	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
+	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryRepository"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 
 	"github.com/jtonynet/go-payments-api/internal/core/service"
@@ -33,13 +33,24 @@ func NewApp(cfg *config.Config) (App, error) {
 	}
 	app.Logger = logger
 
-	cacheConn, err := cache.New(cfg.Cache)
+	cacheInMemoryCfg, _ := cfg.Cache.ToInMemoryDB()
+	cacheConn, err := inMemoryDatabase.NewConn(cacheInMemoryCfg)
 	if err != nil {
 		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
 	}
 
 	if cacheConn.Readiness(context.Background()) != nil {
 		return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
+	}
+
+	lockInMemoryCfg, _ := cfg.Lock.ToInMemoryDB()
+	lockConn, err := inMemoryDatabase.NewConn(lockInMemoryCfg)
+	if err != nil {
+		return App{}, fmt.Errorf("error: dont instantiate lock client: %v", err)
+	}
+
+	if lockConn.Readiness(context.Background()) != nil {
+		return App{}, fmt.Errorf("error: dont connecting to lock: %v", err)
 	}
 
 	if logger != nil {
@@ -64,7 +75,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate repositories: %v", err)
 	}
 
-	cachedMerchantRepo, err := cachedRepository.NewMerchant(
+	cachedMerchantRepo, err := inMemoryRepository.NewMerchant(
 		cacheConn,
 		allRepos.Merchant,
 	)

@@ -303,13 +303,13 @@ docker compose up test-postgres-payments -d
 Comando para executar o teste _conteinerizado_ com a API levantada
 ```bash
 # Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
-docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
+docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
 ```
 
 Comando para executar o teste _local_ em `payments-api`
 ```bash
 # Executa Testes Localmente com ENV test (PostgreSQL de Testes na Integração)
-ENV=test go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
+ENV=test go test -v -count=1  ./internal/adapter/repository ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
 ```
 
 <br/>
@@ -339,7 +339,7 @@ Como as `migrations` e `seeds` ainda não foram adicionadas ao projeto, você po
 
 ```bash
 # Executa Testes no Docker com ENV dev (PostgreSQL de Desenvolvimento na Integração)
-docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
+docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
 ```
 
 <br/>
@@ -596,7 +596,7 @@ flowchart TD
     B --> C{Account da Transação está Bloqueado no <b>Lock Distribuído</b>?}
     
     C -- Não --> D[🔐<br/><b>Bloqueia</b><br/>Account da Transação no Lock Distribuído]
-    D  --> E[[<a href='https://github.com/jtonynet/go-payments-api/tree/32-implementar-memory-lock?tab=readme-ov-file#diagrams-flowchart'>Processa Autorização de Pagamento</a>]]
+    D  --> E[[Processa Autorização de Pagamento]]
 
     C -- Sim --> M[✉️⬅️<br/><b>Subscreve</b><br/>Redis Keyspace Notification<br/><br/> ]
     M --> R[⏸️<br/><b>Aguarda</b><br> receber Mensagem de desbloqueio da Account do Redis Keyspace Notification]
@@ -634,7 +634,7 @@ flowchart TD
     style P fill:#007bff,stroke:#000
 ```
 
-_*A etapa `Processa Autorização de Pagamento` está descrita como uma sub-rotina vinculada ao diagrama de fluxo de Autorização de Pagamento, embora continue de forma simplificada para que o fluxograma faça sentido. Considere os detalhes desse processamento para o débito de saldos. Esses diagramas são interpretações do sistema e não sua implementação._
+_*A etapa [`Processa Autorização de Pagamento`](#diagrams-flowchart) está descrita como uma sub-rotina vinculada ao diagrama de fluxo de Autorização de Pagamento, embora continue de forma simplificada para que o fluxograma faça sentido. Considere os detalhes desse processamento para o débito de saldos. Esses diagramas são interpretações do sistema e não sua implementação._
 
 <br/>
 <br/>

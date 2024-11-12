@@ -1,14 +1,14 @@
-package cachedRepository
+package inMemoryRepository
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/jtonynet/go-payments-api/internal/adapter/cachedRepository/redisRepos"
+	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryRepository/redisRepos"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
-func NewMerchant(conn port.Cache, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
+func NewMerchant(conn port.InMemoryDBConn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
 	var mr port.MerchantRepository
 
 	strategy, err := conn.GetStrategy(context.Background())

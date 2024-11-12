@@ -74,4 +74,4 @@ jobs:
 
     - name: Test
       working-directory: ./payments-api
-      run: ENV=test go test -v ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
+      run: ENV=test go test -v ./internal/adapter/repository ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy

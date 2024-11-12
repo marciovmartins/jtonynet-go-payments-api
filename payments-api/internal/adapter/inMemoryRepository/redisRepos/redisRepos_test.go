@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/jtonynet/go-payments-api/config"
-	"github.com/jtonynet/go-payments-api/internal/adapter/cache"
+	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -17,7 +17,7 @@ var merchantName = "XYZ*TestCachedRepositoryMerchant                   PIRAPORIN
 type RedisReposSuite struct {
 	suite.Suite
 
-	cacheConn          port.Cache
+	cacheConn          port.InMemoryDBConn
 	cachedMerchantRepo port.MerchantRepository
 }
 
@@ -70,7 +70,8 @@ func (suite *RedisReposSuite) SetupSuite() {
 		log.Fatalf("cannot load config: %v", err)
 	}
 
-	cacheConn, err := cache.New(cfg.Cache)
+	cacheInMemoryCfg, _ := cfg.Cache.ToInMemoryDB()
+	cacheConn, err := inMemoryDatabase.NewConn(cacheInMemoryCfg)
 	if err != nil {
 		log.Fatalf("error: dont instantiate cache client: %v", err)
 	}

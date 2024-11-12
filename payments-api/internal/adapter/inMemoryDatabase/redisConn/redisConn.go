@@ -1,4 +1,4 @@
-package redisStrategy
+package redisConn
 
 import (
 	"context"
@@ -23,7 +23,7 @@ type RedisConn struct {
 	expiration time.Duration
 }
 
-func New(cfg config.Cache) (*RedisConn, error) {
+func New(cfg config.InMemoryDB) (*RedisConn, error) {
 	strAddr := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
 
 	db := redis.NewClient(&redis.Options{

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type Cache interface {
+type InMemoryDBConn interface {
 	Readiness(ctx context.Context) error
 	GetStrategy(ctx context.Context) (string, error)
 	Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error
