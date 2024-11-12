@@ -596,7 +596,7 @@ flowchart TD
     B --> C{Account da Transação está Bloqueado no <b>Lock Distribuído</b>?}
     
     C -- Não --> D[🔐<br/><b>Bloqueia</b><br/>Account da Transação no Lock Distribuído]
-    D  --> E[[<a href='#diagrams-flowchart'>Processa Autorização de Pagamento</a>]]
+    D  --> E[[<a href='https://github.com/jtonynet/go-payments-api/tree/32-implementar-memory-lock?tab=readme-ov-file#diagrams-flowchart'>Processa Autorização de Pagamento</a>]]
 
     C -- Sim --> M[✉️⬅️<br/><b>Subscreve</b><br/>Redis Keyspace Notification<br/><br/> ]
     M --> R[⏸️<br/><b>Aguarda</b><br> receber Mensagem de desbloqueio da Account do Redis Keyspace Notification]
