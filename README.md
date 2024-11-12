@@ -285,8 +285,11 @@ Para rodar os [Testes Automatizados](#test-auto) com a API fora do container, de
 
 No arquivo `/.env.TEST`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
-DATABASE_HOST=localhost ### local: localhost | conteinerized: test-postgres-payments
-DATABASE_PORT=5433 ### local: 5433 | conteinerized: 5432
+DATABASE_HOST=localhost         ### local: localhost | conteinerized: test-postgres-payments
+DATABASE_PORT=5433              ### local: 5433 | conteinerized: 5432
+
+IN_MEMORY_CACHE_HOST=localhost  ### local: localhost | conteinerized: redis-payments
+IN_MEMORY_LOCK_HOST=localhost   ### local: localhost | conteinerized: redis-payments
 ```
 <br/>
 
