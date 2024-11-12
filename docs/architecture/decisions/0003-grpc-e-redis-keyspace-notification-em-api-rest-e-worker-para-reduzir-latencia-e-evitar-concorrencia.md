@@ -180,6 +180,6 @@ flowchart TD
 
 A concorrência será mitigada com essas peças de software e sugestões de implementação, sem a necessidade de um robusto sistema de filas para validar o processamento dentro da `SLA` de pagamento de 100ms. Como `trade-off`, perdemos o reprocessamento e a persistência que teríamos com filas, o que podemos mitigar com o uso de `métricas` e `logs` que foram previstos no desafio, mas não devo implantar por ora. A solução é satisfatória e deve atender às demandas do negócio. 
 
-É importante validar continuamente o impacto dessa decisão à medida que o volume de transações cresce. De todas as formas, como o sistema foi desenvolvido de maneira `hexagonal`, não é complicado alterar a forma como o `unlock` é feito, de `pub/sub` para `filas` ou outros, no futuro, se fizer sentido.
+É importante validar continuamente o impacto dessa decisão à medida que o volume de transações cresce. De todas as formas, como o sistema foi desenvolvido de maneira `hexagonal`, não deve ser complicado alterar a forma como o `unlock` é feito, de `pub/sub` para `filas` ou outros, no futuro, se fizer sentido.
 
 
