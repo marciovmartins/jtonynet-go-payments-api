@@ -70,8 +70,8 @@ func (suite *RedisReposSuite) SetupSuite() {
 		log.Fatalf("cannot load config: %v", err)
 	}
 
-	cacheInMemoryCfg, _ := cfg.Cache.ToInMemoryDB()
-	cacheConn, err := inMemoryDatabase.NewConn(cacheInMemoryCfg)
+	cacheCfg, _ := cfg.Cache.ToInMemoryDatabase()
+	cacheConn, err := inMemoryDatabase.NewConn(cacheCfg)
 	if err != nil {
 		log.Fatalf("error: dont instantiate cache client: %v", err)
 	}

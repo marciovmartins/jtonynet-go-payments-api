@@ -7,12 +7,12 @@ import (
 	"github.com/google/uuid"
 )
 
-type InMemoryLockEntity struct {
+type LockEntity struct {
 	Key       uuid.UUID
 	Timestamp time.Time
 }
 
-type InMemoryLockRepository interface {
+type LockRepository interface {
 	Lock(ctx context.Context, key string, value interface{}, expiration time.Duration) error
 	Unlock(ctx context.Context, key string) error
 	GetLockedValue(ctx context.Context, key string) (string, error)

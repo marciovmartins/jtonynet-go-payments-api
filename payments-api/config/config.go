@@ -34,7 +34,7 @@ type Database struct {
 	SSLmode string `mapstructure:"DATABASE_SSLMODE"`
 }
 
-type InMemoryDB struct {
+type InMemoryDatabase struct {
 	Strategy   string
 	Pass       string
 	Port       string
@@ -44,8 +44,8 @@ type InMemoryDB struct {
 	Expiration int
 }
 
-type InMemoryDBconverter interface {
-	ToInMemoryDB() (InMemoryDB, error)
+type InMemoryDatabaseConverter interface {
+	ToInMemoryDatabase() (InMemoryDatabase, error)
 }
 type Cache struct {
 	Strategy   string `mapstructure:"IN_MEMORY_CACHE_STRATEGY"`
@@ -57,8 +57,8 @@ type Cache struct {
 	Expiration int    `mapstructure:"IN_MEMORY_CACHE_EXPIRATION_DEFAULT_IN_MS"`
 }
 
-func (c *Cache) ToInMemoryDB() (InMemoryDB, error) {
-	return InMemoryDB{
+func (c *Cache) ToInMemoryDatabase() (InMemoryDatabase, error) {
+	return InMemoryDatabase{
 		Strategy:   c.Strategy,
 		Pass:       c.Pass,
 		Port:       c.Port,
@@ -79,8 +79,8 @@ type Lock struct {
 	Expiration int    `mapstructure:"IN_MEMORY_LOCK_EXPIRATION_DEFAULT_IN_MS"`
 }
 
-func (l *Lock) ToInMemoryDB() (InMemoryDB, error) {
-	return InMemoryDB{
+func (l *Lock) ToInMemoryDatabase() (InMemoryDatabase, error) {
+	return InMemoryDatabase{
 		Strategy:   l.Strategy,
 		Pass:       l.Pass,
 		Port:       l.Port,

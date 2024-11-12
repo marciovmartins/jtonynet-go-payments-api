@@ -10,7 +10,7 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
-func NewConn(cfg config.InMemoryDB) (port.InMemoryDBConn, error) {
+func NewConn(cfg config.InMemoryDatabase) (port.InMemoryDBConn, error) {
 	switch cfg.Strategy {
 	case "redis":
 		return redisConn.New(cfg)
