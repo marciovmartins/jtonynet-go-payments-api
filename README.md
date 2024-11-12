@@ -412,6 +412,7 @@ _*Diagramas Mermaid podem apresentar problemas de visualização em aplicativos 
 
 <a id="diagrams-flowchart"></a>
 #### 📈 Fluxo
+__Autorização de Pagamento__
 
 ```mermaid
 flowchart TD
@@ -595,7 +596,7 @@ flowchart TD
     B --> C{Account da Transação está Bloqueado no <b>Lock Distribuído</b>?}
     
     C -- Não --> D[🔐<br/><b>Bloqueia</b><br/>Account da Transação no Lock Distribuído]
-    D  --> E[Processa Transação]
+    D  --> E[[<a href='#diagrams-flowchart'>Processa Autorização de Pagamento</a>]]
 
     C -- Sim --> M[✉️⬅️<br/><b>Subscreve</b><br/>Redis Keyspace Notification<br/><br/> ]
     M --> R[⏸️<br/><b>Aguarda</b><br> receber Mensagem de desbloqueio da Account do Redis Keyspace Notification]
@@ -632,6 +633,8 @@ flowchart TD
     style J fill:#78771b,stroke:#000
     style P fill:#007bff,stroke:#000
 ```
+
+_*A etapa `Processa Autorização de Pagamento` está descrita como uma sub-rotina vinculada ao diagrama de fluxo de Autorização de Pagamento, embora continue de forma simplificada para que o fluxograma faça sentido. Considere os detalhes desse processamento para o débito de saldos. Esses diagramas são interpretações do sistema e não sua implementação._
 
 <br/>
 <br/>
