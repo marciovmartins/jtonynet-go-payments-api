@@ -120,7 +120,6 @@ A única alteração arquitetural feita nesse diagrama, se comparado ao da reuni
 
 **Patterns Utilizados:**
 - Cache Aside
-- Circuit Breaker
 - Message Queue
 
 
