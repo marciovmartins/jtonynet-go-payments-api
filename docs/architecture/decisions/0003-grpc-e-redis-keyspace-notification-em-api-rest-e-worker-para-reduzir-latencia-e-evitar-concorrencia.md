@@ -86,7 +86,7 @@ O Diagrama produzido nesse `meeting` se encontra abaixo:
 
 <img src="../../assets/images/screen_captures/miro/interview_architecture_proposal_v1.jpeg">
 
-As questões de protocolos e patterns e outras, embora não estejam presentes no diagrama, foram esclarecidas de maneira verbal ao longo da reunião. Esse documento procura se ater as questoes de concorrencia especificadas do requisito L4. Demais features da arquitetura, caso decida implementar, ganharam seus proprios ADRs (`notification-api`, `metrics-log`), embora tenha fortes ideias de como implanta-los.
+As questões de protocolos e patterns e outras, embora não estejam presentes no diagrama, foram esclarecidas de maneira verbal ao longo da reunião. Esse documento procura se ater as questões de concorrência especificadas do requisito L4. Demais features da arquitetura, caso decida implementar, ganharão seus proprios ADRs (`notification-api`, `metrics-log`), embora tenha fortes ideias de como implantá-los.
 
 ## Decisão
 
