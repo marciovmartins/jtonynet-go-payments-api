@@ -432,15 +432,19 @@ flowchart TD
     G --> K[Registrar Transação Aprovada]
     I --> K[Registrar Transação Aprovada]
     
-    K --> M[✅<br/><b>Aprovada</b><br/> Retorna Código <b>00</b>]
+    K --> P{Ocorreu Erro no Processo da Transação?}
+    P -- Sim --> Q[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>07</b> por Falha Genérica</b>]
+        P -- Não --> M[✅<br/><b>Aprovada</b><br/> Retorna Código <b>00</b>]
     
     J --> N[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>51</b> por Saldo Insuficiente</b>]
 
     N --> O([⏹️<br/>Fim do Processo])
     M --> O
+    Q --> O
 
     style M fill:#009933,stroke:#000
     style N fill:#cc0000,stroke:#000
+    style Q fill:#cc0000,stroke:#000
 ```
 _*Diagrama apresenta uma interpretação do sistema_
 
@@ -466,7 +470,6 @@ _*Diagrama apresenta uma interpretação do sistema_
 7. **Retorna Código "00"**: Se a transação foi aprovada, retorna o código "00" (aprovada).
 
 8. **Retorna Código "51"**: Se a transação foi rejeitada por falta de fundos, retorna o código "51".
-
 
 <br/>
 
