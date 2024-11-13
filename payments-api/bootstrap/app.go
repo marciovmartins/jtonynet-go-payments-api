@@ -83,11 +83,17 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate merchant cached repository: %v", err)
 	}
 
+	memoryLockRepo, err := inMemoryRepository.NewMemoryLock(lockConn)
+	if err != nil {
+		return App{}, fmt.Errorf("error: dont instantiate memory lock repository: %v", err)
+	}
+
 	app.PaymentService = service.NewPayment(
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
 		cachedMerchantRepo,
+		memoryLockRepo,
 		logger,
 	)
 

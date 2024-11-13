@@ -15,6 +15,7 @@ type Payment struct {
 	balanceRepository     port.BalanceRepository
 	transactionRepository port.TransactionRepository
 	merchantRepository    port.MerchantRepository
+	memoryLockRepository  port.MemoryLockRepository
 
 	logger support.Logger
 }
@@ -24,6 +25,7 @@ func NewPayment(
 	bRepository port.BalanceRepository,
 	tRepository port.TransactionRepository,
 	mRepository port.MerchantRepository,
+	mlRepository port.MemoryLockRepository,
 
 	logger support.Logger,
 ) *Payment {
@@ -32,6 +34,7 @@ func NewPayment(
 		balanceRepository:     bRepository,
 		transactionRepository: tRepository,
 		merchantRepository:    mRepository,
+		memoryLockRepository:  mlRepository,
 
 		logger: logger,
 	}

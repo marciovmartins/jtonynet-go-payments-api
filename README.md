@@ -637,7 +637,8 @@ flowchart TD
     style P fill:#007bff,stroke:#000
 ```
 
-_*A etapa [`Processa Autorização de Pagamento`](#diagrams-flowchart) está descrita como uma sub-rotina vinculada ao diagrama de fluxo de Autorização de Pagamento, embora continue de forma simplificada para que o fluxograma faça sentido. Considere os detalhes desse processamento para o débito de saldos. Esses diagramas são interpretações do sistema e não sua implementação._
+_*Esses diagramas representam uma interpretação do sistema, não sua implementação.<br/>**A etapa [`Processa Autorização de Pagamento`](#diagrams-flowchart) é uma sub-rotina vinculada ao diagrama de fluxo de Autorização de Pagamento, mantida de forma simplificada para que esse fluxograma tenha sentido isoladamente. Considere os detalhes do processamento para o débito de saldos das categorias corretas no fluxograma vinculado._
+
 
 <br/>
 <br/>

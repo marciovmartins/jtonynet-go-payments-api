@@ -7,6 +7,13 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
+func mapTransactionRequestToMemoryLockEntity(tMemoryLock port.TransactionPaymentRequest) port.MemoryLockEntity {
+	return port.MemoryLockEntity{
+		Key:       tMemoryLock.AccountUID.String(),
+		Timestamp: tMemoryLock.Timestamp,
+	}
+}
+
 func mapMerchantEntityToDomain(mEntity *port.MerchantEntity) domain.Merchant {
 	return domain.Merchant{
 		Name: mEntity.Name,

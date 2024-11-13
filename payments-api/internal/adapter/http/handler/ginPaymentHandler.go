@@ -25,13 +25,13 @@ import (
 // @Router /payment [post]
 // @Success 200 {object} port.TransactionPaymentResponse
 func PaymentExecution(ctx *gin.Context) {
-	startTime := time.Now()
+	timestamp := time.Now().UnixMilli()
 
 	app := ctx.MustGet("app").(bootstrap.App)
 	logger := app.Logger
 
 	defer func() {
-		elapsedTime := time.Since(startTime).Milliseconds()
+		elapsedTime := time.Now().UnixMilli() - timestamp
 		debugLog(
 			logger,
 			fmt.Sprintf("Execution time: %d ms\n", elapsedTime),
@@ -51,6 +51,7 @@ func PaymentExecution(ctx *gin.Context) {
 
 		return
 	}
+	transactionRequest.Timestamp = timestamp
 
 	validationErrors, ok := dtoIsValid(transactionRequest)
 	if !ok {
