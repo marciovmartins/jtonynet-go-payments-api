@@ -281,6 +281,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteGenericRejected() {
 		allRepos.Transaction,
 		allRepos.Merchant,
 		nil,
+		nil,
 	)
 
 	returnCode, _ := paymentService.Execute(tRequest)
@@ -308,6 +309,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 		allRepos.Balance,
 		allRepos.Transaction,
 		allRepos.Merchant,
+		nil,
 		nil,
 	)
 
@@ -339,6 +341,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsApproved() {
 		allRepos.Balance,
 		allRepos.Transaction,
 		allRepos.Merchant,
+		nil,
 		nil,
 	)
 	returnCode, err := paymentService.Execute(tRequest)
@@ -383,6 +386,7 @@ func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
 		allRepos.Transaction,
 		allRepos.Merchant,
 		nil,
+		nil,
 	)
 	returnCode, err := paymentService.Execute(tRequest)
 
@@ -426,6 +430,7 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
 		allRepos.Transaction,
 		allRepos.Merchant,
 		nil,
+		nil,
 	)
 	returnCode, err := paymentService.Execute(tRequest)
 
@@ -468,6 +473,7 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCFallbackApproved() {
 		allRepos.Balance,
 		allRepos.Transaction,
 		allRepos.Merchant,
+		nil,
 		nil,
 	)
 	returnCode, err := paymentService.Execute(tRequest)

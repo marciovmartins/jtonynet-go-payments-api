@@ -48,13 +48,13 @@ type InMemoryDatabaseConverter interface {
 	ToInMemoryDatabase() (InMemoryDatabase, error)
 }
 type Cache struct {
-	Strategy   string `mapstructure:"IN_MEMORY_CACHE_STRATEGY"`
-	Pass       string `mapstructure:"IN_MEMORY_CACHE_PASSWORD"`
-	Port       string `mapstructure:"IN_MEMORY_CACHE_PORT"`
-	Host       string `mapstructure:"IN_MEMORY_CACHE_HOST"`
-	DB         int    `mapstructure:"IN_MEMORY_CACHE_DB"`
-	Protocol   int    `mapstructure:"IN_MEMORY_CACHE_PROTOCOL"`
-	Expiration int    `mapstructure:"IN_MEMORY_CACHE_EXPIRATION_DEFAULT_IN_MS"`
+	Strategy   string `mapstructure:"CACHE_IN_MEMORY_STRATEGY"`
+	Pass       string `mapstructure:"CACHE_IN_MEMORY_PASSWORD"`
+	Port       string `mapstructure:"CACHE_IN_MEMORY_PORT"`
+	Host       string `mapstructure:"CACHE_IN_MEMORY_HOST"`
+	DB         int    `mapstructure:"CACHE_IN_MEMORY_DB"`
+	Protocol   int    `mapstructure:"CACHE_IN_MEMORY_PROTOCOL"`
+	Expiration int    `mapstructure:"CACHE_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS"`
 }
 
 func (c *Cache) ToInMemoryDatabase() (InMemoryDatabase, error) {
@@ -70,13 +70,13 @@ func (c *Cache) ToInMemoryDatabase() (InMemoryDatabase, error) {
 }
 
 type Lock struct {
-	Strategy   string `mapstructure:"IN_MEMORY_LOCK_STRATEGY"`
-	Pass       string `mapstructure:"IN_MEMORY_LOCK_PASSWORD"`
-	Port       string `mapstructure:"IN_MEMORY_LOCK_PORT"`
-	Host       string `mapstructure:"IN_MEMORY_LOCK_HOST"`
-	DB         int    `mapstructure:"IN_MEMORY_LOCK_DB"`
-	Protocol   int    `mapstructure:"IN_MEMORY_LOCK_PROTOCOL"`
-	Expiration int    `mapstructure:"IN_MEMORY_LOCK_EXPIRATION_DEFAULT_IN_MS"`
+	Strategy   string `mapstructure:"LOCK_IN_MEMORY_STRATEGY"`
+	Pass       string `mapstructure:"LOCK_IN_MEMORY_PASSWORD"`
+	Port       string `mapstructure:"LOCK_IN_MEMORY_PORT"`
+	Host       string `mapstructure:"LOCK_IN_MEMORY_HOST"`
+	DB         int    `mapstructure:"LOCK_IN_MEMORY_DB"`
+	Protocol   int    `mapstructure:"LOCK_IN_MEMORY_PROTOCOL"`
+	Expiration int    `mapstructure:"LOCK_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS"`
 }
 
 func (l *Lock) ToInMemoryDatabase() (InMemoryDatabase, error) {
