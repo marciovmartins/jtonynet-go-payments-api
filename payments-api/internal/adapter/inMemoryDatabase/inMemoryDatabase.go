@@ -8,7 +8,7 @@ import (
 	"github.com/jtonynet/go-payments-api/config"
 )
 
-type DBConn interface {
+type Conn interface {
 	Readiness(ctx context.Context) error
 	GetStrategy(ctx context.Context) (string, error)
 	Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error
@@ -17,7 +17,7 @@ type DBConn interface {
 	GetDefaultExpiration(ctx context.Context) (time.Duration, error)
 }
 
-func NewConn(cfg config.InMemoryDatabase) (DBConn, error) {
+func NewConn(cfg config.InMemoryDatabase) (Conn, error) {
 	switch cfg.Strategy {
 	case "redis":
 		return NewRedisConn(cfg)

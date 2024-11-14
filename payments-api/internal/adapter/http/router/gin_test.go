@@ -69,7 +69,7 @@ func (suite *GinRouterSuite) SetupSuite() {
 	suite.apiGroup.POST("/payment", ginHandler.PaymentExecution)
 }
 
-func (suite *GinRouterSuite) loadDBtestData(conn database.DBConn) {
+func (suite *GinRouterSuite) loadDBtestData(conn database.Conn) {
 	strategy, err := conn.GetStrategy(context.Background())
 	if err != nil {
 		log.Fatalf("error retrieving database strategy: %v", err)

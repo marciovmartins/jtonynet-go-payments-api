@@ -17,7 +17,7 @@ var merchantName = "XYZ*TestCachedRepositoryMerchant                   PIRAPORIN
 type RedisReposSuite struct {
 	suite.Suite
 
-	cacheConn          inMemoryDatabase.DBConn
+	cacheConn          inMemoryDatabase.Conn
 	cachedMerchantRepo port.MerchantRepository
 }
 

@@ -12,11 +12,11 @@ import (
 )
 
 type Merchant struct {
-	gormConn database.DBConn
+	gormConn database.Conn
 	db       *gorm.DB
 }
 
-func NewMerchant(conn database.DBConn) (port.MerchantRepository, error) {
+func NewMerchant(conn database.Conn) (port.MerchantRepository, error) {
 	db, err := conn.GetDB(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("merchant repository failure on conn.GetDB()")

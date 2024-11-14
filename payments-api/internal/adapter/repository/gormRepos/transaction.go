@@ -12,11 +12,11 @@ import (
 )
 
 type Transaction struct {
-	gormConn database.DBConn
+	gormConn database.Conn
 	db       *gorm.DB
 }
 
-func NewTransaction(conn database.DBConn) (port.TransactionRepository, error) {
+func NewTransaction(conn database.Conn) (port.TransactionRepository, error) {
 	db, err := conn.GetDB(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("transaction repository failure on conn.GetDB()")

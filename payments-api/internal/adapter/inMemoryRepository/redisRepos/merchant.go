@@ -10,12 +10,12 @@ import (
 )
 
 type Merchant struct {
-	cacheConn inMemoryDatabase.DBConn
+	cacheConn inMemoryDatabase.Conn
 
 	merchantRepository port.MerchantRepository
 }
 
-func NewMerchant(cacheConn inMemoryDatabase.DBConn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
+func NewMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
 	return &Merchant{
 		cacheConn:          cacheConn,
 		merchantRepository: mRepository,

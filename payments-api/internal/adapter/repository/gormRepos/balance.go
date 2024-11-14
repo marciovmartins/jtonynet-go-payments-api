@@ -24,11 +24,11 @@ type BalanceResult struct {
 }
 
 type Balance struct {
-	gormConn database.DBConn
+	gormConn database.Conn
 	db       *gorm.DB
 }
 
-func NewBalance(conn database.DBConn) (port.BalanceRepository, error) {
+func NewBalance(conn database.Conn) (port.BalanceRepository, error) {
 	db, err := conn.GetDB(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("balance repository failure on conn.GetDB()")

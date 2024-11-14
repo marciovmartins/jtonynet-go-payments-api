@@ -17,7 +17,7 @@ type GormConn struct {
 	driver   string
 }
 
-func NewGormConn(cfg config.Database) (DBConn, error) {
+func NewGormConn(cfg config.Database) (Conn, error) {
 	switch cfg.Driver {
 	case "postgres":
 		strConn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",

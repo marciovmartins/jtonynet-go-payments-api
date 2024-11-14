@@ -7,14 +7,14 @@ import (
 	"github.com/jtonynet/go-payments-api/config"
 )
 
-type DBConn interface {
+type Conn interface {
 	Readiness(ctx context.Context) error
 	GetStrategy(ctx context.Context) (string, error)
 	GetDB(ctx context.Context) (interface{}, error)
 	GetDriver(ctx context.Context) (string, error)
 }
 
-func NewConn(cfg config.Database) (DBConn, error) {
+func NewConn(cfg config.Database) (Conn, error) {
 	switch cfg.Strategy {
 	case "gorm":
 		return NewGormConn(cfg)

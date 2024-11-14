@@ -82,7 +82,7 @@ func (suite *RepositoriesSuite) SetupSuite() {
 	suite.loadDBtestData(conn)
 }
 
-func (suite *RepositoriesSuite) loadDBtestData(conn database.DBConn) {
+func (suite *RepositoriesSuite) loadDBtestData(conn database.Conn) {
 
 	strategy, err := conn.GetStrategy(context.Background())
 	if err != nil {

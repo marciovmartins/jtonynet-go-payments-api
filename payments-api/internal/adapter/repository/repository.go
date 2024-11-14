@@ -17,7 +17,7 @@ type AllRepos struct {
 	Merchant    port.MerchantRepository
 }
 
-func GetAll(conn database.DBConn) (AllRepos, error) {
+func GetAll(conn database.Conn) (AllRepos, error) {
 	repos := AllRepos{}
 
 	strategy, err := conn.GetStrategy(context.Background())

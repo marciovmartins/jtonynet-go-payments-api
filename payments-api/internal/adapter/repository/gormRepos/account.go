@@ -13,11 +13,11 @@ import (
 )
 
 type Account struct {
-	gormConn database.DBConn
+	gormConn database.Conn
 	db       *gorm.DB
 }
 
-func NewAccount(conn database.DBConn) (port.AccountRepository, error) {
+func NewAccount(conn database.Conn) (port.AccountRepository, error) {
 	db, err := conn.GetDB(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("account repository failure on conn.GetDB()")

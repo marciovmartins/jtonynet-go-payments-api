@@ -9,7 +9,7 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
-func NewMerchant(cacheConn inMemoryDatabase.DBConn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
+func NewMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
 	var mr port.MerchantRepository
 
 	strategy, err := cacheConn.GetStrategy(context.Background())
@@ -25,7 +25,7 @@ func NewMerchant(cacheConn inMemoryDatabase.DBConn, mRepository port.MerchantRep
 	}
 }
 
-func NewMemoryLock(lockConn inMemoryDatabase.DBConn) (port.MemoryLockRepository, error) {
+func NewMemoryLock(lockConn inMemoryDatabase.Conn) (port.MemoryLockRepository, error) {
 	var mlr port.MemoryLockRepository
 
 	strategy, err := lockConn.GetStrategy(context.Background())
