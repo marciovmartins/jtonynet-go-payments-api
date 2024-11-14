@@ -12,7 +12,6 @@ type TransactionPaymentRequest struct {
 	TotalAmount decimal.Decimal `json:"totalAmount" validate:"required,min=0.01" binding:"required" example:"100.09"`
 	MCC         string          `json:"mcc" validate:"required,min=4,max=4" binding:"required" example:"5411"`
 	Merchant    string          `json:"merchant" validate:"required,min=3,max=255" binding:"required" example:"PADARIA DO ZE              SAO PAULO BR"`
-	Timestamp   int64
 }
 
 type TransactionPaymentResponse struct {

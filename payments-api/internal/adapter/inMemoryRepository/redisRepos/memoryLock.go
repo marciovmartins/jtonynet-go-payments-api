@@ -2,8 +2,11 @@ package redisRepos
 
 import (
 	"context"
+	"fmt"
 	"strconv"
+	"time"
 
+	"github.com/cenkalti/backoff"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
@@ -20,20 +23,46 @@ func NewMemoryLock(lockConn port.InMemoryDBConn) (port.MemoryLockRepository, err
 func (ml *MemoryLock) Lock(
 	_ context.Context,
 	mle port.MemoryLockEntity,
-) error {
+) (port.MemoryLockEntity, error) {
+	var LockErr error
+
+	retry := backoff.NewExponentialBackOff()
+	retry.MaxElapsedTime = time.Duration(25) * time.Millisecond
+	retry.InitialInterval = time.Duration(2) * time.Millisecond
+
+	backoff.RetryNotify(func() error {
+		_, LockErr = ml.isUnlocked(mle)
+		return LockErr
+	}, retry, nil)
+
 	expiration, err := ml.lockConn.GetDefaultExpiration(context.Background())
 	if err != nil {
-		return err
+		return port.MemoryLockEntity{}, err
 	}
 
-	return ml.lockConn.Set(context.Background(), mle.Key, mle.Timestamp, expiration)
+	err = ml.lockConn.Set(context.Background(), mle.Key, mle.Timestamp, expiration)
+	if err != nil {
+		return port.MemoryLockEntity{}, err
+	}
+
+	return mle, nil
 }
 
 func (ml *MemoryLock) Unlock(_ context.Context, key string) error {
 	return ml.lockConn.Delete(context.Background(), key)
 }
 
-func (ml *MemoryLock) Get(_ context.Context, key string) (port.MemoryLockEntity, error) {
+func (ml *MemoryLock) isUnlocked(mle port.MemoryLockEntity) (bool, error) {
+	locked, err := ml.get(context.Background(), mle.Key)
+	if err == nil {
+		elapsedTime := time.Now().UnixMilli() - locked.Timestamp
+		return false, fmt.Errorf("key is already locked by another process, held for %v ms", elapsedTime)
+	}
+
+	return true, nil
+}
+
+func (ml *MemoryLock) get(_ context.Context, key string) (port.MemoryLockEntity, error) {
 	timestampStr, err := ml.lockConn.Get(context.Background(), key)
 	if err != nil {
 		return port.MemoryLockEntity{}, err

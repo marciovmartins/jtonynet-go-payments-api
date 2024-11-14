@@ -5,12 +5,16 @@ import (
 )
 
 type MemoryLockEntity struct {
-	Key       string
-	Timestamp int64 //timestamp.UnixMilli
+	Key       string //accountUID
+	Timestamp int64  //startTimestamp.UnixMilli
 }
 
+/*
+- Prevent two or more transactions from the same `accountUID` from occurring concurrently
+  - Retrieve or create, if it doesn’t exist, a representation of `MemoryLockEntity` in my lock source
+  - Remove a representation of `MemoryLockEntity` from my lock source
+*/
 type MemoryLockRepository interface {
-	Lock(ctx context.Context, mle MemoryLockEntity) error
+	Lock(ctx context.Context, mle MemoryLockEntity) (MemoryLockEntity, error)
 	Unlock(ctx context.Context, key string) error
-	Get(ctx context.Context, key string) (MemoryLockEntity, error)
 }

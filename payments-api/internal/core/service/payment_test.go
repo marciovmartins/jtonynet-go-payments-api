@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/google/uuid"
@@ -247,9 +248,60 @@ type PaymentSuite struct {
 	suite.Suite
 }
 
+type InMemoryDBfake struct {
+	Lock map[string]string
+}
+
+func newInMemoryDBfake() InMemoryDBfake {
+	imdbf := InMemoryDBfake{}
+	imdbf.Lock = make(map[string]string)
+
+	return imdbf
+}
+
+func (suite *PaymentSuite) getInMemoryDBfake() InMemoryDBfake {
+	inMemorydbFake := newInMemoryDBfake()
+	return inMemorydbFake
+}
+
+func (imdbf *InMemoryDBfake) MemoryLockRepoLock(_ context.Context, mle port.MemoryLockEntity) (port.MemoryLockEntity, error) {
+	imdbf.Lock[mle.Key] = strconv.FormatInt(mle.Timestamp, 10)
+	return mle, nil
+}
+
+func (imdbf *InMemoryDBfake) MemoryLockRepoUnlock(_ context.Context, key string) error {
+	if _, exists := imdbf.Lock[key]; exists {
+		delete(imdbf.Lock, key)
+		return nil
+	}
+	return nil
+}
+
+type MemoryLockRepoFake struct {
+	memoryDB InMemoryDBfake
+}
+
+func newMemoryLockRepoFake(memoryDB InMemoryDBfake) port.MemoryLockRepository {
+	return &MemoryLockRepoFake{
+		memoryDB,
+	}
+}
+
+func (m *MemoryLockRepoFake) Lock(_ context.Context, mle port.MemoryLockEntity) (port.MemoryLockEntity, error) {
+	return m.memoryDB.MemoryLockRepoLock(context.Background(), mle)
+}
+
+func (m *MemoryLockRepoFake) Unlock(_ context.Context, key string) error {
+	return m.memoryDB.MemoryLockRepoUnlock(context.Background(), key)
+}
+
 func (suite *PaymentSuite) getDBfake() *DBfake {
 	dbFake := newDBfake()
 	return &dbFake
+}
+
+func (suite *PaymentSuite) getMemoryLockRepoFake(memoryDB InMemoryDBfake) port.MemoryLockRepository {
+	return newMemoryLockRepoFake(memoryDB)
 }
 
 func (suite *PaymentSuite) getAllRepositories(dbFake *DBfake) *repository.AllRepos {
@@ -267,6 +319,9 @@ func (suite *PaymentSuite) TestL1PaymentExecuteGenericRejected() {
 	dbFake := DBfake{}
 	allRepos := suite.getAllRepositories(&dbFake)
 
+	inMemoryDBfake := suite.getInMemoryDBfake()
+	memoryLockRepo := suite.getMemoryLockRepoFake(inMemoryDBfake)
+
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsApproved,
@@ -280,7 +335,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteGenericRejected() {
 		allRepos.Balance,
 		allRepos.Transaction,
 		allRepos.Merchant,
-		nil,
+		memoryLockRepo,
 		nil,
 	)
 
@@ -296,6 +351,9 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
 
+	inMemoryDBfake := suite.getInMemoryDBfake()
+	memoryLockRepo := suite.getMemoryLockRepoFake(inMemoryDBfake)
+
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsRejected,
@@ -309,7 +367,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 		allRepos.Balance,
 		allRepos.Transaction,
 		allRepos.Merchant,
-		nil,
+		memoryLockRepo,
 		nil,
 	)
 
@@ -328,6 +386,9 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsApproved() {
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
 
+	inMemoryDBfake := suite.getInMemoryDBfake()
+	memoryLockRepo := suite.getMemoryLockRepoFake(inMemoryDBfake)
+
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsApproved,
@@ -341,7 +402,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsApproved() {
 		allRepos.Balance,
 		allRepos.Transaction,
 		allRepos.Merchant,
-		nil,
+		memoryLockRepo,
 		nil,
 	)
 	returnCode, err := paymentService.Execute(tRequest)
@@ -372,6 +433,9 @@ func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
 
+	inMemoryDBfake := suite.getInMemoryDBfake()
+	memoryLockRepo := suite.getMemoryLockRepoFake(inMemoryDBfake)
+
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsFallbackApproved,
@@ -385,7 +449,7 @@ func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
 		allRepos.Balance,
 		allRepos.Transaction,
 		allRepos.Merchant,
-		nil,
+		memoryLockRepo,
 		nil,
 	)
 	returnCode, err := paymentService.Execute(tRequest)
@@ -416,6 +480,9 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
 
+	inMemoryDBfake := suite.getInMemoryDBfake()
+	memoryLockRepo := suite.getMemoryLockRepoFake(inMemoryDBfake)
+
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsApproved,
@@ -429,7 +496,7 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
 		allRepos.Balance,
 		allRepos.Transaction,
 		allRepos.Merchant,
-		nil,
+		memoryLockRepo,
 		nil,
 	)
 	returnCode, err := paymentService.Execute(tRequest)
@@ -460,6 +527,9 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCFallbackApproved() {
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
 
+	inMemoryDBfake := suite.getInMemoryDBfake()
+	memoryLockRepo := suite.getMemoryLockRepoFake(inMemoryDBfake)
+
 	tRequest := port.TransactionPaymentRequest{
 		AccountUID:  accountUIDtoTransact,
 		TotalAmount: amountFoodFundsFallbackApproved,
@@ -473,7 +543,7 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCFallbackApproved() {
 		allRepos.Balance,
 		allRepos.Transaction,
 		allRepos.Merchant,
-		nil,
+		memoryLockRepo,
 		nil,
 	)
 	returnCode, err := paymentService.Execute(tRequest)

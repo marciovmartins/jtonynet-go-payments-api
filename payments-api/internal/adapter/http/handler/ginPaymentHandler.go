@@ -51,7 +51,6 @@ func PaymentExecution(ctx *gin.Context) {
 
 		return
 	}
-	transactionRequest.Timestamp = timestamp
 
 	validationErrors, ok := dtoIsValid(transactionRequest)
 	if !ok {
