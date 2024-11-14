@@ -24,16 +24,21 @@ func (ml *MemoryLock) Lock(
 	_ context.Context,
 	mle port.MemoryLockEntity,
 ) (port.MemoryLockEntity, error) {
-	var LockErr error
+	var lockErr error
+	maxElapsedTime := time.Duration(50) * time.Millisecond
 
 	retry := backoff.NewExponentialBackOff()
-	retry.MaxElapsedTime = time.Duration(25) * time.Millisecond
+	retry.MaxElapsedTime = maxElapsedTime
 	retry.InitialInterval = time.Duration(2) * time.Millisecond
 
 	backoff.RetryNotify(func() error {
-		_, LockErr = ml.isUnlocked(mle)
-		return LockErr
+		_, lockErr = ml.isUnlocked(mle)
+		return lockErr
 	}, retry, nil)
+
+	if lockErr != nil {
+		return port.MemoryLockEntity{}, lockErr
+	}
 
 	expiration, err := ml.lockConn.GetDefaultExpiration(context.Background())
 	if err != nil {
