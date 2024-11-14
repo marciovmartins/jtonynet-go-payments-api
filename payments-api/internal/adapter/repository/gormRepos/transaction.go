@@ -5,17 +5,18 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"gorm.io/gorm"
 )
 
 type Transaction struct {
-	gormConn port.DBConn
+	gormConn database.DBConn
 	db       *gorm.DB
 }
 
-func NewTransaction(conn port.DBConn) (port.TransactionRepository, error) {
+func NewTransaction(conn database.DBConn) (port.TransactionRepository, error) {
 	db, err := conn.GetDB(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("transaction repository failure on conn.GetDB()")

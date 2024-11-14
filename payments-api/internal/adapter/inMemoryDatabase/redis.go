@@ -1,4 +1,4 @@
-package redisConn
+package inMemoryDatabase
 
 import (
 	"context"
@@ -23,7 +23,7 @@ type RedisConn struct {
 	expiration time.Duration
 }
 
-func New(cfg config.InMemoryDatabase) (*RedisConn, error) {
+func NewRedisConn(cfg config.InMemoryDatabase) (*RedisConn, error) {
 	strAddr := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
 
 	db := redis.NewClient(&redis.Options{

@@ -1,18 +1,21 @@
 package router
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/jtonynet/go-payments-api/bootstrap"
 	"github.com/jtonynet/go-payments-api/config"
-	"github.com/jtonynet/go-payments-api/internal/adapter/http/router/ginStrategy"
-	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
-func New(cfg config.Router, app bootstrap.App) (port.Router, error) {
+type Router interface {
+	HandleRequests(ctx context.Context, cfg config.API) error
+}
+
+func New(cfg config.Router, app bootstrap.App) (Router, error) {
 	switch cfg.Strategy {
 	case "gin":
-		return ginStrategy.New(cfg, app)
+		return NewGin(cfg, app)
 	default:
 		return nil, fmt.Errorf("router strategy not suported: %s", cfg.Strategy)
 	}

@@ -1,4 +1,4 @@
-package gormConn
+package database
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
-	"github.com/jtonynet/go-payments-api/internal/core/port"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -18,7 +17,7 @@ type GormConn struct {
 	driver   string
 }
 
-func New(cfg config.Database) (port.DBConn, error) {
+func NewGormConn(cfg config.Database) (DBConn, error) {
 	switch cfg.Driver {
 	case "postgres":
 		strConn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",

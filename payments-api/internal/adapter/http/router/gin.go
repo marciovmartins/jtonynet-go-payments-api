@@ -1,4 +1,4 @@
-package ginStrategy
+package router
 
 import (
 	"context"
@@ -15,15 +15,13 @@ import (
 
 	ginHandler "github.com/jtonynet/go-payments-api/internal/adapter/http/handler"
 	ginMiddleware "github.com/jtonynet/go-payments-api/internal/adapter/http/middleware"
-
-	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
 type Gin struct {
 	app bootstrap.App
 }
 
-func New(cfg config.Router, app bootstrap.App) (port.Router, error) {
+func NewGin(cfg config.Router, app bootstrap.App) (Router, error) {
 	return Gin{app}, nil
 }
 

@@ -7,14 +7,15 @@ import (
 	"time"
 
 	"github.com/cenkalti/backoff"
+	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
 type MemoryLock struct {
-	lockConn port.InMemoryDBConn
+	lockConn inMemoryDatabase.DBConn
 }
 
-func NewMemoryLock(lockConn port.InMemoryDBConn) (port.MemoryLockRepository, error) {
+func NewMemoryLock(lockConn inMemoryDatabase.DBConn) (port.MemoryLockRepository, error) {
 	return &MemoryLock{
 		lockConn,
 	}, nil

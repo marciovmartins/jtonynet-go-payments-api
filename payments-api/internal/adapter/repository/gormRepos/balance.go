@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
@@ -23,11 +24,11 @@ type BalanceResult struct {
 }
 
 type Balance struct {
-	gormConn port.DBConn
+	gormConn database.DBConn
 	db       *gorm.DB
 }
 
-func NewBalance(conn port.DBConn) (port.BalanceRepository, error) {
+func NewBalance(conn database.DBConn) (port.BalanceRepository, error) {
 	db, err := conn.GetDB(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("balance repository failure on conn.GetDB()")

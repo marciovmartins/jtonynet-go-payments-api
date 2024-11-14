@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository/gormRepos"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
@@ -16,7 +17,7 @@ type AllRepos struct {
 	Merchant    port.MerchantRepository
 }
 
-func GetAll(conn port.DBConn) (AllRepos, error) {
+func GetAll(conn database.DBConn) (AllRepos, error) {
 	repos := AllRepos{}
 
 	strategy, err := conn.GetStrategy(context.Background())
