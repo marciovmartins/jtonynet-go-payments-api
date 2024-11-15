@@ -70,14 +70,14 @@ func (suite *GinRouterSuite) SetupSuite() {
 }
 
 func (suite *GinRouterSuite) loadDBtestData(conn database.Conn) {
-	strategy, err := conn.GetStrategy(context.Background())
+	strategy, err := conn.GetStrategy(context.TODO())
 	if err != nil {
 		log.Fatalf("error retrieving database strategy: %v", err)
 	}
 
 	switch strategy {
 	case "gorm":
-		db, err := conn.GetDB(context.Background())
+		db, err := conn.GetDB(context.TODO())
 		if err != nil {
 			log.Fatalf("error retrieving database conn DB: %v", err)
 		}

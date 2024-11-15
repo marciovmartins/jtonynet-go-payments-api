@@ -9,7 +9,7 @@ type API struct {
 	Port       string `mapstructure:"API_PORT"`
 	TagVersion string `mapstructure:"API_TAG_VERSION"`
 	Env        string `mapstructure:"ENV"`
-	TimeoutSLA int    `mapstructure:"API_TIMEOUT_SLA_IN_MS"`
+	TimeoutSLA int64  `mapstructure:"API_TIMEOUT_SLA_IN_MS"`
 }
 
 type Router struct {

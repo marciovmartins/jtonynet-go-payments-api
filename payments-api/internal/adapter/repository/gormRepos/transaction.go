@@ -17,7 +17,7 @@ type Transaction struct {
 }
 
 func NewTransaction(conn database.Conn) (port.TransactionRepository, error) {
-	db, err := conn.GetDB(context.Background())
+	db, err := conn.GetDB(context.TODO())
 	if err != nil {
 		return nil, fmt.Errorf("transaction repository failure on conn.GetDB()")
 	}

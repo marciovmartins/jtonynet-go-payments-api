@@ -23,14 +23,15 @@ func NewMemoryLock(lockConn inMemoryDatabase.Conn) (port.MemoryLockRepository, e
 
 func (ml *MemoryLock) Lock(
 	_ context.Context,
+	timeoutSLA port.TimeoutSLA,
 	mle port.MemoryLockEntity,
 ) (port.MemoryLockEntity, error) {
 	var lockErr error
-	maxElapsedTime := time.Duration(50) * time.Millisecond
+	maxElapsedTime := time.Duration(timeoutSLA / 2)
 
 	retry := backoff.NewExponentialBackOff()
 	retry.MaxElapsedTime = maxElapsedTime
-	retry.InitialInterval = time.Duration(2) * time.Millisecond
+	retry.InitialInterval = time.Duration(1) * time.Millisecond
 
 	backoff.RetryNotify(func() error {
 		_, lockErr = ml.isUnlocked(mle)
@@ -41,12 +42,12 @@ func (ml *MemoryLock) Lock(
 		return port.MemoryLockEntity{}, lockErr
 	}
 
-	expiration, err := ml.lockConn.GetDefaultExpiration(context.Background())
+	expiration, err := ml.lockConn.GetDefaultExpiration(context.TODO())
 	if err != nil {
 		return port.MemoryLockEntity{}, err
 	}
 
-	err = ml.lockConn.Set(context.Background(), mle.Key, mle.Timestamp, expiration)
+	err = ml.lockConn.Set(context.TODO(), mle.Key, mle.Timestamp, expiration)
 	if err != nil {
 		return port.MemoryLockEntity{}, err
 	}
@@ -55,11 +56,11 @@ func (ml *MemoryLock) Lock(
 }
 
 func (ml *MemoryLock) Unlock(_ context.Context, key string) error {
-	return ml.lockConn.Delete(context.Background(), key)
+	return ml.lockConn.Delete(context.TODO(), key)
 }
 
 func (ml *MemoryLock) isUnlocked(mle port.MemoryLockEntity) (bool, error) {
-	locked, err := ml.get(context.Background(), mle.Key)
+	locked, err := ml.get(context.TODO(), mle.Key)
 	if err == nil {
 		elapsedTime := time.Now().UnixMilli() - locked.Timestamp
 		return false, fmt.Errorf("key is already locked by another process, held for %v ms", elapsedTime)
@@ -69,7 +70,7 @@ func (ml *MemoryLock) isUnlocked(mle port.MemoryLockEntity) (bool, error) {
 }
 
 func (ml *MemoryLock) get(_ context.Context, key string) (port.MemoryLockEntity, error) {
-	timestampStr, err := ml.lockConn.Get(context.Background(), key)
+	timestampStr, err := ml.lockConn.Get(context.TODO(), key)
 	if err != nil {
 		return port.MemoryLockEntity{}, err
 	}

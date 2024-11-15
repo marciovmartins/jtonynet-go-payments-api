@@ -20,7 +20,7 @@ type AllRepos struct {
 func GetAll(conn database.Conn) (AllRepos, error) {
 	repos := AllRepos{}
 
-	strategy, err := conn.GetStrategy(context.Background())
+	strategy, err := conn.GetStrategy(context.TODO())
 	if err != nil {
 		return AllRepos{}, fmt.Errorf("error when instantiating merchant repository: %v", err)
 	}

@@ -36,7 +36,7 @@ func NewRedisConn(cfg config.InMemoryDatabase) (*RedisConn, error) {
 	Expiration := time.Duration(cfg.Expiration * int(time.Millisecond))
 
 	return &RedisConn{
-		ctx: context.Background(),
+		ctx: context.TODO(),
 
 		db:         db,
 		strategy:   cfg.Strategy,

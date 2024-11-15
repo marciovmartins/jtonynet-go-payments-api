@@ -11,6 +11,7 @@ import (
 )
 
 type Payment struct {
+	timeoutSLA            port.TimeoutSLA
 	accountRepository     port.AccountRepository
 	balanceRepository     port.BalanceRepository
 	transactionRepository port.TransactionRepository
@@ -22,6 +23,8 @@ type Payment struct {
 }
 
 func NewPayment(
+	timeoutSLA port.TimeoutSLA,
+
 	aRepository port.AccountRepository,
 	bRepository port.BalanceRepository,
 	tRepository port.TransactionRepository,
@@ -31,6 +34,7 @@ func NewPayment(
 	logger support.Logger,
 ) *Payment {
 	return &Payment{
+		timeoutSLA:            timeoutSLA,
 		accountRepository:     aRepository,
 		balanceRepository:     bRepository,
 		transactionRepository: tRepository,
@@ -43,7 +47,8 @@ func NewPayment(
 
 func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 	transactionLocked, err := p.memoryLockRepository.Lock(
-		context.Background(),
+		context.TODO(),
+		p.timeoutSLA,
 		mapTransactionRequestToMemoryLockEntity(tpr),
 	)
 	if err != nil {
@@ -51,7 +56,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 	}
 	p.transactionLocked = transactionLocked
 
-	accountEntity, err := p.accountRepository.FindByUID(context.Background(), tpr.AccountUID)
+	accountEntity, err := p.accountRepository.FindByUID(context.TODO(), tpr.AccountUID)
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to retrieve account entity: %w", err))
 	}
@@ -59,7 +64,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 	account := mapAccountEntityToDomain(accountEntity)
 
 	var merchant domain.Merchant
-	merchantEntity, err := p.merchantRepository.FindByName(context.Background(), tpr.Merchant)
+	merchantEntity, err := p.merchantRepository.FindByName(context.TODO(), tpr.Merchant)
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to retrieve merchant entity with name %s", tpr.Merchant))
 	}
@@ -75,7 +80,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 		account,
 	)
 
-	balanceEntity, err := p.balanceRepository.FindByAccountID(context.Background(), account.ID)
+	balanceEntity, err := p.balanceRepository.FindByAccountID(context.TODO(), account.ID)
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to retrieve balance entity: %w", err))
 	}
@@ -91,17 +96,17 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 		return p.rejectedCustomErr(cErr)
 	}
 
-	err = p.balanceRepository.UpdateTotalAmount(context.Background(), mapBalanceDomainToEntity(approvedBalance))
+	err = p.balanceRepository.UpdateTotalAmount(context.TODO(), mapBalanceDomainToEntity(approvedBalance))
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to update balance entity: %w", err))
 	}
 
-	err = p.transactionRepository.Save(context.Background(), mapTransactionDomainToEntity(transaction))
+	err = p.transactionRepository.Save(context.TODO(), mapTransactionDomainToEntity(transaction))
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to save transaction entity: %w", err))
 	}
 
-	_ = p.memoryLockRepository.Unlock(context.Background(), p.transactionLocked.Key)
+	_ = p.memoryLockRepository.Unlock(context.TODO(), p.transactionLocked.Key)
 
 	return domain.CODE_APPROVED, nil
 }
@@ -109,7 +114,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 func (p *Payment) rejectedGenericErr(err error) (string, error) {
 	p.debugLog(err.Error())
 
-	_ = p.memoryLockRepository.Unlock(context.Background(), p.transactionLocked.Key)
+	_ = p.memoryLockRepository.Unlock(context.TODO(), p.transactionLocked.Key)
 
 	return domain.CODE_REJECTED_GENERIC, err
 }
@@ -117,7 +122,7 @@ func (p *Payment) rejectedGenericErr(err error) (string, error) {
 func (p *Payment) rejectedCustomErr(cErr *domain.CustomError) (string, error) {
 	p.debugLog(cErr.Error())
 
-	_ = p.memoryLockRepository.Unlock(context.Background(), p.transactionLocked.Key)
+	_ = p.memoryLockRepository.Unlock(context.TODO(), p.transactionLocked.Key)
 
 	return cErr.Code, fmt.Errorf("failed to approve balance domain: %s", cErr.Message)
 }

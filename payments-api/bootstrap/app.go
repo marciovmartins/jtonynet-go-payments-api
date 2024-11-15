@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/jtonynet/go-payments-api/config"
 
@@ -15,6 +16,7 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryRepository"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 
+	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/jtonynet/go-payments-api/internal/core/service"
 )
 
@@ -26,6 +28,10 @@ type App struct {
 
 func NewApp(cfg *config.Config) (App, error) {
 	app := App{}
+
+	timeoutSLA := port.TimeoutSLA(
+		time.Duration(cfg.API.TimeoutSLA) * time.Millisecond,
+	)
 
 	logger, err := logger.New(cfg.Logger)
 	if err != nil {
@@ -39,7 +45,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
 	}
 
-	if cacheConn.Readiness(context.Background()) != nil {
+	if cacheConn.Readiness(context.TODO()) != nil {
 		return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
 	}
 
@@ -49,7 +55,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate lock client: %v", err)
 	}
 
-	if lockConn.Readiness(context.Background()) != nil {
+	if lockConn.Readiness(context.TODO()) != nil {
 		return App{}, fmt.Errorf("error: dont connecting to lock: %v", err)
 	}
 
@@ -62,7 +68,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate database: %v", err)
 	}
 
-	if dbConn.Readiness(context.Background()) != nil {
+	if dbConn.Readiness(context.TODO()) != nil {
 		return App{}, fmt.Errorf("error: dont connecting to database: %v", err)
 	}
 
@@ -89,6 +95,7 @@ func NewApp(cfg *config.Config) (App, error) {
 	}
 
 	app.PaymentService = service.NewPayment(
+		timeoutSLA,
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,

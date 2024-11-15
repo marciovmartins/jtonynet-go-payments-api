@@ -12,7 +12,7 @@ import (
 func NewMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
 	var mr port.MerchantRepository
 
-	strategy, err := cacheConn.GetStrategy(context.Background())
+	strategy, err := cacheConn.GetStrategy(context.TODO())
 	if err != nil {
 		return mr, fmt.Errorf("error: dont retrieve cache strategy: %v", err)
 	}
@@ -28,7 +28,7 @@ func NewMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepos
 func NewMemoryLock(lockConn inMemoryDatabase.Conn) (port.MemoryLockRepository, error) {
 	var mlr port.MemoryLockRepository
 
-	strategy, err := lockConn.GetStrategy(context.Background())
+	strategy, err := lockConn.GetStrategy(context.TODO())
 	if err != nil {
 		return mlr, fmt.Errorf("error: dont retrieve memory lock strategy: %v", err)
 	}

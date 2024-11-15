@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -16,6 +17,8 @@ import (
 )
 
 var (
+	timeoutSLAcfg = 100
+
 	accountUIDtoTransact, _ = uuid.Parse("123e4567-e89b-12d3-a456-426614174000")
 
 	balanceFoodAmount = decimal.NewFromFloat(205.11)
@@ -104,7 +107,7 @@ func newAccountRepoFake(db DBfake) port.AccountRepository {
 }
 
 func (arf *AccountRepoFake) FindByUID(_ context.Context, uid uuid.UUID) (port.AccountEntity, error) {
-	accountEntity, err := arf.db.AccountRepoFindByUID(context.Background(), uid)
+	accountEntity, err := arf.db.AccountRepoFindByUID(context.TODO(), uid)
 	return accountEntity, err
 }
 
@@ -287,12 +290,12 @@ func newMemoryLockRepoFake(memoryDB InMemoryDBfake) port.MemoryLockRepository {
 	}
 }
 
-func (m *MemoryLockRepoFake) Lock(_ context.Context, mle port.MemoryLockEntity) (port.MemoryLockEntity, error) {
-	return m.memoryDB.MemoryLockRepoLock(context.Background(), mle)
+func (m *MemoryLockRepoFake) Lock(_ context.Context, timeoutSLA port.TimeoutSLA, mle port.MemoryLockEntity) (port.MemoryLockEntity, error) {
+	return m.memoryDB.MemoryLockRepoLock(context.TODO(), mle)
 }
 
 func (m *MemoryLockRepoFake) Unlock(_ context.Context, key string) error {
-	return m.memoryDB.MemoryLockRepoUnlock(context.Background(), key)
+	return m.memoryDB.MemoryLockRepoUnlock(context.TODO(), key)
 }
 
 func (suite *PaymentSuite) getDBfake() *DBfake {
@@ -316,6 +319,10 @@ func (suite *PaymentSuite) getAllRepositories(dbFake *DBfake) *repository.AllRep
 
 func (suite *PaymentSuite) TestL1PaymentExecuteGenericRejected() {
 	//Arrange
+	timeoutSLA := port.TimeoutSLA(
+		time.Duration(timeoutSLAcfg) * time.Millisecond,
+	)
+
 	dbFake := DBfake{}
 	allRepos := suite.getAllRepositories(&dbFake)
 
@@ -331,6 +338,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteGenericRejected() {
 
 	//Act
 	paymentService := NewPayment(
+		timeoutSLA,
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
@@ -348,6 +356,10 @@ func (suite *PaymentSuite) TestL1PaymentExecuteGenericRejected() {
 
 func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 	//Arrange
+	timeoutSLA := port.TimeoutSLA(
+		time.Duration(timeoutSLAcfg) * time.Millisecond,
+	)
+
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
 
@@ -363,6 +375,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 
 	//Act
 	paymentService := NewPayment(
+		timeoutSLA,
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
@@ -383,6 +396,10 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 
 func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsApproved() {
 	//Arrange
+	timeoutSLA := port.TimeoutSLA(
+		time.Duration(timeoutSLAcfg) * time.Millisecond,
+	)
+
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
 
@@ -398,6 +415,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsApproved() {
 
 	//Act
 	paymentService := NewPayment(
+		timeoutSLA,
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
@@ -430,6 +448,10 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsApproved() {
 
 func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
 	//Arrange
+	timeoutSLA := port.TimeoutSLA(
+		time.Duration(timeoutSLAcfg) * time.Millisecond,
+	)
+
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
 
@@ -445,6 +467,7 @@ func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
 
 	//Act
 	paymentService := NewPayment(
+		timeoutSLA,
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
@@ -477,6 +500,10 @@ func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
 
 func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
 	//Arrange
+	timeoutSLA := port.TimeoutSLA(
+		time.Duration(timeoutSLAcfg) * time.Millisecond,
+	)
+
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
 
@@ -492,6 +519,7 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
 
 	//Act
 	paymentService := NewPayment(
+		timeoutSLA,
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
@@ -524,6 +552,10 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
 
 func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCFallbackApproved() {
 	//Arrange
+	timeoutSLA := port.TimeoutSLA(
+		time.Duration(timeoutSLAcfg) * time.Millisecond,
+	)
+
 	dbFake := suite.getDBfake()
 	allRepos := suite.getAllRepositories(dbFake)
 
@@ -539,6 +571,7 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCFallbackApproved() {
 
 	//Act
 	paymentService := NewPayment(
+		timeoutSLA,
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
@@ -578,11 +611,11 @@ func (suite *PaymentSuite) assertBalanceAmounts(
 	expectedAmountFallback decimal.Decimal,
 	transactionAmount decimal.Decimal,
 ) {
-	accountEntity, err := allRepos.Account.FindByUID(context.Background(), tRequest.AccountUID)
+	accountEntity, err := allRepos.Account.FindByUID(context.TODO(), tRequest.AccountUID)
 	assert.NoError(suite.T(), err)
 
 	// - Balance is updated
-	balanceEntity, err := allRepos.Balance.FindByAccountID(context.Background(), accountEntity.ID)
+	balanceEntity, err := allRepos.Balance.FindByAccountID(context.TODO(), accountEntity.ID)
 	assert.Equal(suite.T(), balanceEntity.AmountTotal, expectedAmountTotal)
 	assert.NoError(suite.T(), err)
 

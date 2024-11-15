@@ -25,6 +25,6 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot initiate routes: ", err)
 	}
-	routes.HandleRequests(context.Background(), cfg.API)
+	routes.HandleRequests(context.TODO(), cfg.API)
 
 }

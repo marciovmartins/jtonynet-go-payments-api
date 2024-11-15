@@ -17,7 +17,7 @@ type Merchant struct {
 }
 
 func NewMerchant(conn database.Conn) (port.MerchantRepository, error) {
-	db, err := conn.GetDB(context.Background())
+	db, err := conn.GetDB(context.TODO())
 	if err != nil {
 		return nil, fmt.Errorf("merchant repository failure on conn.GetDB()")
 	}

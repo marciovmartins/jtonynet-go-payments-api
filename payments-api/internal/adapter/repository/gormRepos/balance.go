@@ -29,7 +29,7 @@ type Balance struct {
 }
 
 func NewBalance(conn database.Conn) (port.BalanceRepository, error) {
-	db, err := conn.GetDB(context.Background())
+	db, err := conn.GetDB(context.TODO())
 	if err != nil {
 		return nil, fmt.Errorf("balance repository failure on conn.GetDB()")
 	}
