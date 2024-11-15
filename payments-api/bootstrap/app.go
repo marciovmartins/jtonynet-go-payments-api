@@ -4,17 +4,19 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/jtonynet/go-payments-api/config"
 
 	"github.com/jtonynet/go-payments-api/internal/support"
 	"github.com/jtonynet/go-payments-api/internal/support/logger"
 
-	"github.com/jtonynet/go-payments-api/internal/adapter/cache"
-	"github.com/jtonynet/go-payments-api/internal/adapter/cachedRepository"
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
+	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
+	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryRepository"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 
+	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/jtonynet/go-payments-api/internal/core/service"
 )
 
@@ -27,19 +29,34 @@ type App struct {
 func NewApp(cfg *config.Config) (App, error) {
 	app := App{}
 
+	timeoutSLA := port.TimeoutSLA(
+		time.Duration(cfg.API.TimeoutSLA) * time.Millisecond,
+	)
+
 	logger, err := logger.New(cfg.Logger)
 	if err != nil {
 		log.Printf("warning: dont instantiate logger: %v", err)
 	}
 	app.Logger = logger
 
-	cacheConn, err := cache.New(cfg.Cache)
+	cacheCfg, _ := cfg.Cache.ToInMemoryDatabase()
+	cacheConn, err := inMemoryDatabase.NewConn(cacheCfg)
 	if err != nil {
 		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
 	}
 
-	if cacheConn.Readiness(context.Background()) != nil {
+	if cacheConn.Readiness(context.TODO()) != nil {
 		return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
+	}
+
+	lockCfg, _ := cfg.Lock.ToInMemoryDatabase()
+	lockConn, err := inMemoryDatabase.NewConn(lockCfg)
+	if err != nil {
+		return App{}, fmt.Errorf("error: dont instantiate lock client: %v", err)
+	}
+
+	if lockConn.Readiness(context.TODO()) != nil {
+		return App{}, fmt.Errorf("error: dont connecting to lock: %v", err)
 	}
 
 	if logger != nil {
@@ -51,7 +68,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate database: %v", err)
 	}
 
-	if dbConn.Readiness(context.Background()) != nil {
+	if dbConn.Readiness(context.TODO()) != nil {
 		return App{}, fmt.Errorf("error: dont connecting to database: %v", err)
 	}
 
@@ -64,7 +81,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate repositories: %v", err)
 	}
 
-	cachedMerchantRepo, err := cachedRepository.NewMerchant(
+	cachedMerchantRepo, err := inMemoryRepository.NewMerchant(
 		cacheConn,
 		allRepos.Merchant,
 	)
@@ -72,11 +89,18 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate merchant cached repository: %v", err)
 	}
 
+	memoryLockRepo, err := inMemoryRepository.NewMemoryLock(lockConn)
+	if err != nil {
+		return App{}, fmt.Errorf("error: dont instantiate memory lock repository: %v", err)
+	}
+
 	app.PaymentService = service.NewPayment(
+		timeoutSLA,
 		allRepos.Account,
 		allRepos.Balance,
 		allRepos.Transaction,
 		cachedMerchantRepo,
+		memoryLockRepo,
 		logger,
 	)
 

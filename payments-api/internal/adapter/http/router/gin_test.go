@@ -1,4 +1,4 @@
-package ginStrategy
+package router
 
 import (
 	"bytes"
@@ -24,8 +24,6 @@ import (
 
 	ginHandler "github.com/jtonynet/go-payments-api/internal/adapter/http/handler"
 	ginMiddleware "github.com/jtonynet/go-payments-api/internal/adapter/http/middleware"
-
-	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
 var (
@@ -50,7 +48,7 @@ type GinRouterSuite struct {
 }
 
 func (suite *GinRouterSuite) SetupSuite() {
-	cfg, err := config.LoadConfig("./../../../../../")
+	cfg, err := config.LoadConfig("./../../../../")
 	if err != nil {
 		log.Fatalf("cannot load config: %v", err)
 	}
@@ -71,15 +69,15 @@ func (suite *GinRouterSuite) SetupSuite() {
 	suite.apiGroup.POST("/payment", ginHandler.PaymentExecution)
 }
 
-func (suite *GinRouterSuite) loadDBtestData(conn port.DBConn) {
-	strategy, err := conn.GetStrategy(context.Background())
+func (suite *GinRouterSuite) loadDBtestData(conn database.Conn) {
+	strategy, err := conn.GetStrategy(context.TODO())
 	if err != nil {
 		log.Fatalf("error retrieving database strategy: %v", err)
 	}
 
 	switch strategy {
 	case "gorm":
-		db, err := conn.GetDB(context.Background())
+		db, err := conn.GetDB(context.TODO())
 		if err != nil {
 			log.Fatalf("error retrieving database conn DB: %v", err)
 		}

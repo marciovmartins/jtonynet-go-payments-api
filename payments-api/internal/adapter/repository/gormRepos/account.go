@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 
@@ -12,12 +13,12 @@ import (
 )
 
 type Account struct {
-	gormConn port.DBConn
+	gormConn database.Conn
 	db       *gorm.DB
 }
 
-func NewAccount(conn port.DBConn) (port.AccountRepository, error) {
-	db, err := conn.GetDB(context.Background())
+func NewGormAccount(conn database.Conn) (port.AccountRepository, error) {
+	db, err := conn.GetDB(context.TODO())
 	if err != nil {
 		return nil, fmt.Errorf("account repository failure on conn.GetDB()")
 	}

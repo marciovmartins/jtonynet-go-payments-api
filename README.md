@@ -16,7 +16,7 @@
  <!-- [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="grpc Logo" title="grpc">](https://grpc.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/)  [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/rabbitmq.svg" width="25px" height="25px" alt="RabbitMQ Logo" title="RabbitMQ">](https://rabbitmq.com/) -->
 
 
-[![Badge Status](https://img.shields.io/badge/STATUS-EM_DESENVOLVIMENTO-green)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-KANBAN-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions)
+[![Badge Status](https://img.shields.io/badge/STATUS-ENCERRADO-red)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-KANBAN-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions)
 >
 
 
@@ -60,10 +60,6 @@ __[Go Payments API](#header)__<br/>
 
 <a id="about"></a>
 ### 📖 Sobre
-
-> Projeto já finalizado como `Desafio` e atendendo aos requisitos. Porém, o considerei tão interessante que decidi continuar seu desenvolvimento. Pretendo, ainda que de maneira local, atender ao requisito L4, embora tenha sido levantado apenas para esclarecimento, além de outros tópicos interessantes.
-> 
-> 
 
 Acompanhe as tarefas pelo __[Kanban](https://github.com/users/jtonynet/projects/7/views/1)__
 
@@ -177,6 +173,15 @@ Este repositório foi criado com a intenção de propor uma possível solução 
 
 <br/>
 
+**Arquitetura Atual do Projeto**<br/>
+Arquitetura mínima atendendo requisito `L4`, com retentativas de aquisição de lock em caso de concorrência. Embora ainda não esteja em sua versão final, a implementação está funcional, validando em forma de `MVP` com uma solução de `Lock Distribuído`. Abordagem `Growth Hack`, que deverá escalar conforme o sugerido em [Questão Aberta L4](#open-question) e na ADR [0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md).
+
+<center>
+    <img src="./docs/assets/images/screen_captures/miro/minimun_architecture_with_exponential_retry_backoff.png">
+</center>
+
+<br/>
+
 O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`, evidenciando preferências, mas aceitando subscrições com outras linguagens e paradigmas. Realizarei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior familiaridade e experiência além de entender que essa linguagem e arquitetura se encaixam ao desafio.
 
 Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adotar novas tecnologias e paradigmas conforme necessário.
@@ -208,7 +213,7 @@ Após a `.env` renomeada, rode os comandos `docker compose` (de acordo com sua v
 # Construir a imagem
 docker compose build
 
-# Rodar o PostgreSQL de Desenvolvimento
+# Rodar o PostgreSQL e o Redis de Desenvolvimento
 docker compose up postgres-payments redis-payments -d
 
 # Rodar a API
@@ -285,8 +290,11 @@ Para rodar os [Testes Automatizados](#test-auto) com a API fora do container, de
 
 No arquivo `/.env.TEST`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
-DATABASE_HOST=localhost ### local: localhost | conteinerized: test-postgres-payments
-DATABASE_PORT=5433 ### local: 5433 | conteinerized: 5432
+DATABASE_HOST=localhost         ### local: localhost | conteinerized: test-postgres-payments
+DATABASE_PORT=5433              ### local: 5433 | conteinerized: 5432
+
+IN_MEMORY_CACHE_HOST=localhost  ### local: localhost | conteinerized: redis-payments
+IN_MEMORY_LOCK_HOST=localhost   ### local: localhost | conteinerized: redis-payments
 ```
 <br/>
 
@@ -303,13 +311,13 @@ docker compose up test-postgres-payments -d
 Comando para executar o teste _conteinerizado_ com a API levantada
 ```bash
 # Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
-docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
+docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 Comando para executar o teste _local_ em `payments-api`
 ```bash
 # Executa Testes Localmente com ENV test (PostgreSQL de Testes na Integração)
-ENV=test go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
+ENV=test go test -v -count=1  ./internal/adapter/repository ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 <br/>
@@ -339,7 +347,7 @@ Como as `migrations` e `seeds` ainda não foram adicionadas ao projeto, você po
 
 ```bash
 # Executa Testes no Docker com ENV dev (PostgreSQL de Desenvolvimento na Integração)
-docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/cachedRepository/redisRepos ./internal/adapter/cachedRepository/redisRepos ./internal/core/service ./internal/adapter/http/router/ginStrategy
+docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 <br/>
@@ -412,6 +420,7 @@ _*Diagramas Mermaid podem apresentar problemas de visualização em aplicativos 
 
 <a id="diagrams-flowchart"></a>
 #### 📈 Fluxo
+__Autorização de Pagamento__
 
 ```mermaid
 flowchart TD
@@ -432,15 +441,19 @@ flowchart TD
     G --> K[Registrar Transação Aprovada]
     I --> K[Registrar Transação Aprovada]
     
-    K --> M[✅<br/><b>Aprovada</b><br/> Retorna Código <b>00</b>]
+    K --> P{Ocorreu Erro no Processo da Transação?}
+    P -- Sim --> Q[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>07</b> por Falha Genérica</b>]
+        P -- Não --> M[✅<br/><b>Aprovada</b><br/> Retorna Código <b>00</b>]
     
     J --> N[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>51</b> por Saldo Insuficiente</b>]
 
     N --> O([⏹️<br/>Fim do Processo])
     M --> O
+    Q --> O
 
     style M fill:#009933,stroke:#000
     style N fill:#cc0000,stroke:#000
+    style Q fill:#cc0000,stroke:#000
 ```
 _*Diagrama apresenta uma interpretação do sistema_
 
@@ -466,7 +479,6 @@ _*Diagrama apresenta uma interpretação do sistema_
 7. **Retorna Código "00"**: Se a transação foi aprovada, retorna o código "00" (aprovada).
 
 8. **Retorna Código "51"**: Se a transação foi rejeitada por falta de fundos, retorna o código "51".
-
 
 <br/>
 
@@ -592,7 +604,7 @@ flowchart TD
     B --> C{Account da Transação está Bloqueado no <b>Lock Distribuído</b>?}
     
     C -- Não --> D[🔐<br/><b>Bloqueia</b><br/>Account da Transação no Lock Distribuído]
-    D  --> E[Processa Transação]
+    D  --> E[[Processa Autorização de Pagamento]]
 
     C -- Sim --> M[✉️⬅️<br/><b>Subscreve</b><br/>Redis Keyspace Notification<br/><br/> ]
     M --> R[⏸️<br/><b>Aguarda</b><br> receber Mensagem de desbloqueio da Account do Redis Keyspace Notification]
@@ -629,6 +641,9 @@ flowchart TD
     style J fill:#78771b,stroke:#000
     style P fill:#007bff,stroke:#000
 ```
+
+_*Esses diagramas representam uma interpretação do sistema, não sua implementação.<br/>**A etapa [`Processa Autorização de Pagamento`](#diagrams-flowchart) é uma sub-rotina vinculada ao diagrama de fluxo de Autorização de Pagamento, mantida de forma simplificada para que esse fluxograma tenha sentido isoladamente. Considere os detalhes do processamento para o débito de saldos das categorias corretas no fluxograma vinculado._
+
 
 <br/>
 <br/>

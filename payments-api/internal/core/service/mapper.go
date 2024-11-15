@@ -2,10 +2,18 @@ package service
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
+
+func mapTransactionRequestToMemoryLockEntity(tMemoryLock port.TransactionPaymentRequest) port.MemoryLockEntity {
+	return port.MemoryLockEntity{
+		Key:       tMemoryLock.AccountUID.String(),
+		Timestamp: time.Now().UnixMilli(),
+	}
+}
 
 func mapMerchantEntityToDomain(mEntity *port.MerchantEntity) domain.Merchant {
 	return domain.Merchant{
@@ -14,11 +22,11 @@ func mapMerchantEntityToDomain(mEntity *port.MerchantEntity) domain.Merchant {
 	}
 }
 
-func mapAccountEntityToDomain(aEntity port.AccountEntity) (domain.Account, error) {
+func mapAccountEntityToDomain(aEntity port.AccountEntity) domain.Account {
 	return domain.Account{
 		ID:  aEntity.ID,
 		UID: aEntity.UID,
-	}, nil
+	}
 }
 
 func mapBalanceEntityToDomain(bEntity port.BalanceEntity) (*domain.Balance, error) {

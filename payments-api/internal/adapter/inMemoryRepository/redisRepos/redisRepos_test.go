@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/jtonynet/go-payments-api/config"
-	"github.com/jtonynet/go-payments-api/internal/adapter/cache"
+	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -17,8 +17,11 @@ var merchantName = "XYZ*TestCachedRepositoryMerchant                   PIRAPORIN
 type RedisReposSuite struct {
 	suite.Suite
 
-	cacheConn          port.Cache
+	cacheConn          inMemoryDatabase.Conn
 	cachedMerchantRepo port.MerchantRepository
+
+	lockConn             inMemoryDatabase.Conn
+	memoryLockRepository port.MemoryLockRepository
 }
 
 type DBfake struct {
@@ -70,53 +73,78 @@ func (suite *RedisReposSuite) SetupSuite() {
 		log.Fatalf("cannot load config: %v", err)
 	}
 
-	cacheConn, err := cache.New(cfg.Cache)
+	cacheCfg, _ := cfg.Cache.ToInMemoryDatabase()
+	cacheConn, err := inMemoryDatabase.NewConn(cacheCfg)
 	if err != nil {
 		log.Fatalf("error: dont instantiate cache client: %v", err)
 	}
 
-	if cacheConn.Readiness(context.Background()) != nil {
+	if cacheConn.Readiness(context.TODO()) != nil {
 		log.Fatalf("error: dont connecting to cache: %v", err)
 	}
 
-	cacheConn.Delete(context.Background(), merchantName)
+	cacheConn.Delete(context.TODO(), merchantName)
 
 	dbFake := newDBfake()
 	merchantRepo := newMerchantRepoFake(dbFake)
 
-	cachedMerchantRepo, err := NewMerchant(cacheConn, merchantRepo)
+	cachedMerchantRepo, err := NewRedisMerchant(cacheConn, merchantRepo)
 	if err != nil {
 		log.Fatalf("error: dont instantiate merchant cached repository: %v", err)
 	}
 
 	suite.cacheConn = cacheConn
 	suite.cachedMerchantRepo = cachedMerchantRepo
+
+	lockCfg, _ := cfg.Lock.ToInMemoryDatabase()
+	lockConn, err := inMemoryDatabase.NewConn(lockCfg)
+	if err != nil {
+		log.Fatalf("error: dont instantiate lock client: %v", err)
+	}
+
+	if lockConn.Readiness(context.TODO()) != nil {
+		log.Fatalf("error: dont connecting to lock: %v", err)
+	}
+
+	memoryLockRepo, err := NewMemoryLock(lockConn)
+	if err != nil {
+		log.Fatalf("error: dont instantiate memory lock repository: %v", err)
+	}
+
+	suite.lockConn = lockConn
+	suite.memoryLockRepository = memoryLockRepo
 }
 
 func (suite *RedisReposSuite) TearDownSuite() {
-	suite.cacheConn.Delete(context.Background(), merchantName)
+	suite.cacheConn.Delete(context.TODO(), merchantName)
 }
 
 func (suite *RedisReposSuite) MerchantRepositoryFindByNameNotCached() {
-	_, err := suite.cacheConn.Get(context.Background(), merchantName)
+	_, err := suite.cacheConn.Get(context.TODO(), merchantName)
 	assert.EqualError(suite.T(), err, "redis: nil")
 
-	merchantEntity, err := suite.cachedMerchantRepo.FindByName(context.Background(), merchantName)
+	merchantEntity, err := suite.cachedMerchantRepo.FindByName(context.TODO(), merchantName)
 	assert.NoError(suite.T(), err)
 	assert.NotNil(suite.T(), merchantEntity)
 
-	_, err = suite.cacheConn.Get(context.Background(), merchantName)
+	_, err = suite.cacheConn.Get(context.TODO(), merchantName)
 	assert.NoError(suite.T(), err)
 }
 
 func (suite *RedisReposSuite) MerchantRepositoryFindByNameCached() {
-	_, err := suite.cacheConn.Get(context.Background(), merchantName)
+	_, err := suite.cacheConn.Get(context.TODO(), merchantName)
 	assert.NoError(suite.T(), err)
 
-	merchantEntity, err := suite.cachedMerchantRepo.FindByName(context.Background(), merchantName)
+	merchantEntity, err := suite.cachedMerchantRepo.FindByName(context.TODO(), merchantName)
 	assert.NoError(suite.T(), err)
 	assert.NotNil(suite.T(), merchantEntity)
 }
+
+func (suite *RedisReposSuite) MemoryLockRepoLockSuccesfulLock() {
+
+}
+
+func (suite *RedisReposSuite) MemoryLockRepoLockNotSuccesfulLock() {}
 
 func TestRedisReposSuite(t *testing.T) {
 	suite.Run(t, new(RedisReposSuite))

@@ -5,18 +5,19 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"gorm.io/gorm"
 )
 
 type Merchant struct {
-	gormConn port.DBConn
+	gormConn database.Conn
 	db       *gorm.DB
 }
 
-func NewMerchant(conn port.DBConn) (port.MerchantRepository, error) {
-	db, err := conn.GetDB(context.Background())
+func NewMerchant(conn database.Conn) (port.MerchantRepository, error) {
+	db, err := conn.GetDB(context.TODO())
 	if err != nil {
 		return nil, fmt.Errorf("merchant repository failure on conn.GetDB()")
 	}

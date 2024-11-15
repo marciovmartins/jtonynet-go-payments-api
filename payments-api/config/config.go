@@ -9,6 +9,7 @@ type API struct {
 	Port       string `mapstructure:"API_PORT"`
 	TagVersion string `mapstructure:"API_TAG_VERSION"`
 	Env        string `mapstructure:"ENV"`
+	TimeoutSLA int64  `mapstructure:"API_TIMEOUT_SLA_IN_MS"`
 }
 
 type Router struct {
@@ -19,7 +20,7 @@ type Logger struct {
 	Strategy  string `mapstructure:"LOG_STRATEGY"`   // slog
 	Level     string `mapstructure:"LOG_LEVEL"`      // debug | info | warn | error
 	Format    string `mapstructure:"LOG_OPT_FORMAT"` // text | json
-	AddSource bool   `mapstructure:"LOG_OPT_ADD_SOURCE"`
+	AddSource bool   `mapstructure:"LOG_OPT_ADD_SOURCE_BOOL"`
 }
 
 type Database struct {
@@ -34,15 +35,61 @@ type Database struct {
 	SSLmode string `mapstructure:"DATABASE_SSLMODE"`
 }
 
-type Cache struct {
-	Strategy string `mapstructure:"CACHE_STRATEGY"` // redis
+type InMemoryDatabase struct {
+	Strategy   string
+	Pass       string
+	Port       string
+	Host       string
+	DB         int
+	Protocol   int
+	Expiration int
+}
 
-	Pass       string `mapstructure:"REDIS_PASSWORD"`
-	Port       string `mapstructure:"REDIS_PORT"`
-	Host       string `mapstructure:"REDIS_HOST"`
-	DB         int    `mapstructure:"REDIS_DB"`
-	Protocol   int    `mapstructure:"REDIS_PROTOCOL"`
-	Expiration int    `mapstructure:"REDIS_EXPIRATION_DEFAULT_IN_MS"`
+type InMemoryDatabaseConverter interface {
+	ToInMemoryDatabase() (InMemoryDatabase, error)
+}
+type Cache struct {
+	Strategy   string `mapstructure:"CACHE_IN_MEMORY_STRATEGY"`
+	Pass       string `mapstructure:"CACHE_IN_MEMORY_PASSWORD"`
+	Port       string `mapstructure:"CACHE_IN_MEMORY_PORT"`
+	Host       string `mapstructure:"CACHE_IN_MEMORY_HOST"`
+	DB         int    `mapstructure:"CACHE_IN_MEMORY_DB"`
+	Protocol   int    `mapstructure:"CACHE_IN_MEMORY_PROTOCOL"`
+	Expiration int    `mapstructure:"CACHE_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS"`
+}
+
+func (c *Cache) ToInMemoryDatabase() (InMemoryDatabase, error) {
+	return InMemoryDatabase{
+		Strategy:   c.Strategy,
+		Pass:       c.Pass,
+		Port:       c.Port,
+		Host:       c.Host,
+		DB:         c.DB,
+		Protocol:   c.Protocol,
+		Expiration: c.Expiration,
+	}, nil
+}
+
+type Lock struct {
+	Strategy   string `mapstructure:"LOCK_IN_MEMORY_STRATEGY"`
+	Pass       string `mapstructure:"LOCK_IN_MEMORY_PASSWORD"`
+	Port       string `mapstructure:"LOCK_IN_MEMORY_PORT"`
+	Host       string `mapstructure:"LOCK_IN_MEMORY_HOST"`
+	DB         int    `mapstructure:"LOCK_IN_MEMORY_DB"`
+	Protocol   int    `mapstructure:"LOCK_IN_MEMORY_PROTOCOL"`
+	Expiration int    `mapstructure:"LOCK_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS"`
+}
+
+func (l *Lock) ToInMemoryDatabase() (InMemoryDatabase, error) {
+	return InMemoryDatabase{
+		Strategy:   l.Strategy,
+		Pass:       l.Pass,
+		Port:       l.Port,
+		Host:       l.Host,
+		DB:         l.DB,
+		Protocol:   l.Protocol,
+		Expiration: l.Expiration,
+	}, nil
 }
 
 type Config struct {
@@ -51,6 +98,7 @@ type Config struct {
 	Router   Router   `mapstructure:",squash"`
 	Logger   Logger   `mapstructure:",squash"`
 	Cache    Cache    `mapstructure:",squash"`
+	Lock     Lock     `mapstructure:",squash"`
 }
 
 func LoadConfig(path string) (*Config, error) {

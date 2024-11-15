@@ -65,7 +65,7 @@ func (suite *RepositoriesSuite) SetupSuite() {
 		log.Fatalf("error connecting to database: %v", err)
 	}
 
-	if conn.Readiness(context.Background()) != nil {
+	if conn.Readiness(context.TODO()) != nil {
 		log.Fatalf("error connecting to database: %v", err)
 	}
 
@@ -82,16 +82,16 @@ func (suite *RepositoriesSuite) SetupSuite() {
 	suite.loadDBtestData(conn)
 }
 
-func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
+func (suite *RepositoriesSuite) loadDBtestData(conn database.Conn) {
 
-	strategy, err := conn.GetStrategy(context.Background())
+	strategy, err := conn.GetStrategy(context.TODO())
 	if err != nil {
 		log.Fatalf("error retrieving database strategy to charge test data")
 	}
 
 	switch strategy {
 	case "gorm":
-		db, err := conn.GetDB(context.Background())
+		db, err := conn.GetDB(context.TODO())
 		if err != nil {
 			log.Fatalf("error retrieving database conn DB to charge test data")
 		}
@@ -163,7 +163,7 @@ func (suite *RepositoriesSuite) loadDBtestData(conn port.DBConn) {
 }
 
 func (suite *RepositoriesSuite) AccountRepositoryFindByUIDsuccess() {
-	accountEntity, err := suite.AccountRepo.FindByUID(context.Background(), accountUID)
+	accountEntity, err := suite.AccountRepo.FindByUID(context.TODO(), accountUID)
 	assert.Equal(suite.T(), accountEntity.ID, uint(1))
 	assert.NoError(suite.T(), err)
 
@@ -179,7 +179,7 @@ func (suite *RepositoriesSuite) BalanceRepositoryFindByAccountIDsuccess() {
 
 	accountEntity := suite.AccountEntity
 
-	balanceEntity, err := suite.BalanceRepo.FindByAccountID(context.Background(), accountEntity.ID)
+	balanceEntity, err := suite.BalanceRepo.FindByAccountID(context.TODO(), accountEntity.ID)
 	assert.Equal(suite.T(), balanceEntity.AmountTotal, amountTotal)
 	assert.NoError(suite.T(), err)
 
@@ -195,7 +195,7 @@ func (suite *RepositoriesSuite) BalanceRepositoryUpdateTotalAmountSuccess() {
 	foodBalanceCategory.Amount = foodBalanceCategory.Amount.Sub(amountFoodTransaction)
 	balanceEntity.Categories[foodCategoryPriority] = foodBalanceCategory
 
-	balanceEntityUpdateErr := suite.BalanceRepo.UpdateTotalAmount(context.Background(), balanceEntity)
+	balanceEntityUpdateErr := suite.BalanceRepo.UpdateTotalAmount(context.TODO(), balanceEntity)
 	assert.NoError(suite.T(), balanceEntityUpdateErr)
 }
 
@@ -209,13 +209,13 @@ func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
 		TotalAmount: amountFoodTransaction,
 	}
 
-	transactionEntitySaveErr := suite.TransactionRepo.Save(context.Background(), transactionEntity)
+	transactionEntitySaveErr := suite.TransactionRepo.Save(context.TODO(), transactionEntity)
 	assert.NoError(suite.T(), transactionEntitySaveErr)
 
 }
 
 func (suite *RepositoriesSuite) MerchantRepositoryFindByName() {
-	merchantEntity, err := suite.MerchantRepo.FindByName(context.Background(), merchant1NameToMap)
+	merchantEntity, err := suite.MerchantRepo.FindByName(context.TODO(), merchant1NameToMap)
 	assert.Equal(suite.T(), merchantEntity.MCC, merchant1CorrectMccToMap)
 	assert.NoError(suite.T(), err)
 }

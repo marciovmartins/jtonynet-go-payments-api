@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository/gormRepos"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
@@ -16,17 +17,17 @@ type AllRepos struct {
 	Merchant    port.MerchantRepository
 }
 
-func GetAll(conn port.DBConn) (AllRepos, error) {
+func GetAll(conn database.Conn) (AllRepos, error) {
 	repos := AllRepos{}
 
-	strategy, err := conn.GetStrategy(context.Background())
+	strategy, err := conn.GetStrategy(context.TODO())
 	if err != nil {
 		return AllRepos{}, fmt.Errorf("error when instantiating merchant repository: %v", err)
 	}
 
 	switch strategy {
 	case "gorm":
-		account, err := gormRepos.NewAccount(conn)
+		account, err := gormRepos.NewGormAccount(conn)
 		if err != nil {
 			return AllRepos{}, fmt.Errorf("error when instantiating account repository: %v", err)
 		}

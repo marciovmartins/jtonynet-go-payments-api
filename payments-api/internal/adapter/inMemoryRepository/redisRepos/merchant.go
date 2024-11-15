@@ -3,20 +3,21 @@ package redisRepos
 import (
 	"context"
 
+	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 
 	"github.com/tidwall/gjson"
 )
 
 type Merchant struct {
-	redisConn port.Cache
+	cacheConn inMemoryDatabase.Conn
 
 	merchantRepository port.MerchantRepository
 }
 
-func NewMerchant(conn port.Cache, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
+func NewRedisMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
 	return &Merchant{
-		redisConn:          conn,
+		cacheConn:          cacheConn,
 		merchantRepository: mRepository,
 	}, nil
 }
@@ -24,19 +25,19 @@ func NewMerchant(conn port.Cache, mRepository port.MerchantRepository) (port.Mer
 func (m *Merchant) FindByName(_ context.Context, name string) (*port.MerchantEntity, error) {
 	var mEntity *port.MerchantEntity
 
-	merchantCached, err := m.redisConn.Get(context.Background(), name)
+	merchantCached, err := m.cacheConn.Get(context.TODO(), name)
 	if err != nil {
-		mEntity, err = m.merchantRepository.FindByName(context.Background(), name)
+		mEntity, err = m.merchantRepository.FindByName(context.TODO(), name)
 		if err != nil {
 			return mEntity, err
 		}
 
-		defaultExpiration, err := m.redisConn.GetDefaultExpiration(context.Background())
+		defaultExpiration, err := m.cacheConn.GetDefaultExpiration(context.TODO())
 		if err != nil {
 			return mEntity, err
 		}
 
-		err = m.redisConn.Set(context.Background(), name, mEntity, defaultExpiration)
+		err = m.cacheConn.Set(context.TODO(), name, mEntity, defaultExpiration)
 		if err != nil {
 			return mEntity, err
 		}
