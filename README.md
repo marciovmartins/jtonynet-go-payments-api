@@ -16,7 +16,7 @@
  <!-- [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="grpc Logo" title="grpc">](https://grpc.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/)  [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/rabbitmq.svg" width="25px" height="25px" alt="RabbitMQ Logo" title="RabbitMQ">](https://rabbitmq.com/) -->
 
 
-[![Badge Status](https://img.shields.io/badge/STATUS-EM_DESENVOLVIMENTO-green)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-KANBAN-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions)
+[![Badge Status](https://img.shields.io/badge/STATUS-ENCERRADO-red)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-KANBAN-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions)
 >
 
 
@@ -60,10 +60,6 @@ __[Go Payments API](#header)__<br/>
 
 <a id="about"></a>
 ### 📖 Sobre
-
-> Projeto já finalizado como `Desafio` e atendendo aos requisitos. Porém, o considerei tão interessante que decidi continuar seu desenvolvimento. Pretendo, ainda que de maneira local, atender ao requisito L4, embora tenha sido levantado apenas para esclarecimento, além de outros tópicos interessantes.
-> 
-> 
 
 Acompanhe as tarefas pelo __[Kanban](https://github.com/users/jtonynet/projects/7/views/1)__
 

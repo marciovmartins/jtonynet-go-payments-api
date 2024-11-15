@@ -27,7 +27,7 @@ func GetAll(conn database.Conn) (AllRepos, error) {
 
 	switch strategy {
 	case "gorm":
-		account, err := gormRepos.NewAccount(conn)
+		account, err := gormRepos.NewGormAccount(conn)
 		if err != nil {
 			return AllRepos{}, fmt.Errorf("error when instantiating account repository: %v", err)
 		}

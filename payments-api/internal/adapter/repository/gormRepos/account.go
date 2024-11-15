@@ -17,7 +17,7 @@ type Account struct {
 	db       *gorm.DB
 }
 
-func NewAccount(conn database.Conn) (port.AccountRepository, error) {
+func NewGormAccount(conn database.Conn) (port.AccountRepository, error) {
 	db, err := conn.GetDB(context.TODO())
 	if err != nil {
 		return nil, fmt.Errorf("account repository failure on conn.GetDB()")

@@ -247,10 +247,6 @@ func (trf *TransactionRepoFake) Save(_ context.Context, te port.TransactionEntit
 	return nil
 }
 
-type PaymentSuite struct {
-	suite.Suite
-}
-
 type InMemoryDBfake struct {
 	Lock map[string]string
 }
@@ -296,6 +292,10 @@ func (m *MemoryLockRepoFake) Lock(_ context.Context, timeoutSLA port.TimeoutSLA,
 
 func (m *MemoryLockRepoFake) Unlock(_ context.Context, key string) error {
 	return m.memoryDB.MemoryLockRepoUnlock(context.TODO(), key)
+}
+
+type PaymentSuite struct {
+	suite.Suite
 }
 
 func (suite *PaymentSuite) getDBfake() *DBfake {

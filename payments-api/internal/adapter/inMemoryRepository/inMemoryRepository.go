@@ -19,7 +19,7 @@ func NewMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepos
 
 	switch strategy {
 	case "redis":
-		return redisRepos.NewMerchant(cacheConn, mRepository)
+		return redisRepos.NewRedisMerchant(cacheConn, mRepository)
 	default:
 		return mr, fmt.Errorf("cached repository strategy not suported: %s", strategy)
 	}

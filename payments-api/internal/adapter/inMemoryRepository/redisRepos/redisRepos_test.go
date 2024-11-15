@@ -19,6 +19,9 @@ type RedisReposSuite struct {
 
 	cacheConn          inMemoryDatabase.Conn
 	cachedMerchantRepo port.MerchantRepository
+
+	lockConn             inMemoryDatabase.Conn
+	memoryLockRepository port.MemoryLockRepository
 }
 
 type DBfake struct {
@@ -85,13 +88,31 @@ func (suite *RedisReposSuite) SetupSuite() {
 	dbFake := newDBfake()
 	merchantRepo := newMerchantRepoFake(dbFake)
 
-	cachedMerchantRepo, err := NewMerchant(cacheConn, merchantRepo)
+	cachedMerchantRepo, err := NewRedisMerchant(cacheConn, merchantRepo)
 	if err != nil {
 		log.Fatalf("error: dont instantiate merchant cached repository: %v", err)
 	}
 
 	suite.cacheConn = cacheConn
 	suite.cachedMerchantRepo = cachedMerchantRepo
+
+	lockCfg, _ := cfg.Lock.ToInMemoryDatabase()
+	lockConn, err := inMemoryDatabase.NewConn(lockCfg)
+	if err != nil {
+		log.Fatalf("error: dont instantiate lock client: %v", err)
+	}
+
+	if lockConn.Readiness(context.TODO()) != nil {
+		log.Fatalf("error: dont connecting to lock: %v", err)
+	}
+
+	memoryLockRepo, err := NewMemoryLock(lockConn)
+	if err != nil {
+		log.Fatalf("error: dont instantiate memory lock repository: %v", err)
+	}
+
+	suite.lockConn = lockConn
+	suite.memoryLockRepository = memoryLockRepo
 }
 
 func (suite *RedisReposSuite) TearDownSuite() {
@@ -118,6 +139,12 @@ func (suite *RedisReposSuite) MerchantRepositoryFindByNameCached() {
 	assert.NoError(suite.T(), err)
 	assert.NotNil(suite.T(), merchantEntity)
 }
+
+func (suite *RedisReposSuite) MemoryLockRepoLockSuccesfulLock() {
+
+}
+
+func (suite *RedisReposSuite) MemoryLockRepoLockNotSuccesfulLock() {}
 
 func TestRedisReposSuite(t *testing.T) {
 	suite.Run(t, new(RedisReposSuite))

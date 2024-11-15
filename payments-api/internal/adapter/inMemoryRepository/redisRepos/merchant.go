@@ -15,7 +15,7 @@ type Merchant struct {
 	merchantRepository port.MerchantRepository
 }
 
-func NewMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
+func NewRedisMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
 	return &Merchant{
 		cacheConn:          cacheConn,
 		merchantRepository: mRepository,
