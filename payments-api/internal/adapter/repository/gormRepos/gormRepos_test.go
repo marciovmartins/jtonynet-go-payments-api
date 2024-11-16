@@ -1,4 +1,4 @@
-package repository
+package gormRepos
 
 import (
 	"context"
@@ -37,8 +37,6 @@ var (
 	merchant1CorrectMccIdToMap = 2
 
 	merchant2NameToMap         = "PAG*JoseDaSilva          RIO DE JANEI BR"
-	merchant2IncorrectMccToMap = "5555"
-	merchant2CorrectMccToMap   = "5812"
 	merchant2CorrectMccIdToMap = 4
 )
 
@@ -55,7 +53,7 @@ type RepositoriesSuite struct {
 }
 
 func (suite *RepositoriesSuite) SetupSuite() {
-	cfg, err := config.LoadConfig("./../../../")
+	cfg, err := config.LoadConfig("./../../../../")
 	if err != nil {
 		log.Fatalf("cannot load config: %v", err)
 	}
@@ -69,15 +67,30 @@ func (suite *RepositoriesSuite) SetupSuite() {
 		log.Fatalf("error connecting to database: %v", err)
 	}
 
-	repositories, err := GetAll(conn)
+	account, err := NewGormAccount(conn)
 	if err != nil {
-		log.Fatalf("error when instantiating repositories: %v", err)
+		log.Fatalf("error when instantiating account repository: %v", err)
 	}
 
-	suite.AccountRepo = repositories.Account
-	suite.BalanceRepo = repositories.Balance
-	suite.TransactionRepo = repositories.Transaction
-	suite.MerchantRepo = repositories.Merchant
+	balance, err := NewBalance(conn)
+	if err != nil {
+		log.Fatalf("error when instantiating balance repository: %v", err)
+	}
+
+	transaction, err := NewTransaction(conn)
+	if err != nil {
+		log.Fatalf("error when instantiating transaction repository: %v", err)
+	}
+
+	merchant, err := NewMerchant(conn)
+	if err != nil {
+		log.Fatalf("error when instantiating merchant repository: %v", err)
+	}
+
+	suite.AccountRepo = account
+	suite.BalanceRepo = balance
+	suite.TransactionRepo = transaction
+	suite.MerchantRepo = merchant
 
 	suite.loadDBtestData(conn)
 }
