@@ -309,13 +309,13 @@ docker compose up test-postgres-payments -d
 Comando para executar o teste _conteinerizado_ com a API levantada
 ```bash
 # Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
-docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
+docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 Comando para executar o teste _local_ em `payments-api`
 ```bash
 # Executa Testes Localmente com ENV test (PostgreSQL de Testes na Integração)
-ENV=test go test -v -count=1  ./internal/adapter/repository/gormRepos ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
+ENV=test go test -v -count=1  ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 <br/>
@@ -345,7 +345,7 @@ Como as `migrations` e `seeds` ainda não foram adicionadas ao projeto, você po
 
 ```bash
 # Executa Testes no Docker com ENV dev (PostgreSQL de Desenvolvimento na Integração)
-docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
+docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 <br/>

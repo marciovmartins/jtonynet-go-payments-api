@@ -13,7 +13,6 @@ import (
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
-	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryRepository"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 
 	"github.com/jtonynet/go-payments-api/internal/core/port"
@@ -81,7 +80,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate repositories: %v", err)
 	}
 
-	cachedMerchantRepo, err := inMemoryRepository.NewMerchant(
+	cachedMerchantRepo, err := repository.NewCachedMerchant(
 		cacheConn,
 		allRepos.Merchant,
 	)
@@ -89,7 +88,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate merchant cached repository: %v", err)
 	}
 
-	memoryLockRepo, err := inMemoryRepository.NewMemoryLock(lockConn)
+	memoryLockRepo, err := repository.NewMemoryLock(lockConn)
 	if err != nil {
 		return App{}, fmt.Errorf("error: dont instantiate memory lock repository: %v", err)
 	}
