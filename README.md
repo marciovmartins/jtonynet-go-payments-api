@@ -16,9 +16,7 @@
  <!-- [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="grpc Logo" title="grpc">](https://grpc.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/)  [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/rabbitmq.svg" width="25px" height="25px" alt="RabbitMQ Logo" title="RabbitMQ">](https://rabbitmq.com/) -->
 
 
-[![Badge Status](https://img.shields.io/badge/STATUS-ENCERRADO-red)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-KANBAN-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions)
->
-
+[![Badge Status](https://img.shields.io/badge/STATUS-ENCERRADO-blue)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-KANBAN-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions)
 
 ## 🕸️ Redes
 
@@ -311,13 +309,13 @@ docker compose up test-postgres-payments -d
 Comando para executar o teste _conteinerizado_ com a API levantada
 ```bash
 # Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
-docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
+docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 Comando para executar o teste _local_ em `payments-api`
 ```bash
 # Executa Testes Localmente com ENV test (PostgreSQL de Testes na Integração)
-ENV=test go test -v -count=1  ./internal/adapter/repository ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
+ENV=test go test -v -count=1  ./internal/adapter/repository/gormRepos ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 <br/>
@@ -347,7 +345,7 @@ Como as `migrations` e `seeds` ainda não foram adicionadas ao projeto, você po
 
 ```bash
 # Executa Testes no Docker com ENV dev (PostgreSQL de Desenvolvimento na Integração)
-docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
+docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/inMemoryRepository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 <br/>
