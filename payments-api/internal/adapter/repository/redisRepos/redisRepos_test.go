@@ -17,10 +17,10 @@ var merchantName = "XYZ*TestCachedRepositoryMerchant                   PIRAPORIN
 type RedisReposSuite struct {
 	suite.Suite
 
-	cacheConn          inMemoryDatabase.Conn
+	cacheConn          inMemoryDatabase.Client
 	cachedMerchantRepo port.MerchantRepository
 
-	lockConn             inMemoryDatabase.Conn
+	lockConn             inMemoryDatabase.Client
 	memoryLockRepository port.MemoryLockRepository
 }
 
@@ -74,7 +74,7 @@ func (suite *RedisReposSuite) SetupSuite() {
 	}
 
 	cacheCfg, _ := cfg.Cache.ToInMemoryDatabase()
-	cacheConn, err := inMemoryDatabase.NewConn(cacheCfg)
+	cacheConn, err := inMemoryDatabase.NewClient(cacheCfg)
 	if err != nil {
 		log.Fatalf("error: dont instantiate cache client: %v", err)
 	}
@@ -97,7 +97,7 @@ func (suite *RedisReposSuite) SetupSuite() {
 	suite.cachedMerchantRepo = cachedMerchantRepo
 
 	lockCfg, _ := cfg.Lock.ToInMemoryDatabase()
-	lockConn, err := inMemoryDatabase.NewConn(lockCfg)
+	lockConn, err := inMemoryDatabase.NewClient(lockCfg)
 	if err != nil {
 		log.Fatalf("error: dont instantiate lock client: %v", err)
 	}

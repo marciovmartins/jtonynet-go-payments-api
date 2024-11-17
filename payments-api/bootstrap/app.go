@@ -39,7 +39,7 @@ func NewApp(cfg *config.Config) (App, error) {
 	app.Logger = logger
 
 	cacheCfg, _ := cfg.Cache.ToInMemoryDatabase()
-	cacheConn, err := inMemoryDatabase.NewConn(cacheCfg)
+	cacheConn, err := inMemoryDatabase.NewClient(cacheCfg)
 	if err != nil {
 		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
 	}
@@ -49,7 +49,7 @@ func NewApp(cfg *config.Config) (App, error) {
 	}
 
 	lockCfg, _ := cfg.Lock.ToInMemoryDatabase()
-	lockConn, err := inMemoryDatabase.NewConn(lockCfg)
+	lockConn, err := inMemoryDatabase.NewClient(lockCfg)
 	if err != nil {
 		return App{}, fmt.Errorf("error: dont instantiate lock client: %v", err)
 	}

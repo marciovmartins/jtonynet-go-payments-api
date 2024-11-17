@@ -12,10 +12,10 @@ import (
 )
 
 type MemoryLock struct {
-	lockConn inMemoryDatabase.Conn
+	lockConn inMemoryDatabase.Client
 }
 
-func NewMemoryLock(lockConn inMemoryDatabase.Conn) (port.MemoryLockRepository, error) {
+func NewMemoryLock(lockConn inMemoryDatabase.Client) (port.MemoryLockRepository, error) {
 	return &MemoryLock{
 		lockConn,
 	}, nil

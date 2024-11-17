@@ -59,7 +59,7 @@ func GetAll(conn database.Conn) (AllRepos, error) {
 	}
 }
 
-func NewCachedMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
+func NewCachedMerchant(cacheConn inMemoryDatabase.Client, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
 	var mr port.MerchantRepository
 
 	strategy, err := cacheConn.GetStrategy(context.TODO())
@@ -75,7 +75,7 @@ func NewCachedMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.Merchan
 	}
 }
 
-func NewMemoryLock(lockConn inMemoryDatabase.Conn) (port.MemoryLockRepository, error) {
+func NewMemoryLock(lockConn inMemoryDatabase.Client) (port.MemoryLockRepository, error) {
 	var mlr port.MemoryLockRepository
 
 	strategy, err := lockConn.GetStrategy(context.TODO())
