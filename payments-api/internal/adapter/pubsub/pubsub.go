@@ -14,17 +14,6 @@ type PubSub interface {
 	Close() error
 }
 
-/*
-func NewCLient(cfg config.InMemoryDatabase) (Conn, error) {
-	switch cfg.Strategy {
-	case "redis":
-		return NewRedisClient(cfg)
-	default:
-		return nil, fmt.Errorf("pubsub strategy not suported: %s", cfg.Strategy)
-	}
-}
-*/
-
 func NewPubSubFromClient(client inMemoryDatabase.Client) (PubSub, error) {
 	strategy, err := client.GetStrategy(context.TODO())
 	if err != nil {
