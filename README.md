@@ -491,14 +491,6 @@ _*Esse fluxo representa o processo de aprovação, fallback e rejeição da tran
 
 ```mermaid
 erDiagram
-    accounts {
-        int id PK
-        UUID uid
-        string name
-        datetime created_at
-        datetime updated_at
-        timestamp deleted_at
-    }
 
     accounts_categories {
         int id PK
@@ -509,20 +501,7 @@ erDiagram
         timestamp deleted_at
     }
 
-    transactions {
-        int id PK
-        UUID uid
-        int account_id FK
-        int account_category_id FK
-        numeric amount
-        string mcc
-        string merchant
-        numeric total_amount
-        timestamp created_at
-        timestamp updated_at
-        timestamp deleted_at
-    }
-    
+
     merchants {
         int id PK
         UUID uid
@@ -533,6 +512,21 @@ erDiagram
         timestamp deleted_at
     }
 
+    transactions {
+        int id PK
+        UUID uid
+        int account_id FK
+        int category_id FK
+        numeric amount
+        string mcc
+        string merchant_name
+        numeric total_amount
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_at
+    }
+
+
    mccs {
         int id PK
         string mcc
@@ -541,6 +535,7 @@ erDiagram
         datetime updated_at
         timestamp deleted_at
     }
+
 
     categories {
         int id PK
@@ -551,26 +546,36 @@ erDiagram
         datetime updated_at
         timestamp deleted_at
     }
+    
+    accounts {
+        int id PK
+        UUID uid
+        string name
+        datetime created_at
+        datetime updated_at
+        timestamp deleted_at
+    }
 
-    categories ||--o{ accounts_categories : defines
-    accounts ||--o{ transactions : performs
+    categories ||--o{ transactions : has
     categories ||--o{ mccs : has
-    accounts ||--o{ accounts_categories : has
+    categories ||--o{ accounts_categories : defines
     mccs ||--o{ merchants : has
-    accounts_categories ||--o{ transactions : has
-    
 
-    
+
+    accounts_categories }o--|| accounts : has
+    transactions }o--|| accounts : performs
+
 ```
 <a id="diagrams-erchart-description"></a>
 ##### 📝 Descrição
 
-**accounts** Tabela principal, conectada tanto a **Balances** quanto a **Transactions**, armazenando informações sobre as contas.  
-**balances** Armazena os saldos por categoria.<br/>
-**transactions** Registra o histórico de transações realizadas.<br/>
-**categories**: Cada categoria (FOOD, MEAL, CASH...) é armazenada. O campo `priority` permite definir a prioridade ou a sequência da categoria<br/>
-**mccs** Contém MCCs (códigos de quatro dígitos) e uma `category_id` correspondente, associada a categoria.<br/>
-**merchant** para ajustar MCCs incorretos de acordo com o nome do comerciante.
+**accounts** Tabela principal, conectada a **transactions** e **accounts_categories**, armazenando informações sobre as contas.  
+**accounts_categories** Vincula contas a categorias associadas.  
+**transactions** Registra o histórico de transações realizadas, incluindo categoria, comerciante e valores.  
+**categories** Armazena categorias (FOOD, MEAL, CASH...), com `priority` para definir a ordem de utilização.  
+**mccs** Contém MCCs (códigos de quatro dígitos) associados às categorias.  
+**merchants** Ajusta MCCs com base no nome do comerciante.
+
 
 
 
@@ -766,8 +771,6 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 ### 🏁 Conclusão
 
 - Defini o modelo hexagonal pois sua abordagem de `ports` and `adapters` proporciona flexibilidade para que o sistema atenda a chamadas `http`, e possa ser facilmente estendido para outras abordagens, como processamento de `mensagens` e `pub/sub` (sugestão de solução L4), sem alterar o `core`, garantindo um sistema com separação de responsabilidades.
-
-- Implantar uma versão inicial de `memory lock` (sugestão de solução L4).
 
 - Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada em uma sessão no `Miro Board`. Pretendo criar um `ADR` e tarefas no `Kanban` visando implantar parte do que foi discutido no `Miro`.
 
