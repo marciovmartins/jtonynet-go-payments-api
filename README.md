@@ -500,12 +500,10 @@ erDiagram
         timestamp deleted_at
     }
 
-    balances {
+    accounts_categories {
         int id PK
-        UUID uid
         int account_id FK
         int category_id FK
-        numeric amount
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at
@@ -515,6 +513,8 @@ erDiagram
         int id PK
         UUID uid
         int account_id FK
+        int account_category_id FK
+        numeric amount
         string mcc
         string merchant
         numeric total_amount
@@ -552,11 +552,12 @@ erDiagram
         timestamp deleted_at
     }
 
-    categories ||--o{ balances : defines
+    categories ||--o{ accounts_categories : defines
     accounts ||--o{ transactions : performs
     categories ||--o{ mccs : has
-    accounts ||--o{ balances : has
+    accounts ||--o{ accounts_categories : has
     mccs ||--o{ merchants : has
+    accounts_categories ||--o{ transactions : has
     
 
     
