@@ -172,11 +172,13 @@ Este repositório foi criado com a intenção de propor uma possível solução 
 <br/>
 
 **Arquitetura Atual do Projeto**<br/>
-Arquitetura mínima atendendo requisito `L4`, com retentativas de aquisição de lock em caso de concorrência. Embora ainda não esteja em sua versão final, a implementação está funcional, validando em forma de `MVP` com uma solução de `Lock Distribuído`. Abordagem `Growth Hack`, que deverá escalar conforme o sugerido em [Questão Aberta L4](#open-question) e na ADR [0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md).
+Arquitetura atendendo ao requisito `L4`, agora com a utilização de notificações do `Redis Keyspace Notification` para gerenciar locks em cenários de concorrência. A implementação elimina retentativas desnecessárias, substituindo-as por uma abordagem baseada em eventos assíncronos. O sistema aguarda mensagens de desbloqueio em um canal `pub/sub` (`payment-unlock-channel`), garantindo maior eficiência. A solução está funcional, com um modelo de `Lock Distribuído`, projetada para escalar conforme sugerido em [Questão Aberta L4](#open-question) e na ADR [0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md).
 
 <center>
-    <img src="./docs/assets/images/screen_captures/miro/minimun_architecture_with_exponential_retry_backoff.png">
+    <img src="./docs/assets/images/screen_captures/miro/architectureV2_with_pub_sub_redis_keyspace_notification.png">
 </center>
+
+_*Para acompanhar a evolução do projeto com seus respectivos diagramas, acesse o [Evolution Doc](./docs/architecture/evolution.md)_
 
 <br/>
 
