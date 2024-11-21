@@ -380,15 +380,15 @@ L3. Merchants com mapeamentos MCC incorretos
 Query Consulta Balances por Account:
 ```sql
 SELECT 
-     a.id as account_id, 
-     a.uid as account_uid, 
-     t.id as transaction_id, 
-     t.uid as transaction_uid, 
-     t.amount as amount, 
-     c.id as category_id, 
-     c.name as category_name, 
-     c.priority as priority,
-     STRING_AGG(mc.mcc, ',') AS codes
+	a.id as account_id, 
+	a.uid as account_uid, 
+	t.id as transaction_id, 
+	t.uid as transaction_uid, 
+	t.amount as amount, 
+	c.id as category_id, 
+	c.name as category_name, 
+	c.priority as priority,
+	STRING_AGG(mc.mcc, ',') AS codes
 FROM 
 	accounts as a 
 JOIN 
@@ -397,12 +397,12 @@ JOIN
 	categories as c ON c.id = ac.category_id 
 JOIN 
 	transactions as t ON t.account_id = a.id AND 
-    t.category_id = c.id AND 
-    t.id = (
-        SELECT MAX(t2.id) 
-        FROM transactions t2 
-        WHERE t2.account_id = a.id AND t2.category_id = c.id
-    )
+	t.category_id = c.id AND 
+	t.id = (
+		SELECT MAX(t2.id) 
+		FROM transactions t2 
+		WHERE t2.account_id = a.id AND t2.category_id = c.id
+	)
 LEFT JOIN 
 	mccs as mc ON mc.category_id = c.id 
 WHERE 
