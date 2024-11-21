@@ -82,6 +82,11 @@ func (a *Account) FindByUID(_ context.Context, uid uuid.UUID) (port.AccountEntit
     	`).
 		Joins("LEFT JOIN mccs as mc ON mc.category_id = c.id").
 		Where("a.uid = ?", uid).
+		Where(`
+			a.deleted_at IS NULL
+			AND ac.deleted_at IS NULL
+			AND c.deleted_at IS NULL
+		`).
 		Group("a.id, a.uid, t.id, t.uid, t.amount, c.id, c.name, c.priority").
 		Scan(&results).Error
 

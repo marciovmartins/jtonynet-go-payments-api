@@ -20,24 +20,13 @@ import (
 var (
 	accountUID, _ = uuid.Parse("123e4567-e89b-12d3-a456-426614174000")
 
-	// balanceFoodUID, _ = uuid.Parse("bf64460c-efe0-4ffb-bd1f-54b136c2b2ac")
-	// balanceMealUID, _ = uuid.Parse("19475f4b-ee4c-4bce-add1-df0db5908201")
-	// balanceCashUID, _ = uuid.Parse("389e9316-ce28-478e-b14e-f971812de22d")
-
 	balanceFoodAmount = decimal.NewFromFloat(205.11)
 	balanceMealAmount = decimal.NewFromFloat(110.22)
 	balanceCashAmount = decimal.NewFromFloat(115.33)
 
-	// amountFoodTransaction   = decimal.NewFromFloat(100.10)
-	// MCCFoodTransaction      = "5411"
-	// merchantFoodTransaction = "PADARIA DO ZE               SAO PAULO BR"
-
 	merchant1NameToMap       = "UBER EATS                   SAO PAULO BR"
 	merchant1CorrectMccToMap = "5412"
-	// merchant1CorrectMccIdToMap = 2
-
-	// merchant2NameToMap         = "PAG*JoseDaSilva          RIO DE JANEI BR"
-	// merchant2CorrectMccIdToMap = 4
+	merchant1CategoryToMap   = uint(2)
 )
 
 type RepositoriesSuite struct {
@@ -171,7 +160,22 @@ func (suite *RepositoriesSuite) AccountRepositoryFindByUIDsuccess() {
 	suite.AccountEntity = accountEntity
 }
 
-func (suite *RepositoriesSuite) MerchantRepositoryFindByName() {
+func (suite *RepositoriesSuite) AccountRepositorySaveTransactionsSuccess() {
+	transactionEntities := make(map[int]port.TransactionEntity)
+
+	transactionEntities[1] = port.TransactionEntity{
+		AccountID:    1,
+		Amount:       decimal.NewFromFloat(100.00),
+		MCC:          merchant1CorrectMccToMap,
+		MerchantName: merchant1NameToMap,
+		CategoryID:   merchant1CategoryToMap,
+	}
+
+	err := suite.AccountRepo.SaveTransactions(context.TODO(), transactionEntities)
+	assert.NoError(suite.T(), err)
+}
+
+func (suite *RepositoriesSuite) MerchantRepositoryFindByNameSuccess() {
 	merchantEntity, err := suite.MerchantRepo.FindByName(context.TODO(), merchant1NameToMap)
 	assert.Equal(suite.T(), merchantEntity.MCC, merchant1CorrectMccToMap)
 	assert.NoError(suite.T(), err)
@@ -186,11 +190,11 @@ func (suite *RepositoriesSuite) TestCases() {
 		suite.AccountRepositoryFindByUIDsuccess()
 	})
 
-	// suite.T().Run("TestTransactionRepositorySaveSuccess", func(t *testing.T) {
-	// 	suite.TransactionRepositorySaveSuccess()
-	// })
+	suite.T().Run("TestTransactionRepositorySaveSuccess", func(t *testing.T) {
+		suite.AccountRepositorySaveTransactionsSuccess()
+	})
 
-	suite.T().Run("TestMerchantRepositoryFindByName", func(t *testing.T) {
-		suite.MerchantRepositoryFindByName()
+	suite.T().Run("TestMerchantRepositoryFindByNameSuccess", func(t *testing.T) {
+		suite.MerchantRepositoryFindByNameSuccess()
 	})
 }

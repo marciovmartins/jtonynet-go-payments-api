@@ -322,8 +322,9 @@ ENV=test go test -v -count=1  ./internal/adapter/repository/gormRepos ./internal
 
 Cada vez que o comando for executado, as tabelas e índices da base de dados testada serão truncados e recriados no banco de dados do ambiente selecionado (`test` ou `dev`). Os usuários dos ambientes `homol`, `prod` e correlatos não devem ter permissões para executar essas ações no próprio database, garantindo uma execução segura, limpa e sem impacto nos dados de produção.
 
-
-<img src="./docs/assets/images/screen_captures/tests_run.png">
+<center>
+    <img src="./docs/assets/images/screen_captures/tests_run.png">
+</center>
 
 _*Saída esperada do comando_
 
