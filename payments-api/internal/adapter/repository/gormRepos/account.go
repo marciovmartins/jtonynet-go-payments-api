@@ -134,7 +134,12 @@ func (a *Account) FindByUID(_ context.Context, uid uuid.UUID) (port.AccountEntit
 }
 
 func (a *Account) SaveTransactions(_ context.Context, transactions map[int]port.TransactionEntity) error {
+	if len(transactions) == 0 {
+		return fmt.Errorf("no transactions to save")
+	}
+
 	var tSlice []gormModel.Transaction
+
 	for _, transaction := range transactions {
 		tSlice = append(tSlice, gormModel.Transaction{
 			UID:          uuid.New(),

@@ -80,7 +80,10 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 		return p.rejectedCustomErr(cErr)
 	}
 
-	err = p.accountRepository.SaveTransactions(context.TODO(), mapTransactionDomainsToEntities(approvedTransactions))
+	err = p.accountRepository.SaveTransactions(
+		context.TODO(),
+		mapTransactionDomainsToEntities(approvedTransactions),
+	)
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to save transaction entity: %w", err))
 	}
