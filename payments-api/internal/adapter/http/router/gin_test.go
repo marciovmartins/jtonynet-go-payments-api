@@ -123,20 +123,27 @@ func (suite *GinRouterSuite) loadDBtestData(conn database.Conn) {
 			accountUID)
 		dbGorm.Exec(insertAccountQuery)
 
-		dbGorm.Exec("TRUNCATE TABLE balances RESTART IDENTITY CASCADE")
-		insertBalancesQuery := fmt.Sprintf(`
-			INSERT INTO balances (uid, account_id, amount, category_id, created_at, updated_at)
-			VALUES
-				('%s', 1, %v, 1, NOW(), NOW()),
-				('%s', 1, %v, 2, NOW(), NOW()),
-				('%s', 1, %v, 3, NOW(), NOW())`,
-			balanceFoodUID, balanceFoodAmount,
-			balanceMealUID, balanceMealAmount,
-			balanceCashUID, balanceCashAmount,
-		)
-		dbGorm.Exec(insertBalancesQuery)
-
 		dbGorm.Exec("TRUNCATE TABLE transactions RESTART IDENTITY CASCADE")
+		insertTransactionQuery := fmt.Sprintf(`
+			INSERT INTO transactions (account_id, amount, category_id, created_at, updated_at)
+			VALUES
+				(1, %v, 1, NOW(), NOW()),
+				(1, %v, 2, NOW(), NOW()),
+				(1, %v, 3, NOW(), NOW())`,
+			balanceFoodAmount,
+			balanceMealAmount,
+			balanceCashAmount,
+		)
+		dbGorm.Exec(insertTransactionQuery)
+
+		dbGorm.Exec("TRUNCATE TABLE account_categories RESTART IDENTITY CASCADE")
+		insertAccountCategoriesQuery := `
+			INSERT INTO account_categories (account_id, category_id, created_at, updated_at)
+			VALUES
+				(1, 1, NOW(), NOW()),
+				(1, 2, NOW(), NOW()),
+				(1, 3, NOW(), NOW())`
+		dbGorm.Exec(insertAccountCategoriesQuery)
 
 	default:
 		log.Fatalf("error connecting to database migrate to charge test data")
