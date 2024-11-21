@@ -9,8 +9,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"gopkg.in/go-playground/assert.v1"
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
@@ -22,8 +22,13 @@ var (
 	accountUIDtoTransact, _ = uuid.Parse("123e4567-e89b-12d3-a456-426614174000")
 
 	balanceFoodAmount = decimal.NewFromFloat(205.11)
+	foodCategoryID    = uint(1)
+
 	balanceMealAmount = decimal.NewFromFloat(310.22)
+	mealCategoryID    = uint(2)
+
 	balanceCashAmount = decimal.NewFromFloat(415.33)
+	cashCategoryID    = uint(3)
 
 	correctFoodMCC = "5411"
 
@@ -33,49 +38,56 @@ var (
 )
 
 type DBfake struct {
-	Account     map[uint]port.AccountEntity
-	Balance     map[uint]port.BalanceByCategoryEntity
-	Transaction map[uint]port.TransactionEntity
-	Merchant    map[uint]port.MerchantEntity
+	Accounts     map[uint]port.AccountEntity
+	Transactions map[uint]port.TransactionEntity
+	Merchants    map[uint]port.MerchantEntity
 }
 
 func newDBfake() DBfake {
 	db := DBfake{}
 
-	db.Transaction = make(map[uint]port.TransactionEntity)
+	db.Transactions = make(map[uint]port.TransactionEntity)
 
-	db.Account = map[uint]port.AccountEntity{
+	categories := make(map[int]port.TransactionByCategoryEntity)
+	foodCategoryUID, _ := uuid.Parse("32e04519-a979-4de2-a20e-77e8342d718f")
+	categories[1] = port.TransactionByCategoryEntity{
+		ID:       1,
+		UID:      foodCategoryUID,
+		Amount:   balanceFoodAmount,
+		Category: port.CategoryEntity{ID: foodCategoryID, Name: "FOOD", MCCs: []string{"5411", "5412"}, Priority: 1},
+	}
+
+	mealCategoryUID, _ := uuid.Parse("e5ce3deb-7dea-4382-a1fd-1428c9888bdc")
+	categories[2] = port.TransactionByCategoryEntity{
+		ID:       2,
+		UID:      mealCategoryUID,
+		Amount:   balanceFoodAmount,
+		Category: port.CategoryEntity{ID: mealCategoryID, Name: "MEAL", MCCs: []string{"5811", "5812"}, Priority: 2},
+	}
+
+	cashCategoryUID, _ := uuid.Parse("4cfdc9f0-a9d8-409d-ba8e-58a36e126ec1")
+	categories[3] = port.TransactionByCategoryEntity{
+		ID:       3,
+		UID:      cashCategoryUID,
+		Amount:   balanceFoodAmount,
+		Category: port.CategoryEntity{ID: cashCategoryID, Name: "CASH", Priority: 3},
+	}
+
+	db.Accounts = map[uint]port.AccountEntity{
 		1: {
 			ID:  1,
 			UID: accountUIDtoTransact,
+			Balance: port.BalanceEntity{
+				AmountTotal: decimal.NewFromFloat(930.66),
+				Categories:  categories,
+			},
 		},
 	}
 
-	db.Merchant = map[uint]port.MerchantEntity{
+	db.Merchants = map[uint]port.MerchantEntity{
 		1: {
 			Name: "UBER EATS                   SAO PAULO BR",
 			MCC:  "5412",
-		},
-	}
-
-	db.Balance = map[uint]port.BalanceByCategoryEntity{
-		1: {
-			ID:        1,
-			AccountID: 1,
-			Amount:    balanceFoodAmount,
-			Category:  port.CategoryEntity{Name: "FOOD", MCCs: []string{"5411", "5412"}, Priority: 1},
-		},
-		2: {
-			ID:        2,
-			AccountID: 1,
-			Amount:    balanceMealAmount,
-			Category:  port.CategoryEntity{Name: "MEAL", MCCs: []string{"5811", "5812"}, Priority: 2},
-		},
-		3: {
-			ID:        3,
-			AccountID: 1,
-			Amount:    balanceCashAmount,
-			Category:  port.CategoryEntity{Name: "CASH", Priority: 3},
 		},
 	}
 
@@ -87,7 +99,7 @@ func (dbf *DBfake) GetDB() *DBfake {
 }
 
 func (dbf *DBfake) AccountRepoFindByUID(_ context.Context, uid uuid.UUID) (port.AccountEntity, error) {
-	for _, ae := range dbf.Account {
+	for _, ae := range dbf.Accounts {
 		if ae.UID == uid {
 			return ae, nil
 		}
@@ -111,24 +123,24 @@ func (arf *AccountRepoFake) FindByUID(_ context.Context, uid uuid.UUID) (port.Ac
 	return accountEntity, err
 }
 
-type BalanceRepoFake struct {
-	db DBfake
-}
+func (arf *AccountRepoFake) SaveTransactions(_ context.Context, transactions map[int]port.TransactionEntity) error {
+	maxID := uint(1)
 
-func newBalanceRepoFake(db DBfake) port.BalanceRepository {
-	return &BalanceRepoFake{
-		db,
+	for _, t := range transactions {
+		arf.db.Transactions[maxID] = port.TransactionEntity{
+			ID:           maxID,
+			UID:          uuid.New(),
+			AccountID:    t.AccountID,
+			Amount:       t.Amount,
+			MCC:          t.MCC,
+			MerchantName: t.MerchantName,
+			CategoryID:   t.CategoryID,
+		}
+
+		maxID = maxID + 1
 	}
-}
 
-type TransactionRepoFake struct {
-	db DBfake
-}
-
-func newTransactionRepoFake(db DBfake) port.TransactionRepository {
-	return &TransactionRepoFake{
-		db,
-	}
+	return nil
 }
 
 type MerchantRepoFake struct {
@@ -147,104 +159,13 @@ func (m *MerchantRepoFake) FindByName(_ context.Context, name string) (*port.Mer
 }
 
 func (dbf *DBfake) MerchantRepoFindByName(Name string) (*port.MerchantEntity, error) {
-
-	for _, m := range dbf.Merchant {
+	for _, m := range dbf.Merchants {
 		if m.Name == Name {
 			return &m, nil
 		}
 	}
 
 	return nil, nil
-}
-
-func (dbf *DBfake) BalanceRepoFindByAccountID(accountID uint) (port.BalanceEntity, error) {
-	categories := make(map[int]port.BalanceByCategoryEntity)
-	amountTotal := decimal.NewFromInt(0)
-
-	for _, be := range dbf.Balance {
-		if be.AccountID == accountID {
-			amountTotal = amountTotal.Add(be.Amount)
-			categories[be.Category.Priority] = be
-		}
-	}
-
-	if len(categories) == 0 {
-		return port.BalanceEntity{}, fmt.Errorf("balances with AccountID %v not found", accountID)
-	}
-
-	b := port.BalanceEntity{
-		AccountID:   accountID,
-		AmountTotal: amountTotal,
-		Categories:  categories,
-	}
-
-	return b, nil
-}
-
-func (brf *BalanceRepoFake) FindByAccountID(_ context.Context, accountID uint) (port.BalanceEntity, error) {
-	balanceEntity, err := brf.db.BalanceRepoFindByAccountID(accountID)
-	return balanceEntity, err
-}
-
-func (dbf *DBfake) BalanceRepoUpdate(bCategory port.BalanceByCategoryEntity) bool {
-	b, exists := dbf.Balance[bCategory.ID]
-	if !exists {
-		return false
-	}
-
-	b.Amount = bCategory.Amount
-	dbf.Balance[bCategory.ID] = b
-
-	return true
-}
-
-func (brf *BalanceRepoFake) UpdateTotalAmount(_ context.Context, be port.BalanceEntity) error {
-	for _, bCategory := range be.Categories {
-		ok := brf.db.BalanceRepoUpdate(bCategory)
-		if !ok {
-			return fmt.Errorf("balances with ID %v not found to update", bCategory.ID)
-		}
-	}
-
-	return nil
-}
-
-func (dbf *DBfake) TransactionRepoSave(te port.TransactionEntity) bool {
-	nextID := uint(len(dbf.Transaction) + 1)
-	te.ID = nextID
-	te.UID, _ = uuid.NewUUID()
-	dbf.Transaction[nextID] = te
-
-	return true
-}
-
-func (dbf *DBfake) TransactionRepoFindLastByAcountId(accountID uint) (port.TransactionEntity, error) {
-	var lastTransaction port.TransactionEntity
-	found := false
-	maxKey := uint(0)
-
-	for key, t := range dbf.Transaction {
-		if t.AccountID == accountID && key > maxKey {
-			lastTransaction = t
-			maxKey = key
-			found = true
-		}
-	}
-
-	if !found {
-		return port.TransactionEntity{}, fmt.Errorf("transaction with AccountID %v not found", accountID)
-	}
-
-	return lastTransaction, nil
-}
-
-func (trf *TransactionRepoFake) Save(_ context.Context, te port.TransactionEntity) error {
-	ok := trf.db.TransactionRepoSave(te)
-	if !ok {
-		return fmt.Errorf("transaction with AccountID %v not save", te.AccountID)
-	}
-
-	return nil
 }
 
 type InMemoryDBfake struct {
@@ -310,8 +231,6 @@ func (suite *PaymentSuite) getMemoryLockRepoFake(memoryDB InMemoryDBfake) port.M
 func (suite *PaymentSuite) getAllRepositories(dbFake *DBfake) *repository.AllRepos {
 	allRepos := repository.AllRepos{}
 	allRepos.Account = newAccountRepoFake(*dbFake)
-	allRepos.Balance = newBalanceRepoFake(*dbFake)
-	allRepos.Transaction = newTransactionRepoFake(*dbFake)
 	allRepos.Merchant = newMerchantRepoFake(*dbFake)
 
 	return &allRepos
@@ -340,8 +259,6 @@ func (suite *PaymentSuite) TestL1PaymentExecuteGenericRejected() {
 	paymentService := NewPayment(
 		timeoutSLA,
 		allRepos.Account,
-		allRepos.Balance,
-		allRepos.Transaction,
 		allRepos.Merchant,
 		memoryLockRepo,
 		nil,
@@ -377,8 +294,6 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 	paymentService := NewPayment(
 		timeoutSLA,
 		allRepos.Account,
-		allRepos.Balance,
-		allRepos.Transaction,
 		allRepos.Merchant,
 		memoryLockRepo,
 		nil,
@@ -388,7 +303,7 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsRejected() {
 
 	//Assert
 	codeRejected := "51" // domain.CODE_REJECTED_INSUFICIENT_FUNDS
-	insuficientFundsError := "failed to approve balance domain: balance category has insuficient funds"
+	insuficientFundsError := "failed to approve transaction: transaction category has insuficient funds"
 
 	assert.Equal(suite.T(), returnCode, codeRejected)
 	assert.Equal(suite.T(), err.Error(), insuficientFundsError)
@@ -417,8 +332,6 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsApproved() {
 	paymentService := NewPayment(
 		timeoutSLA,
 		allRepos.Account,
-		allRepos.Balance,
-		allRepos.Transaction,
 		allRepos.Merchant,
 		memoryLockRepo,
 		nil,
@@ -429,21 +342,11 @@ func (suite *PaymentSuite) TestL1PaymentExecuteCorrectMCCWithFundsApproved() {
 	codeApproved := "00" // domain.CODE_APPROVED
 
 	assert.Equal(suite.T(), returnCode, codeApproved)
-	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), err, nil)
 
-	expectedAmountTotal := decimal.NewFromFloat(830.56)
-	expectedAmountCategory := decimal.NewFromFloat(105.01)
-	expectedAmountFallback := decimal.NewFromFloat(415.33)
-	transactionAmount := amountFoodFundsApproved
-	suite.assertBalanceAmounts(
-		dbFake,
-		allRepos,
-		tRequest,
-		expectedAmountTotal,
-		expectedAmountCategory,
-		expectedAmountFallback,
-		transactionAmount,
-	)
+	foodTransaction, err := getLastTransaction(dbFake.Transactions, port.TransactionEntity{AccountID: 1, CategoryID: foodCategoryID})
+	assert.Equal(suite.T(), foodTransaction.Amount, decimal.NewFromFloat(105.01))
+	assert.Equal(suite.T(), err, nil)
 }
 
 func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
@@ -469,8 +372,6 @@ func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
 	paymentService := NewPayment(
 		timeoutSLA,
 		allRepos.Account,
-		allRepos.Balance,
-		allRepos.Transaction,
 		allRepos.Merchant,
 		memoryLockRepo,
 		nil,
@@ -481,21 +382,15 @@ func (suite *PaymentSuite) TestL2PaymentExecuteCorrectMCCFallbackApproved() {
 	codeApproved := "00" // domain.CODE_APPROVED
 
 	assert.Equal(suite.T(), returnCode, codeApproved)
-	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), err, nil)
 
-	expectedAmountTotal := decimal.NewFromFloat(610.66)
-	expectedAmountCategory := decimal.NewFromFloat(0)
-	expectedAmountFallback := decimal.NewFromFloat(300.44)
-	transactionAmount := amountFoodFundsFallbackApproved
-	suite.assertBalanceAmounts(
-		dbFake,
-		allRepos,
-		tRequest,
-		expectedAmountTotal,
-		expectedAmountCategory,
-		expectedAmountFallback,
-		transactionAmount,
-	)
+	foodTransaction, _ := getLastTransaction(dbFake.Transactions, port.TransactionEntity{AccountID: 1, CategoryID: foodCategoryID})
+	assert.Equal(suite.T(), err, nil)
+	assert.Equal(suite.T(), foodTransaction.Amount, decimal.NewFromFloat(0))
+
+	cashTransaction, _ := getLastTransaction(dbFake.Transactions, port.TransactionEntity{AccountID: 1, CategoryID: cashCategoryID})
+	assert.Equal(suite.T(), err, nil)
+	assert.Equal(suite.T(), cashTransaction.Amount, decimal.NewFromFloat(90.22))
 }
 
 func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
@@ -521,8 +416,6 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
 	paymentService := NewPayment(
 		timeoutSLA,
 		allRepos.Account,
-		allRepos.Balance,
-		allRepos.Transaction,
 		allRepos.Merchant,
 		memoryLockRepo,
 		nil,
@@ -533,21 +426,11 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCWithFundsApproved() {
 	codeApproved := "00" // domain.CODE_APPROVED
 
 	assert.Equal(suite.T(), returnCode, codeApproved)
-	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), err, nil)
 
-	expectedAmountTotal := decimal.NewFromFloat(830.56)
-	expectedAmountCategory := decimal.NewFromFloat(105.01)
-	expectedAmountFallback := decimal.NewFromFloat(415.33)
-	transactionAmount := amountFoodFundsApproved
-	suite.assertBalanceAmounts(
-		dbFake,
-		allRepos,
-		tRequest,
-		expectedAmountTotal,
-		expectedAmountCategory,
-		expectedAmountFallback,
-		transactionAmount,
-	)
+	foodTransaction, err := getLastTransaction(dbFake.Transactions, port.TransactionEntity{AccountID: 1, CategoryID: foodCategoryID})
+	assert.Equal(suite.T(), foodTransaction.Amount, decimal.NewFromFloat(105.01))
+	assert.Equal(suite.T(), err, nil)
 }
 
 func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCFallbackApproved() {
@@ -573,8 +456,6 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCFallbackApproved() {
 	paymentService := NewPayment(
 		timeoutSLA,
 		allRepos.Account,
-		allRepos.Balance,
-		allRepos.Transaction,
 		allRepos.Merchant,
 		memoryLockRepo,
 		nil,
@@ -585,54 +466,42 @@ func (suite *PaymentSuite) TestL3PaymentExecuteNameMCCFallbackApproved() {
 	codeApproved := "00" // domain.CODE_APPROVED
 
 	assert.Equal(suite.T(), returnCode, codeApproved)
-	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), err, nil)
 
-	expectedAmountTotal := decimal.NewFromFloat(610.66)
-	expectedAmountCategory := decimal.NewFromFloat(0)
-	expectedAmountFallback := decimal.NewFromFloat(300.44)
-	transactionAmount := amountFoodFundsFallbackApproved
-	suite.assertBalanceAmounts(
-		dbFake,
-		allRepos,
-		tRequest,
-		expectedAmountTotal,
-		expectedAmountCategory,
-		expectedAmountFallback,
-		transactionAmount,
-	)
+	foodTransaction, _ := getLastTransaction(dbFake.Transactions, port.TransactionEntity{AccountID: 1, CategoryID: foodCategoryID})
+	assert.Equal(suite.T(), err, nil)
+	assert.Equal(suite.T(), foodTransaction.Amount, decimal.NewFromFloat(0))
+
+	cashTransaction, _ := getLastTransaction(dbFake.Transactions, port.TransactionEntity{AccountID: 1, CategoryID: cashCategoryID})
+	assert.Equal(suite.T(), err, nil)
+	assert.Equal(suite.T(), cashTransaction.Amount, decimal.NewFromFloat(90.22))
 }
 
-func (suite *PaymentSuite) assertBalanceAmounts(
-	dbFake *DBfake,
-	allRepos *repository.AllRepos,
-	tRequest port.TransactionPaymentRequest,
-	expectedAmountTotal decimal.Decimal,
-	expectedAmountCategory decimal.Decimal,
-	expectedAmountFallback decimal.Decimal,
-	transactionAmount decimal.Decimal,
-) {
-	accountEntity, err := allRepos.Account.FindByUID(context.TODO(), tRequest.AccountUID)
-	assert.NoError(suite.T(), err)
+func getLastTransaction(transactions map[uint]port.TransactionEntity, tParams port.TransactionEntity) (*port.TransactionEntity, error) {
+	var transaction port.TransactionEntity
+	var maxKey uint
+	var found bool
 
-	// - Balance is updated
-	balanceEntity, err := allRepos.Balance.FindByAccountID(context.TODO(), accountEntity.ID)
-	assert.Equal(suite.T(), balanceEntity.AmountTotal, expectedAmountTotal)
-	assert.NoError(suite.T(), err)
+	found = false
+	for key, t := range transactions {
+		if tParams.AccountID == t.AccountID && tParams.CategoryID == t.CategoryID {
+			if !found || key > maxKey {
+				maxKey = key
+				transaction = t
+				found = true
+			}
+		}
+	}
 
-	balanceDomain, err := mapBalanceEntityToDomain(balanceEntity)
-	assert.NoError(suite.T(), err)
+	if found {
+		return &transaction, nil
+	}
 
-	balanceCategoryMCC, err := balanceDomain.GetByMCC(correctFoodMCC)
-	assert.Equal(suite.T(), balanceCategoryMCC.Amount, expectedAmountCategory)
-	assert.NoError(suite.T(), err)
-
-	balanceCategoryFallback, err := balanceDomain.GetFallback()
-	assert.Equal(suite.T(), balanceCategoryFallback.Amount, expectedAmountFallback)
-	assert.NoError(suite.T(), err)
-
-	// - Transaction was registered
-	transactionByAcountId, _ := dbFake.TransactionRepoFindLastByAcountId(accountEntity.ID)
-	assert.Equal(suite.T(), transactionByAcountId.TotalAmount, transactionAmount)
+	return &transaction, fmt.Errorf(
+		"transaction with AccountID: %v and CategoryID: %v not found",
+		tParams.AccountID,
+		tParams.CategoryID,
+	)
 }
 
 func TestPaymentSuite(t *testing.T) {

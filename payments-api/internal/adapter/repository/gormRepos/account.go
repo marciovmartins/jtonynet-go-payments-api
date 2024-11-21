@@ -2,12 +2,15 @@ package gormRepos
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/model/gormModel"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
+	"github.com/shopspring/decimal"
 
 	"gorm.io/gorm"
 )
@@ -34,14 +37,124 @@ func NewGormAccount(conn database.Conn) (port.AccountRepository, error) {
 	}, nil
 }
 
+type accountResult struct {
+	AccountID      uint
+	AccountUID     uuid.UUID
+	TransactionID  uint
+	TransactionUID uuid.UUID
+	Amount         decimal.Decimal
+	CategoryID     uint
+	CategoryName   string
+	Priority       int
+	Codes          sql.NullString
+}
+
 func (a *Account) FindByUID(_ context.Context, uid uuid.UUID) (port.AccountEntity, error) {
-	accountModel := gormModel.Account{}
-	if err := a.db.Where(&gormModel.Account{UID: uid}).First(&accountModel).Error; err != nil {
-		return port.AccountEntity{}, fmt.Errorf("account with uid: %s not found", uid)
+	var account port.AccountEntity
+	var balance port.BalanceEntity
+	var results []accountResult
+
+	firstFound := false
+	transactionsByCategories := make(map[int]port.TransactionByCategoryEntity)
+
+	err := a.db.Table("accounts as a").
+		Select(`
+			a.id as account_id, 
+			a.uid as account_uid, 
+			t.id as transaction_id, 
+			t.uid as transaction_uid, 
+			t.amount as amount, 
+			c.id as category_id, 
+			c.name as category_name, 
+			c.priority as priority,
+			STRING_AGG(mc.mcc, ',') AS codes
+		`).
+		Joins("JOIN account_categories as ac ON ac.account_id = a.id").
+		Joins("JOIN categories as c ON c.id = ac.category_id").
+		Joins(`
+        	JOIN transactions as t ON t.account_id = a.id AND 
+				t.category_id = c.id AND 
+				t.id = (
+        	    	SELECT MAX(t2.id) 
+        	    	FROM transactions t2 
+        	    	WHERE t2.account_id = a.id AND t2.category_id = c.id
+        		)
+    	`).
+		Joins("LEFT JOIN mccs as mc ON mc.category_id = c.id").
+		Where("a.uid = ?", uid).
+		Where(`
+			a.deleted_at IS NULL
+			AND ac.deleted_at IS NULL
+			AND c.deleted_at IS NULL
+		`).
+		Group("a.id, a.uid, t.id, t.uid, t.amount, c.id, c.name, c.priority").
+		Scan(&results).Error
+
+	if err != nil {
+		return account, fmt.Errorf("error retrying account:%s  err: %w", uid, err)
 	}
 
-	return port.AccountEntity{
-		ID:  accountModel.ID,
-		UID: accountModel.UID,
-	}, nil
+	if len(results) > 0 {
+		amountTotal := decimal.NewFromInt(0)
+
+		for _, result := range results {
+			mccs := []string{}
+			if result.Codes.Valid {
+				mccs = strings.Split(result.Codes.String, ",")
+			}
+
+			amountTotal = amountTotal.Add(result.Amount)
+
+			if !firstFound {
+				firstFound = true
+				account.ID = result.AccountID
+				account.UID = result.AccountUID
+			}
+
+			transactionsByCategories[int(result.TransactionID)] = port.TransactionByCategoryEntity{
+				ID:     result.TransactionID,
+				UID:    result.TransactionUID,
+				Amount: result.Amount,
+				Category: port.CategoryEntity{
+					ID:       result.CategoryID,
+					Name:     result.CategoryName,
+					Priority: result.Priority,
+					MCCs:     mccs,
+				},
+			}
+		}
+
+		balance.AmountTotal = amountTotal
+		balance.Categories = transactionsByCategories
+	}
+
+	account.Balance = balance
+
+	return account, nil
+}
+
+func (a *Account) SaveTransactions(_ context.Context, transactions map[int]port.TransactionEntity) error {
+	if len(transactions) == 0 {
+		return fmt.Errorf("no transactions to save")
+	}
+
+	var tSlice []gormModel.Transaction
+
+	for _, transaction := range transactions {
+		tSlice = append(tSlice, gormModel.Transaction{
+			UID:          uuid.New(),
+			AccountID:    transaction.AccountID,
+			CategoryID:   transaction.CategoryID,
+			Amount:       transaction.Amount,
+			MCC:          transaction.MCC,
+			MerchantName: transaction.MerchantName,
+		})
+	}
+
+	err := a.db.Create(&tSlice).Error
+	if err != nil {
+		return fmt.Errorf("failed to save transactions: %w", err)
+	}
+
+	return nil
 }

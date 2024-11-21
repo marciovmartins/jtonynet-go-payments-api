@@ -12,17 +12,17 @@ func (m *Merchant) NewTransaction(
 	totalAmount decimal.Decimal,
 	name string,
 	account Account,
-) *Transaction {
+) Transaction {
 	correctMCC := mcc
 	if m.MCC != "" {
 		correctMCC = m.MCC
 	}
 
-	return &Transaction{
-		AccountID:   account.ID,
-		AccountUID:  account.UID,
-		MCC:         correctMCC,
-		TotalAmount: totalAmount,
-		Merchant:    name,
+	return Transaction{
+		AccountID:    account.ID,
+		AccountUID:   account.UID,
+		MCC:          correctMCC,
+		Amount:       totalAmount,
+		MerchantName: name,
 	}
 }
