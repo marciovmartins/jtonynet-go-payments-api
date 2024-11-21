@@ -41,10 +41,10 @@ func NewGormConn(cfg config.Database) (Conn, error) {
 		*/
 		db.AutoMigrate(&gormModel.Account{})
 		db.AutoMigrate(&gormModel.Category{})
+		db.AutoMigrate(&gormModel.AccountCategory{})
 		db.AutoMigrate(&gormModel.MCC{})
-		db.AutoMigrate(&gormModel.Balance{})
-		db.AutoMigrate(&gormModel.Transaction{})
 		db.AutoMigrate(&gormModel.Merchant{})
+		db.AutoMigrate(&gormModel.Transaction{})
 
 		gConn := GormConn{
 			db:       db,

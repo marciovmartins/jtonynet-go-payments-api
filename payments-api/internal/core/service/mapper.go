@@ -1,17 +1,47 @@
 package service
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
+	"github.com/shopspring/decimal"
 )
 
 func mapTransactionRequestToMemoryLockEntity(tMemoryLock port.TransactionPaymentRequest) port.MemoryLockEntity {
 	return port.MemoryLockEntity{
 		Key:       tMemoryLock.AccountUID.String(),
 		Timestamp: time.Now().UnixMilli(),
+	}
+}
+
+func mapAccountEntityToDomain(aEntity port.AccountEntity) domain.Account {
+	amountTotal := decimal.NewFromFloat(10)
+
+	transactionItens := make(map[int]domain.TransactionCategory)
+	for priority, item := range aEntity.Balance.Categories {
+		amountTotal = amountTotal.Add(item.Amount)
+
+		transactionItens[priority] = domain.TransactionCategory{
+			ID:         item.ID,
+			CategoryID: item.Category.ID,
+			Name:       item.Category.Name,
+			Amount:     item.Amount,
+			MCCs:       item.Category.MCCs,
+			Priority:   priority,
+		}
+	}
+
+	return domain.Account{
+		ID:  aEntity.ID,
+		UID: aEntity.UID,
+
+		Balance: domain.Balance{
+			AmountTotal: amountTotal,
+			TransactionByCategories: domain.TransactionByCategories{
+				Itens: transactionItens,
+			},
+		},
 	}
 }
 
@@ -22,70 +52,17 @@ func mapMerchantEntityToDomain(mEntity *port.MerchantEntity) domain.Merchant {
 	}
 }
 
-func mapAccountEntityToDomain(aEntity port.AccountEntity) domain.Account {
-	return domain.Account{
-		ID:  aEntity.ID,
-		UID: aEntity.UID,
-	}
-}
-
-func mapBalanceEntityToDomain(bEntity port.BalanceEntity) (*domain.Balance, error) {
-	categoryItens := make(map[int]domain.Category)
-	for _, ce := range bEntity.Categories {
-		category := domain.Category{
-			ID:       ce.ID,
-			Name:     ce.Category.Name,
-			Amount:   ce.Amount,
-			MCCs:     ce.Category.MCCs,
-			Priority: ce.Category.Priority,
+func mapTransactionDomainsToEntities(approvedTransactions map[int]domain.Transaction) map[int]port.TransactionEntity {
+	transactionEntities := make(map[int]port.TransactionEntity)
+	for priority, tDomain := range approvedTransactions {
+		transactionEntities[priority] = port.TransactionEntity{
+			AccountID:    tDomain.AccountID,
+			Amount:       tDomain.Amount,
+			MCC:          tDomain.MCC,
+			MerchantName: tDomain.MerchantName,
+			CategoryID:   tDomain.CategoryID,
 		}
-		categoryItens[category.Priority] = category
 	}
 
-	if len(categoryItens) == 0 {
-		return &domain.Balance{}, fmt.Errorf("failed to map Balance with AccountID %v, Cotegories not found", bEntity.AccountID)
-	}
-
-	categories := domain.Categories{Itens: categoryItens}
-
-	b := &domain.Balance{
-		AccountID:   bEntity.AccountID,
-		AmountTotal: bEntity.AmountTotal,
-		Categories:  categories,
-	}
-
-	return b, nil
-}
-
-func mapBalanceDomainToEntity(dBalance *domain.Balance) port.BalanceEntity {
-	bCategories := make(map[int]port.BalanceByCategoryEntity)
-	for _, categoryItem := range dBalance.Categories.Itens {
-		bCategory := port.BalanceByCategoryEntity{
-			ID:        categoryItem.ID,
-			AccountID: dBalance.AccountID,
-			Amount:    categoryItem.Amount,
-			Category: port.CategoryEntity{
-				Name:     categoryItem.Name,
-				MCCs:     categoryItem.MCCs,
-				Priority: categoryItem.Priority,
-			},
-		}
-
-		bCategories[categoryItem.Priority] = bCategory
-	}
-
-	return port.BalanceEntity{
-		AccountID:   dBalance.AccountID,
-		AmountTotal: dBalance.AmountTotal,
-		Categories:  bCategories,
-	}
-}
-
-func mapTransactionDomainToEntity(tDomain *domain.Transaction) port.TransactionEntity {
-	return port.TransactionEntity{
-		AccountID:   tDomain.AccountID,
-		TotalAmount: tDomain.TotalAmount,
-		MCC:         tDomain.MCC,
-		Merchant:    tDomain.Merchant,
-	}
+	return transactionEntities
 }

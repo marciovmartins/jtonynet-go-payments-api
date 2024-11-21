@@ -379,23 +379,35 @@ L3. Merchants com mapeamentos MCC incorretos
 
 Query Consulta Balances por Account:
 ```sql
-SELECT
-   b.account_id, 
-   b.id AS balance_id,
-   b.uid AS balance_uid, 
-   b.amount, 
-   c.name, 
-   c.priority, STRING_AGG(mc.mcc, ',') AS codes 
+SELECT 
+     a.id as account_id, 
+     a.uid as account_uid, 
+     t.id as transaction_id, 
+     t.uid as transaction_uid, 
+     t.amount as amount, 
+     c.id as category_id, 
+     c.name as category_name, 
+     c.priority as priority,
+     STRING_AGG(mc.mcc, ',') AS codes
 FROM 
-	balances AS b 
+	accounts as a 
 JOIN 
-	categories AS c ON b.category_id = c.id 
+	account_categories as ac ON ac.account_id = a.id 
+JOIN 
+	categories as c ON c.id = ac.category_id 
+JOIN 
+	transactions as t ON t.account_id = a.id AND 
+    t.category_id = c.id AND 
+    t.id = (
+        SELECT MAX(t2.id) 
+        FROM transactions t2 
+        WHERE t2.account_id = a.id AND t2.category_id = c.id
+    )
 LEFT JOIN 
-	mccs AS mc ON c.id = mc.category_id 
-WHERE
-	b.account_id = 1 
-GROUP by
-	b.account_id, b.id, b.uid, b.amount, c.name, c.priority;
+	mccs as mc ON mc.category_id = c.id 
+WHERE 
+	a.uid = '123e4567-e89b-12d3-a456-426614174000' 
+GROUP BY a.id, a.uid, t.id, t.uid, t.amount, c.id, c.name, c.priority;
 ```
 
 

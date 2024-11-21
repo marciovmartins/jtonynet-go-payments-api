@@ -11,12 +11,10 @@ import (
 )
 
 type Payment struct {
-	timeoutSLA            port.TimeoutSLA
-	accountRepository     port.AccountRepository
-	balanceRepository     port.BalanceRepository
-	transactionRepository port.TransactionRepository
-	merchantRepository    port.MerchantRepository
-	memoryLockRepository  port.MemoryLockRepository
+	timeoutSLA           port.TimeoutSLA
+	accountRepository    port.AccountRepository
+	merchantRepository   port.MerchantRepository
+	memoryLockRepository port.MemoryLockRepository
 
 	logger            support.Logger
 	transactionLocked port.MemoryLockEntity
@@ -26,20 +24,16 @@ func NewPayment(
 	timeoutSLA port.TimeoutSLA,
 
 	aRepository port.AccountRepository,
-	bRepository port.BalanceRepository,
-	tRepository port.TransactionRepository,
 	mRepository port.MerchantRepository,
 	mlRepository port.MemoryLockRepository,
 
 	logger support.Logger,
 ) *Payment {
 	return &Payment{
-		timeoutSLA:            timeoutSLA,
-		accountRepository:     aRepository,
-		balanceRepository:     bRepository,
-		transactionRepository: tRepository,
-		merchantRepository:    mRepository,
-		memoryLockRepository:  mlRepository,
+		timeoutSLA:           timeoutSLA,
+		accountRepository:    aRepository,
+		merchantRepository:   mRepository,
+		memoryLockRepository: mlRepository,
 
 		logger: logger,
 	}
@@ -62,6 +56,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 	}
 
 	account := mapAccountEntityToDomain(accountEntity)
+	account.Logger = p.logger
 
 	var merchant domain.Merchant
 	merchantEntity, err := p.merchantRepository.FindByName(context.TODO(), tpr.Merchant)
@@ -80,28 +75,12 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 		account,
 	)
 
-	balanceEntity, err := p.balanceRepository.FindByAccountID(context.TODO(), account.ID)
-	if err != nil {
-		return p.rejectedGenericErr(fmt.Errorf("failed to retrieve balance entity: %w", err))
-	}
-
-	balance, err := mapBalanceEntityToDomain(balanceEntity)
-	if err != nil {
-		return p.rejectedGenericErr(fmt.Errorf("failed to map balance domain from entity: %w", err))
-	}
-	balance.Logger = p.logger
-
-	approvedBalance, cErr := balance.ApproveTransaction(transaction)
+	approvedTransactions, cErr := account.ApproveTransaction(transaction)
 	if cErr != nil {
 		return p.rejectedCustomErr(cErr)
 	}
 
-	err = p.balanceRepository.UpdateTotalAmount(context.TODO(), mapBalanceDomainToEntity(approvedBalance))
-	if err != nil {
-		return p.rejectedGenericErr(fmt.Errorf("failed to update balance entity: %w", err))
-	}
-
-	err = p.transactionRepository.Save(context.TODO(), mapTransactionDomainToEntity(transaction))
+	err = p.accountRepository.SaveTransactions(context.TODO(), mapTransactionDomainsToEntities(approvedTransactions))
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to save transaction entity: %w", err))
 	}
@@ -124,7 +103,7 @@ func (p *Payment) rejectedCustomErr(cErr *domain.CustomError) (string, error) {
 
 	_ = p.memoryLockRepository.Unlock(context.TODO(), p.transactionLocked.Key)
 
-	return cErr.Code, fmt.Errorf("failed to approve balance domain: %s", cErr.Message)
+	return cErr.Code, fmt.Errorf("failed to approve transaction: %s", cErr.Message)
 }
 
 func (p *Payment) debugLog(msg string) {

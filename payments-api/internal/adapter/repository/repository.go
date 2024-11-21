@@ -13,10 +13,8 @@ import (
 )
 
 type AllRepos struct {
-	Account     port.AccountRepository
-	Balance     port.BalanceRepository
-	Transaction port.TransactionRepository
-	Merchant    port.MerchantRepository
+	Account  port.AccountRepository
+	Merchant port.MerchantRepository
 }
 
 func GetAll(conn database.Conn) (AllRepos, error) {
@@ -34,18 +32,6 @@ func GetAll(conn database.Conn) (AllRepos, error) {
 			return AllRepos{}, fmt.Errorf("error when instantiating account repository: %v", err)
 		}
 		repos.Account = account
-
-		balance, err := gormRepos.NewBalance(conn)
-		if err != nil {
-			return AllRepos{}, fmt.Errorf("error when instantiating balance repository: %v", err)
-		}
-		repos.Balance = balance
-
-		transaction, err := gormRepos.NewTransaction(conn)
-		if err != nil {
-			return AllRepos{}, fmt.Errorf("error when instantiating transaction repository: %v", err)
-		}
-		repos.Transaction = transaction
 
 		Merchant, err := gormRepos.NewMerchant(conn)
 		if err != nil {

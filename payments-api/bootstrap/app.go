@@ -96,8 +96,6 @@ func NewApp(cfg *config.Config) (App, error) {
 	app.PaymentService = service.NewPayment(
 		timeoutSLA,
 		allRepos.Account,
-		allRepos.Balance,
-		allRepos.Transaction,
 		cachedMerchantRepo,
 		memoryLockRepo,
 		logger,

@@ -20,33 +20,31 @@ import (
 var (
 	accountUID, _ = uuid.Parse("123e4567-e89b-12d3-a456-426614174000")
 
-	balanceFoodUID, _ = uuid.Parse("bf64460c-efe0-4ffb-bd1f-54b136c2b2ac")
-	balanceMealUID, _ = uuid.Parse("19475f4b-ee4c-4bce-add1-df0db5908201")
-	balanceCashUID, _ = uuid.Parse("389e9316-ce28-478e-b14e-f971812de22d")
+	// balanceFoodUID, _ = uuid.Parse("bf64460c-efe0-4ffb-bd1f-54b136c2b2ac")
+	// balanceMealUID, _ = uuid.Parse("19475f4b-ee4c-4bce-add1-df0db5908201")
+	// balanceCashUID, _ = uuid.Parse("389e9316-ce28-478e-b14e-f971812de22d")
 
 	balanceFoodAmount = decimal.NewFromFloat(205.11)
 	balanceMealAmount = decimal.NewFromFloat(110.22)
 	balanceCashAmount = decimal.NewFromFloat(115.33)
 
-	amountFoodTransaction   = decimal.NewFromFloat(100.10)
-	MCCFoodTransaction      = "5411"
-	merchantFoodTransaction = "PADARIA DO ZE               SAO PAULO BR"
+	// amountFoodTransaction   = decimal.NewFromFloat(100.10)
+	// MCCFoodTransaction      = "5411"
+	// merchantFoodTransaction = "PADARIA DO ZE               SAO PAULO BR"
 
-	merchant1NameToMap         = "UBER EATS                   SAO PAULO BR"
-	merchant1CorrectMccToMap   = "5412"
-	merchant1CorrectMccIdToMap = 2
+	merchant1NameToMap       = "UBER EATS                   SAO PAULO BR"
+	merchant1CorrectMccToMap = "5412"
+	// merchant1CorrectMccIdToMap = 2
 
-	merchant2NameToMap         = "PAG*JoseDaSilva          RIO DE JANEI BR"
-	merchant2CorrectMccIdToMap = 4
+	// merchant2NameToMap         = "PAG*JoseDaSilva          RIO DE JANEI BR"
+	// merchant2CorrectMccIdToMap = 4
 )
 
 type RepositoriesSuite struct {
 	suite.Suite
 
-	AccountRepo     port.AccountRepository
-	BalanceRepo     port.BalanceRepository
-	TransactionRepo port.TransactionRepository
-	MerchantRepo    port.MerchantRepository
+	AccountRepo  port.AccountRepository
+	MerchantRepo port.MerchantRepository
 
 	AccountEntity port.AccountEntity
 	BalanceEntity port.BalanceEntity
@@ -72,24 +70,12 @@ func (suite *RepositoriesSuite) SetupSuite() {
 		log.Fatalf("error when instantiating account repository: %v", err)
 	}
 
-	balance, err := NewBalance(conn)
-	if err != nil {
-		log.Fatalf("error when instantiating balance repository: %v", err)
-	}
-
-	transaction, err := NewTransaction(conn)
-	if err != nil {
-		log.Fatalf("error when instantiating transaction repository: %v", err)
-	}
-
 	merchant, err := NewMerchant(conn)
 	if err != nil {
 		log.Fatalf("error when instantiating merchant repository: %v", err)
 	}
 
 	suite.AccountRepo = account
-	suite.BalanceRepo = balance
-	suite.TransactionRepo = transaction
 	suite.MerchantRepo = merchant
 
 	suite.loadDBtestData(conn)
@@ -136,16 +122,11 @@ func (suite *RepositoriesSuite) loadDBtestData(conn database.Conn) {
 		dbGorm.Exec(insertMCCQuery)
 
 		dbGorm.Exec("TRUNCATE TABLE merchants RESTART IDENTITY CASCADE")
-		insertMerchantQuery := fmt.Sprintf(`
+		insertMerchantQuery := `
 			INSERT INTO merchants (uid, name, mcc_id, created_at, updated_at)
 			VALUES
-				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', '%s', %v, NOW(), NOW()),
-				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', '%s', %v, NOW(), NOW())`,
-			merchant1NameToMap,
-			merchant1CorrectMccIdToMap,
-			merchant2NameToMap,
-			merchant2CorrectMccIdToMap,
-		)
+				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', 'UBER EATS                   SAO PAULO BR', 2, NOW(), NOW()),
+				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', 'PAG*JoseDaSilva          RIO DE JANEI BR', 4, NOW(), NOW())`
 		dbGorm.Exec(insertMerchantQuery)
 
 		dbGorm.Exec("TRUNCATE TABLE accounts RESTART IDENTITY CASCADE")
@@ -155,20 +136,27 @@ func (suite *RepositoriesSuite) loadDBtestData(conn database.Conn) {
 			accountUID)
 		dbGorm.Exec(insertAccountQuery)
 
-		dbGorm.Exec("TRUNCATE TABLE balances RESTART IDENTITY CASCADE")
-		insertBalancesQuery := fmt.Sprintf(`
-			INSERT INTO balances (uid, account_id, amount, category_id, created_at, updated_at)
-			VALUES
-				('%s', 1, %v, 1, NOW(), NOW()),
-				('%s', 1, %v, 2, NOW(), NOW()),
-				('%s', 1, %v, 3, NOW(), NOW())`,
-			balanceFoodUID, balanceFoodAmount,
-			balanceMealUID, balanceMealAmount,
-			balanceCashUID, balanceCashAmount,
-		)
-		dbGorm.Exec(insertBalancesQuery)
-
 		dbGorm.Exec("TRUNCATE TABLE transactions RESTART IDENTITY CASCADE")
+		insertTransactionQuery := fmt.Sprintf(`
+			INSERT INTO transactions (account_id, amount, category_id, created_at, updated_at)
+			VALUES
+				(1, %v, 1, NOW(), NOW()),
+				(1, %v, 2, NOW(), NOW()),
+				(1, %v, 3, NOW(), NOW())`,
+			balanceFoodAmount,
+			balanceMealAmount,
+			balanceCashAmount,
+		)
+		dbGorm.Exec(insertTransactionQuery)
+
+		dbGorm.Exec("TRUNCATE TABLE account_categories RESTART IDENTITY CASCADE")
+		insertAccountCategoriesQuery := `
+			INSERT INTO account_categories (account_id, category_id, created_at, updated_at)
+			VALUES
+				(1, 1, NOW(), NOW()),
+				(1, 2, NOW(), NOW()),
+				(1, 3, NOW(), NOW())`
+		dbGorm.Exec(insertAccountCategoriesQuery)
 
 	default:
 		log.Fatalf("error connecting to database migrate to charge test data")
@@ -181,50 +169,6 @@ func (suite *RepositoriesSuite) AccountRepositoryFindByUIDsuccess() {
 	assert.NoError(suite.T(), err)
 
 	suite.AccountEntity = accountEntity
-}
-
-func (suite *RepositoriesSuite) BalanceRepositoryFindByAccountIDsuccess() {
-	amountTotal := decimal.Sum(
-		balanceFoodAmount,
-		balanceMealAmount,
-		balanceCashAmount,
-	)
-
-	accountEntity := suite.AccountEntity
-
-	balanceEntity, err := suite.BalanceRepo.FindByAccountID(context.TODO(), accountEntity.ID)
-	assert.Equal(suite.T(), balanceEntity.AmountTotal, amountTotal)
-	assert.NoError(suite.T(), err)
-
-	suite.BalanceEntity = balanceEntity
-}
-
-func (suite *RepositoriesSuite) BalanceRepositoryUpdateTotalAmountSuccess() {
-	balanceEntity := suite.BalanceEntity
-
-	foodCategoryPriority := 1
-
-	foodBalanceCategory := balanceEntity.Categories[foodCategoryPriority]
-	foodBalanceCategory.Amount = foodBalanceCategory.Amount.Sub(amountFoodTransaction)
-	balanceEntity.Categories[foodCategoryPriority] = foodBalanceCategory
-
-	balanceEntityUpdateErr := suite.BalanceRepo.UpdateTotalAmount(context.TODO(), balanceEntity)
-	assert.NoError(suite.T(), balanceEntityUpdateErr)
-}
-
-func (suite *RepositoriesSuite) TransactionRepositorySaveSuccess() {
-	accountEntity := suite.AccountEntity
-
-	transactionEntity := port.TransactionEntity{
-		AccountID:   accountEntity.ID,
-		MCC:         MCCFoodTransaction,
-		Merchant:    merchantFoodTransaction,
-		TotalAmount: amountFoodTransaction,
-	}
-
-	transactionEntitySaveErr := suite.TransactionRepo.Save(context.TODO(), transactionEntity)
-	assert.NoError(suite.T(), transactionEntitySaveErr)
-
 }
 
 func (suite *RepositoriesSuite) MerchantRepositoryFindByName() {
@@ -242,17 +186,9 @@ func (suite *RepositoriesSuite) TestCases() {
 		suite.AccountRepositoryFindByUIDsuccess()
 	})
 
-	suite.T().Run("TestBalanceRepositoryFindByAccountIDSuccess", func(t *testing.T) {
-		suite.BalanceRepositoryFindByAccountIDsuccess()
-	})
-
-	suite.T().Run("TestBalanceRepositoryUpdateTotalAmountSuccess", func(t *testing.T) {
-		suite.BalanceRepositoryUpdateTotalAmountSuccess()
-	})
-
-	suite.T().Run("TestTransactionRepositorySaveSuccess", func(t *testing.T) {
-		suite.TransactionRepositorySaveSuccess()
-	})
+	// suite.T().Run("TestTransactionRepositorySaveSuccess", func(t *testing.T) {
+	// 	suite.TransactionRepositorySaveSuccess()
+	// })
 
 	suite.T().Run("TestMerchantRepositoryFindByName", func(t *testing.T) {
 		suite.MerchantRepositoryFindByName()

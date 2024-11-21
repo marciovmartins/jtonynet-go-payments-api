@@ -1,8 +1,6 @@
 package port
 
 import (
-	"context"
-
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
@@ -19,14 +17,18 @@ type TransactionPaymentResponse struct {
 }
 
 type TransactionEntity struct {
-	ID          uint
-	UID         uuid.UUID
-	AccountID   uint
-	TotalAmount decimal.Decimal
-	MCC         string
-	Merchant    string
+	ID           uint
+	UID          uuid.UUID
+	AccountID    uint
+	CategoryID   uint
+	Amount       decimal.Decimal
+	MCC          string
+	MerchantName string
 }
 
-type TransactionRepository interface {
-	Save(ctx context.Context, te TransactionEntity) error
+type TransactionByCategoryEntity struct {
+	ID       uint
+	UID      uuid.UUID
+	Amount   decimal.Decimal
+	Category CategoryEntity
 }

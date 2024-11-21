@@ -6,9 +6,10 @@ import (
 )
 
 type Transaction struct {
-	AccountID   uint
-	AccountUID  uuid.UUID
-	MCC         string
-	TotalAmount decimal.Decimal
-	Merchant    string
+	AccountID    uint
+	AccountUID   uuid.UUID
+	CategoryID   uint
+	MCC          string
+	Amount       decimal.Decimal
+	MerchantName string
 }
