@@ -20,9 +20,9 @@ type TransactionByCategories struct {
 }
 
 func (tc *TransactionByCategories) GetByMCC(mcc string) (TransactionCategory, error) {
-	for _, categoryItem := range tc.Itens {
-		if searchInSlice(mcc, categoryItem.MCCs) {
-			return categoryItem, nil
+	for _, transactionCategory := range tc.Itens {
+		if searchInSlice(mcc, transactionCategory.MCCs) {
+			return transactionCategory, nil
 		}
 	}
 
@@ -34,10 +34,10 @@ func (tc *TransactionByCategories) GetFallback() (TransactionCategory, error) {
 	found := false
 	maxKey := -1
 
-	for key, categoryItem := range tc.Itens {
-		if key > maxKey && len(categoryItem.MCCs) == 0 {
+	for key, transactionCategory := range tc.Itens {
+		if key > maxKey && len(transactionCategory.MCCs) == 0 {
 			maxKey = key
-			categoryFallback = categoryItem
+			categoryFallback = transactionCategory
 			found = true
 		}
 	}

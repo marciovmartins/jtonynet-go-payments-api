@@ -396,9 +396,9 @@ JOIN
 JOIN 
 	categories as c ON c.id = ac.category_id 
 JOIN 
-	transactions as t ON t.account_id = a.id AND 
-	t.category_id = c.id AND 
-	t.id = (
+	transactions as t ON t.account_id = a.id  
+	AND t.category_id = c.id 
+	AND t.id = (
 		SELECT MAX(t2.id) 
 		FROM transactions t2 
 		WHERE t2.account_id = a.id AND t2.category_id = c.id

@@ -99,13 +99,13 @@ func (a *Account) debugLog(msg string) {
 	}
 }
 
-func (a *Account) mapCategoryToTransaction(c TransactionCategory, t Transaction) Transaction {
+func (a *Account) mapCategoryToTransaction(tc TransactionCategory, t Transaction) Transaction {
 	return Transaction{
 		AccountID:    a.ID,
 		AccountUID:   a.UID,
-		CategoryID:   c.ID,
+		CategoryID:   tc.CategoryID,
+		Amount:       tc.Amount,
 		MCC:          t.MCC,
-		Amount:       c.Amount,
 		MerchantName: t.MerchantName,
 	}
 }
