@@ -7,6 +7,7 @@ import (
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
+	"github.com/jtonynet/go-payments-api/internal/adapter/pubSub"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository/gormRepos"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository/redisRepos"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
@@ -45,7 +46,7 @@ func GetAll(conn database.Conn) (AllRepos, error) {
 	}
 }
 
-func NewCachedMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
+func NewCachedMerchant(cacheConn inMemoryDatabase.Client, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
 	var mr port.MerchantRepository
 
 	strategy, err := cacheConn.GetStrategy(context.TODO())
@@ -61,7 +62,7 @@ func NewCachedMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.Merchan
 	}
 }
 
-func NewMemoryLock(lockConn inMemoryDatabase.Conn) (port.MemoryLockRepository, error) {
+func NewMemoryLock(lockConn inMemoryDatabase.Client, pubsub pubSub.PubSub) (port.MemoryLockRepository, error) {
 	var mlr port.MemoryLockRepository
 
 	strategy, err := lockConn.GetStrategy(context.TODO())
@@ -71,7 +72,7 @@ func NewMemoryLock(lockConn inMemoryDatabase.Conn) (port.MemoryLockRepository, e
 
 	switch strategy {
 	case "redis":
-		return redisRepos.NewMemoryLock(lockConn)
+		return redisRepos.NewMemoryLock(lockConn, pubsub)
 	default:
 		return mlr, fmt.Errorf("memory lock repository strategy not suported: %s", strategy)
 	}

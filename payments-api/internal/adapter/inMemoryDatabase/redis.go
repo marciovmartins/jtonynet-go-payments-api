@@ -15,18 +15,18 @@ import (
 	font: https://github.com/redis/go-redis
 */
 
-type RedisConn struct {
+type RedisClient struct {
 	ctx context.Context
 
-	db         *redis.Client
+	client     *redis.Client
 	strategy   string
 	expiration time.Duration
 }
 
-func NewRedisConn(cfg config.InMemoryDatabase) (*RedisConn, error) {
+func NewRedisClient(cfg config.InMemoryDatabase) (*RedisClient, error) {
 	strAddr := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
 
-	db := redis.NewClient(&redis.Options{
+	client := redis.NewClient(&redis.Options{
 		Addr:     strAddr,
 		Password: cfg.Pass,
 		DB:       cfg.DB,
@@ -35,17 +35,17 @@ func NewRedisConn(cfg config.InMemoryDatabase) (*RedisConn, error) {
 
 	Expiration := time.Duration(cfg.Expiration * int(time.Millisecond))
 
-	return &RedisConn{
+	return &RedisClient{
 		ctx: context.TODO(),
 
-		db:         db,
+		client:     client,
 		strategy:   cfg.Strategy,
 		expiration: Expiration,
 	}, nil
 }
 
-func (c *RedisConn) Readiness(_ context.Context) error {
-	_, err := c.db.Ping(c.ctx).Result()
+func (c *RedisClient) Readiness(_ context.Context) error {
+	_, err := c.client.Ping(c.ctx).Result()
 	if err != nil {
 		return err
 	}
@@ -53,17 +53,17 @@ func (c *RedisConn) Readiness(_ context.Context) error {
 	return nil
 }
 
-func (c *RedisConn) GetStrategy(_ context.Context) (string, error) {
+func (c *RedisClient) GetStrategy(_ context.Context) (string, error) {
 	return c.strategy, nil
 }
 
-func (c *RedisConn) Set(_ context.Context, key string, value interface{}, expiration time.Duration) error {
+func (c *RedisClient) Set(_ context.Context, key string, value interface{}, expiration time.Duration) error {
 	data, err := json.Marshal(value)
 	if err != nil {
 		return err
 	}
 
-	err = c.db.Set(c.ctx, key, data, expiration).Err()
+	err = c.client.Set(c.ctx, key, data, expiration).Err()
 	if err != nil {
 		return err
 	}
@@ -71,8 +71,8 @@ func (c *RedisConn) Set(_ context.Context, key string, value interface{}, expira
 	return nil
 }
 
-func (c *RedisConn) Get(_ context.Context, key string) (string, error) {
-	val, err := c.db.Get(c.ctx, key).Result()
+func (c *RedisClient) Get(_ context.Context, key string) (string, error) {
+	val, err := c.client.Get(c.ctx, key).Result()
 	if err != nil {
 		return "", err
 	}
@@ -83,14 +83,26 @@ func (c *RedisConn) Get(_ context.Context, key string) (string, error) {
 	return val, nil
 }
 
-func (c *RedisConn) Delete(_ context.Context, key string) error {
-	err := c.db.Del(c.ctx, key).Err()
+func (c *RedisClient) Delete(_ context.Context, key string) error {
+	err := c.client.Del(c.ctx, key).Err()
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *RedisConn) GetDefaultExpiration(_ context.Context) (time.Duration, error) {
+func (c *RedisClient) Expire(ctx context.Context, key string, expiration time.Duration) error {
+	err := c.client.Expire(c.ctx, key, expiration).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *RedisClient) GetDefaultExpiration(_ context.Context) (time.Duration, error) {
 	return c.expiration, nil
+}
+
+func (c *RedisClient) GetClient(_ context.Context) (interface{}, error) {
+	return c.client, nil
 }

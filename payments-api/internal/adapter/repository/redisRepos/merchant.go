@@ -10,12 +10,12 @@ import (
 )
 
 type Merchant struct {
-	cacheConn inMemoryDatabase.Conn
+	cacheConn inMemoryDatabase.Client
 
 	merchantRepository port.MerchantRepository
 }
 
-func NewRedisMerchant(cacheConn inMemoryDatabase.Conn, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
+func NewRedisMerchant(cacheConn inMemoryDatabase.Client, mRepository port.MerchantRepository) (port.MerchantRepository, error) {
 	return &Merchant{
 		cacheConn:          cacheConn,
 		merchantRepository: mRepository,

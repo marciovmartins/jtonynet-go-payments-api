@@ -6,57 +6,64 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/cenkalti/backoff"
 	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
+	"github.com/jtonynet/go-payments-api/internal/adapter/pubSub"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
 type MemoryLock struct {
-	lockConn inMemoryDatabase.Conn
+	lockConn inMemoryDatabase.Client
+	pubsub   pubSub.PubSub
 }
 
-func NewMemoryLock(lockConn inMemoryDatabase.Conn) (port.MemoryLockRepository, error) {
+func NewMemoryLock(lockConn inMemoryDatabase.Client, pubsub pubSub.PubSub) (port.MemoryLockRepository, error) {
 	return &MemoryLock{
 		lockConn,
+		pubsub,
 	}, nil
 }
 
 func (ml *MemoryLock) Lock(
-	_ context.Context,
+	ctx context.Context,
 	timeoutSLA port.TimeoutSLA,
 	mle port.MemoryLockEntity,
 ) (port.MemoryLockEntity, error) {
-	var lockErr error
-	maxElapsedTime := time.Duration(timeoutSLA / 2)
-
-	retry := backoff.NewExponentialBackOff()
-	retry.MaxElapsedTime = maxElapsedTime
-	retry.InitialInterval = time.Duration(1) * time.Millisecond
-
-	backoff.RetryNotify(func() error {
-		_, lockErr = ml.isUnlocked(mle)
-		return lockErr
-	}, retry, nil)
-
-	if lockErr != nil {
-		return port.MemoryLockEntity{}, lockErr
-	}
-
-	expiration, err := ml.lockConn.GetDefaultExpiration(context.TODO())
+	expiration, err := ml.lockConn.GetDefaultExpiration(ctx)
 	if err != nil {
 		return port.MemoryLockEntity{}, err
 	}
 
-	err = ml.lockConn.Set(context.TODO(), mle.Key, mle.Timestamp, expiration)
+	_, lockErr := ml.isUnlocked(mle)
+	if lockErr == nil {
+		err = ml.lockConn.Set(ctx, mle.Key, mle.Timestamp, expiration)
+		if err != nil {
+			return port.MemoryLockEntity{}, err
+		}
+
+		return mle, nil
+	}
+
+	unlockChannel, err := ml.pubsub.Subscribe(ctx, mle.Key)
 	if err != nil {
 		return port.MemoryLockEntity{}, err
 	}
 
-	return mle, nil
+	select {
+	case <-unlockChannel:
+		err = ml.lockConn.Set(ctx, mle.Key, mle.Timestamp, expiration)
+		if err != nil {
+			return port.MemoryLockEntity{}, err
+		}
+		return mle, nil
+	case <-time.After(time.Duration(timeoutSLA)):
+		return port.MemoryLockEntity{}, fmt.Errorf("timeout waiting for lock release on key: %s", mle.Key)
+	case <-ctx.Done():
+		return port.MemoryLockEntity{}, ctx.Err()
+	}
 }
 
-func (ml *MemoryLock) Unlock(_ context.Context, key string) error {
-	return ml.lockConn.Delete(context.TODO(), key)
+func (ml *MemoryLock) Unlock(ctx context.Context, key string) error {
+	return ml.lockConn.Expire(ctx, key, 0)
 }
 
 func (ml *MemoryLock) isUnlocked(mle port.MemoryLockEntity) (bool, error) {

@@ -20,19 +20,25 @@ env:
   DATABASE_PORT: 5432
   DATABASE_SSLMODE: disable
 
-  CACHE_IN_MEMORY_STRATEGY: redis
-  CACHE_IN_MEMORY_HOST: redis
-  CACHE_IN_MEMORY_PORT: 6379
-  CACHE_IN_MEMORY_DB: 0
-  CACHE_IN_MEMORY_PROTOCOL: 3
-  CACHE_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS: 10000
+  PUBSUB_STRATEGY: redis
+  PUBSUB_HOST: redis-payments
+  PUBSUB_PORT: 6379
+  PUBSUB_DB: 1
+  PUBSUB_PROTOCOL: 3
 
   LOCK_IN_MEMORY_STRATEGY: redis
   LOCK_IN_MEMORY_HOST: redis
   LOCK_IN_MEMORY_PORT: 6379
   LOCK_IN_MEMORY_DB: 1
   LOCK_IN_MEMORY_PROTOCOL: 3
-  LOCK_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS: 10000
+  LOCK_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS: 100
+
+  CACHE_IN_MEMORY_STRATEGY: redis
+  CACHE_IN_MEMORY_HOST: redis
+  CACHE_IN_MEMORY_PORT: 6379
+  CACHE_IN_MEMORY_DB: 0
+  CACHE_IN_MEMORY_PROTOCOL: 3
+  CACHE_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS: 50000
 
 jobs:
   test:
@@ -75,6 +81,11 @@ jobs:
       uses: actions/setup-go@v4
       with:
          go-version: 1.23
+
+    - name: Configure Redis Keyspace Notifications
+      run: |
+        apk add --no-cache redis
+        redis-cli -h redis -p 6379 CONFIG SET notify-keyspace-events Ex
 
     - name: Install dependencies
       working-directory: ./payments-api
