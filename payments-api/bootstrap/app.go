@@ -39,14 +39,10 @@ func NewApp(cfg *config.Config) (App, error) {
 	}
 	app.Logger = logger
 
-	pubSubCfg, err := pubSub.New(cfg.PubSub)
+	pubSubUnlock, err := pubSub.New(cfg.PubSub)
 	if err != nil {
 		return App{}, fmt.Errorf("error: dont instantiate pubsub client: %v", err)
 	}
-
-	fmt.Println("----------------------")
-	fmt.Println(pubSubCfg)
-	fmt.Println("----------------------")
 
 	lockCfg, _ := cfg.Lock.ToInMemoryDatabase()
 	lockConn, err := inMemoryDatabase.NewClient(lockCfg)
@@ -98,7 +94,7 @@ func NewApp(cfg *config.Config) (App, error) {
 		return App{}, fmt.Errorf("error: dont instantiate merchant cached repository: %v", err)
 	}
 
-	memoryLockRepo, err := repository.NewMemoryLock(lockConn)
+	memoryLockRepo, err := repository.NewMemoryLock(lockConn, pubSubUnlock)
 	if err != nil {
 		return App{}, fmt.Errorf("error: dont instantiate memory lock repository: %v", err)
 	}

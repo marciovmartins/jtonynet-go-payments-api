@@ -31,14 +31,18 @@ func NewRedisPubSub(cfg config.PubSub) (*RedisPubSub, error) {
 	}, nil
 }
 
-func (r *RedisPubSub) Subscribe(_ context.Context, topic string) (<-chan string, error) {
-	r.pubsub = r.client.Subscribe(context.TODO(), topic)
+func (r *RedisPubSub) Subscribe(_ context.Context, key string) (<-chan string, error) {
+	keyspaceChannel := fmt.Sprintf("__keyevent@%d__:expired", r.client.Options().DB)
+
+	r.pubsub = r.client.Subscribe(context.TODO(), keyspaceChannel)
 	channel := make(chan string)
 
 	go func() {
 		defer close(channel)
 		for msg := range r.pubsub.Channel() {
-			channel <- msg.Payload
+			if msg.Payload == key {
+				channel <- msg.Payload
+			}
 		}
 	}()
 

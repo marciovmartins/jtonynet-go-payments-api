@@ -91,6 +91,14 @@ func (c *RedisClient) Delete(_ context.Context, key string) error {
 	return nil
 }
 
+func (c *RedisClient) Expire(ctx context.Context, key string, expiration time.Duration) error {
+	err := c.client.Expire(c.ctx, key, expiration).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *RedisClient) GetDefaultExpiration(_ context.Context) (time.Duration, error) {
 	return c.expiration, nil
 }

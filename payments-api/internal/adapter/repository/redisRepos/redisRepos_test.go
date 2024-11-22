@@ -7,6 +7,7 @@ import (
 
 	"github.com/jtonynet/go-payments-api/config"
 	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
+	"github.com/jtonynet/go-payments-api/internal/adapter/pubSub"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -106,7 +107,12 @@ func (suite *RedisReposSuite) SetupSuite() {
 		log.Fatalf("error: dont connecting to lock: %v", err)
 	}
 
-	memoryLockRepo, err := NewMemoryLock(lockConn)
+	pubSubUnlock, err := pubSub.New(cfg.PubSub)
+	if err != nil {
+		log.Fatalf("error: dont instantiate pubsub client: %v", err)
+	}
+
+	memoryLockRepo, err := NewMemoryLock(lockConn, pubSubUnlock)
 	if err != nil {
 		log.Fatalf("error: dont instantiate memory lock repository: %v", err)
 	}
