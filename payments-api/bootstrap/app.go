@@ -13,6 +13,7 @@ import (
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
+	"github.com/jtonynet/go-payments-api/internal/adapter/pubSub"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 
 	"github.com/jtonynet/go-payments-api/internal/core/port"
@@ -38,15 +39,14 @@ func NewApp(cfg *config.Config) (App, error) {
 	}
 	app.Logger = logger
 
-	cacheCfg, _ := cfg.Cache.ToInMemoryDatabase()
-	cacheConn, err := inMemoryDatabase.NewClient(cacheCfg)
+	pubSubCfg, err := pubSub.New(cfg.PubSub)
 	if err != nil {
-		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
+		return App{}, fmt.Errorf("error: dont instantiate pubsub client: %v", err)
 	}
 
-	if cacheConn.Readiness(context.TODO()) != nil {
-		return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
-	}
+	fmt.Println("----------------------")
+	fmt.Println(pubSubCfg)
+	fmt.Println("----------------------")
 
 	lockCfg, _ := cfg.Lock.ToInMemoryDatabase()
 	lockConn, err := inMemoryDatabase.NewClient(lockCfg)
@@ -59,7 +59,17 @@ func NewApp(cfg *config.Config) (App, error) {
 	}
 
 	if logger != nil {
-		logger.Debug("successfully: connected to the cache!")
+		logger.Debug("successfully: connected to the lock!")
+	}
+
+	cacheCfg, _ := cfg.Cache.ToInMemoryDatabase()
+	cacheConn, err := inMemoryDatabase.NewClient(cacheCfg)
+	if err != nil {
+		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
+	}
+
+	if cacheConn.Readiness(context.TODO()) != nil {
+		return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
 	}
 
 	dbConn, err := database.NewConn(cfg.Database)

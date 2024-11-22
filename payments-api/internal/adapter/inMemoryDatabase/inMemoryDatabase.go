@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/jtonynet/go-payments-api/config"
-	"github.com/jtonynet/go-payments-api/internal/adapter/pubsub"
 )
 
 type Client interface {
@@ -19,7 +18,7 @@ type Client interface {
 	GetClient(ctx context.Context) (interface{}, error)
 }
 
-func NewClient(cfg config.InMemoryDatabase, pubSubLock pubsub.PubSub) (Client, error) {
+func NewClient(cfg config.InMemoryDatabase) (Client, error) {
 	switch cfg.Strategy {
 	case "redis":
 		return NewRedisClient(cfg)

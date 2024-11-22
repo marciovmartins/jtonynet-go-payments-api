@@ -74,6 +74,7 @@ services:
       - redis-payments-data:/data
     networks:
       - payments-network
+    command: [ "redis-server", "--notify-keyspace-events", "Ex" ]
 
   payments-api:
     build:

@@ -12,17 +12,6 @@ type API struct {
 	TimeoutSLA int64  `mapstructure:"API_TIMEOUT_SLA_IN_MS"`
 }
 
-type Router struct {
-	Strategy string `mapstructure:"HTTP_ROUTER_STRATEGY"` // gin
-}
-
-type Logger struct {
-	Strategy  string `mapstructure:"LOG_STRATEGY"`   // slog
-	Level     string `mapstructure:"LOG_LEVEL"`      // debug | info | warn | error
-	Format    string `mapstructure:"LOG_OPT_FORMAT"` // text | json
-	AddSource bool   `mapstructure:"LOG_OPT_ADD_SOURCE_BOOL"`
-}
-
 type Database struct {
 	Strategy string `mapstructure:"DATABASE_STRATEGY"`
 	Driver   string `mapstructure:"DATABASE_DRIVER"`
@@ -33,6 +22,19 @@ type Database struct {
 	DB      string `mapstructure:"DATABASE_DB"`
 	Port    string `mapstructure:"DATABASE_PORT"`
 	SSLmode string `mapstructure:"DATABASE_SSLMODE"`
+}
+
+type Router struct {
+	Strategy string `mapstructure:"HTTP_ROUTER_STRATEGY"` // gin
+}
+
+type PubSub struct {
+	Strategy string `mapstructure:"PUBSUB_STRATEGY"`
+	Pass     string `mapstructure:"PUBSUB_PASSWORD"`
+	Port     string `mapstructure:"PUBSUB_PORT"`
+	Host     string `mapstructure:"PUBSUB_HOST"`
+	DB       int    `mapstructure:"PUBSUB_DB"`
+	Protocol int    `mapstructure:"PUBSUB_PROTOCOL"`
 }
 
 type InMemoryDatabase struct {
@@ -47,27 +49,6 @@ type InMemoryDatabase struct {
 
 type InMemoryDatabaseConverter interface {
 	ToInMemoryDatabase() (InMemoryDatabase, error)
-}
-type Cache struct {
-	Strategy   string `mapstructure:"CACHE_IN_MEMORY_STRATEGY"`
-	Pass       string `mapstructure:"CACHE_IN_MEMORY_PASSWORD"`
-	Port       string `mapstructure:"CACHE_IN_MEMORY_PORT"`
-	Host       string `mapstructure:"CACHE_IN_MEMORY_HOST"`
-	DB         int    `mapstructure:"CACHE_IN_MEMORY_DB"`
-	Protocol   int    `mapstructure:"CACHE_IN_MEMORY_PROTOCOL"`
-	Expiration int    `mapstructure:"CACHE_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS"`
-}
-
-func (c *Cache) ToInMemoryDatabase() (InMemoryDatabase, error) {
-	return InMemoryDatabase{
-		Strategy:   c.Strategy,
-		Pass:       c.Pass,
-		Port:       c.Port,
-		Host:       c.Host,
-		DB:         c.DB,
-		Protocol:   c.Protocol,
-		Expiration: c.Expiration,
-	}, nil
 }
 
 type Lock struct {
@@ -92,13 +73,43 @@ func (l *Lock) ToInMemoryDatabase() (InMemoryDatabase, error) {
 	}, nil
 }
 
+type Cache struct {
+	Strategy   string `mapstructure:"CACHE_IN_MEMORY_STRATEGY"`
+	Pass       string `mapstructure:"CACHE_IN_MEMORY_PASSWORD"`
+	Port       string `mapstructure:"CACHE_IN_MEMORY_PORT"`
+	Host       string `mapstructure:"CACHE_IN_MEMORY_HOST"`
+	DB         int    `mapstructure:"CACHE_IN_MEMORY_DB"`
+	Protocol   int    `mapstructure:"CACHE_IN_MEMORY_PROTOCOL"`
+	Expiration int    `mapstructure:"CACHE_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS"`
+}
+
+func (c *Cache) ToInMemoryDatabase() (InMemoryDatabase, error) {
+	return InMemoryDatabase{
+		Strategy:   c.Strategy,
+		Pass:       c.Pass,
+		Port:       c.Port,
+		Host:       c.Host,
+		DB:         c.DB,
+		Protocol:   c.Protocol,
+		Expiration: c.Expiration,
+	}, nil
+}
+
+type Logger struct {
+	Strategy  string `mapstructure:"LOG_STRATEGY"`   // slog
+	Level     string `mapstructure:"LOG_LEVEL"`      // debug | info | warn | error
+	Format    string `mapstructure:"LOG_OPT_FORMAT"` // text | json
+	AddSource bool   `mapstructure:"LOG_OPT_ADD_SOURCE_BOOL"`
+}
+
 type Config struct {
 	API      API      `mapstructure:",squash"`
 	Database Database `mapstructure:",squash"`
 	Router   Router   `mapstructure:",squash"`
-	Logger   Logger   `mapstructure:",squash"`
-	Cache    Cache    `mapstructure:",squash"`
+	PubSub   PubSub   `mapstructure:",squash"`
 	Lock     Lock     `mapstructure:",squash"`
+	Cache    Cache    `mapstructure:",squash"`
+	Logger   Logger   `mapstructure:",squash"`
 }
 
 func LoadConfig(path string) (*Config, error) {

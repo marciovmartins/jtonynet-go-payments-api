@@ -26,7 +26,7 @@ type RedisClient struct {
 func NewRedisClient(cfg config.InMemoryDatabase) (*RedisClient, error) {
 	strAddr := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
 
-	db := redis.NewClient(&redis.Options{
+	client := redis.NewClient(&redis.Options{
 		Addr:     strAddr,
 		Password: cfg.Pass,
 		DB:       cfg.DB,
@@ -38,7 +38,7 @@ func NewRedisClient(cfg config.InMemoryDatabase) (*RedisClient, error) {
 	return &RedisClient{
 		ctx: context.TODO(),
 
-		client:     db,
+		client:     client,
 		strategy:   cfg.Strategy,
 		expiration: Expiration,
 	}, nil

@@ -510,6 +510,8 @@ _*Esse fluxo representa o processo de aprovação, fallback e rejeição da tran
 <a id="diagrams-erchart"></a>
 #### 📈 ER
 
+<center>
+
 ```mermaid
 erDiagram
 
@@ -587,6 +589,9 @@ erDiagram
     transactions }o--|| accounts : performs
 
 ```
+
+</center>
+
 <a id="diagrams-erchart-description"></a>
 ##### 📝 Descrição
 
@@ -596,9 +601,6 @@ erDiagram
 **categories** Armazena categorias (FOOD, MEAL, CASH...), com `priority` para definir a ordem de utilização.  
 **mccs** Contém MCCs (códigos de quatro dígitos) associados às categorias.  
 **merchants** Ajusta MCCs com base no nome do comerciante.
-
-
-
 
 <br/>
 
@@ -615,7 +617,7 @@ erDiagram
 
 Utilizaria `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esses dados sejam distintos. Um sistema de dados em memória rápido, como `Redis`, seria utilizado para armazenar e liberar locks, coordenando o acesso a recursos compartilhados de maneira eficiente.
 
-O processamento da transação verifica se a `account` já está registrada no `lock`. Se não estiver, a aplicação a insere no banco em memória e inicia suas tarefas. Caso já esteja registrada, indicando que outra instância está processando uma transação para a mesma `account`, a aplicação se inscreve em um canal, aguardando uma mensagem de desbloqueio por até 100 ms menos o tempo médio de processamento, evitando concorrência.
+O processamento da transação verifica se a `account` já está registrada no `lock`. Se não estiver, a aplicação a insere no banco em memória e inicia suas tarefas. Caso já esteja registrada, indicando que outra instância está processando uma transação para a mesma `account`, a aplicação se inscreve em um canal, aguardando uma mensagem de desbloqueio por até 100 ms, evitando concorrência.
 
 Com [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/) (similar a `pub/sub`), quando o processamento terminar e a chave `account` for removida (pelo processo ou `ttl`), uma mensagem deve ser publicada pelo próprio `Redis` aos inscritos, sinalizando a liberação do `lock`.
 
@@ -633,7 +635,7 @@ flowchart TD
 
     C -- Sim --> M[✉️⬅️<br/><b>Subscreve</b><br/>Redis Keyspace Notification<br/><br/> ]
     M --> R[⏸️<br/><b>Aguarda</b><br> receber Mensagem de desbloqueio da Account do Redis Keyspace Notification]
-    R --> N{Recebi Mensagem de desbloqueio em tempo útil? <br/> <b><i>t<i> < 100 ms - tempo médio de processo</b>}
+    R --> N{Recebi Mensagem de desbloqueio em tempo útil? <br/> <b><i>t<i> < 100 ms</b>}
     N -- Sim --> D
     N -- Não --> O[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>07</b> por Falha Genérica</b>]
 
@@ -793,7 +795,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Defini o modelo hexagonal pois sua abordagem de `ports` and `adapters` proporciona flexibilidade para que o sistema atenda a chamadas `http`, e possa ser facilmente estendido para outras abordagens, como processamento de `mensagens` e `pub/sub` (sugestão de solução L4), sem alterar o `core`, garantindo um sistema com separação de responsabilidades.
 
-- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada pelo proponente do desafio em uma sessão no `Miro Board` por conta da `Latencia` adicional gerada a. Como pode ser visto no `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md) e em tarefas `Kanban` visando implantar parte do que foi discutido no `Miro`.
+- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada pelo proponente do desafio em uma sessão no `Miro Board` devido à latência adicional gerada. Isso fica explícito no `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir latência e evitar concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md) e em tarefas do `Kanban` que visam implementar parte do que foi discutido no `Miro`.
 
 - Foi realizado um `refactor` na estrutura das tabelas para tornar a aplicação mais robusta, criando um ponto único para inserir `transactions` e atualizar os saldos das `accounts` com base nas `categories`. Essa abordagem baseada em `eventos` visa mitigar impactos de `inconsistência eventual`.
 
@@ -808,9 +810,6 @@ Essas são minhas considerações sobre o que consegui produzir ao longo desse d
 <br/>
 
 [⤴️ de volta ao índice](#index)
-
-
-
 
 <!--
 docker stop $(docker ps -aq)
