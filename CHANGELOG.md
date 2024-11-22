@@ -10,19 +10,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 
+## [0.1.5] - 2024-21-11
+### Adicionado
+
+  - [Issue 36](https://github.com/jtonynet/go-payments-api/issues/35)
+    - Removido `MVP` da solução L4 com `Exponential Backoff Retry` como `Growth Hack`
+    - Adicionado `Redis Keyspace Notification` como melhoria `L4`
+    - Unlock expira o `ttl` da chave de memory lock
+    - Timeout de 100ms para memory lock
+
 ## [0.1.4] - 2024-20-11
 ### Adicionado
+
 - [Issue 38](https://github.com/jtonynet/go-payments-api/issues/38)
   - Alteração visando aumentar a a resiliência a consistência eventual do banco.
 
 ## [0.1.3] - 2024-15-11
 ### Adicionado
+
 - Melhorias na `repository` aderente ao padrão Hexagonal
 - Implementando `MVP` da solução L4 com `Exponential Backoff Retry` como `Growth Hack`
 - Melhorias na documentação
 
 ## [0.1.2] - 2024-10-11
 ### Adicionado
+
 - Adaptador de Roteador aderente ao padrão Hexagonal
 - Correções e pequenas refatorações no projeto
 - Estratégia de cache com Redis adicionada para o merchant
@@ -31,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.1] - 2024-23-10
 ### Added
+
 - Aumento da cobertura de testes
 - Categorias e MCCs extraidos para a database
 - Diagrama descritivo L4 com uso de `fila` e `memory lock`
@@ -40,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ## [0.1.0] - 2024-23-10
 ### Fixed
+
   - Bump version
   - Status no README movido para AGUARDANDO
   - Removido arquivo antigo desnecessário
@@ -47,6 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ## [0.0.7] - 2024-23-10
 ### Fixed
+
   - Movendo Custom Error para domain
 
 ### Fixed
