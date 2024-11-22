@@ -84,7 +84,7 @@ jobs:
 
     - name: Configure Redis Keyspace Notifications
       run: |
-        apt-get update && apt-get install -y redis-tools
+        apk add --no-cache redis
         redis-cli -h redis -p 6379 CONFIG SET notify-keyspace-events Ex
 
     - name: Install dependencies
