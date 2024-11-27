@@ -6,8 +6,7 @@ import (
 
 	"github.com/jtonynet/go-payments-api/internal/core/domain"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
-
-	"github.com/jtonynet/go-payments-api/internal/support"
+	"github.com/jtonynet/go-payments-api/internal/support/logger"
 )
 
 type Payment struct {
@@ -16,7 +15,7 @@ type Payment struct {
 	merchantRepository   port.MerchantRepository
 	memoryLockRepository port.MemoryLockRepository
 
-	logger            support.Logger
+	logger            logger.Logger
 	transactionLocked port.MemoryLockEntity
 }
 
@@ -27,7 +26,7 @@ func NewPayment(
 	mRepository port.MerchantRepository,
 	mlRepository port.MemoryLockRepository,
 
-	logger support.Logger,
+	logger logger.Logger,
 ) *Payment {
 	return &Payment{
 		timeoutSLA:           timeoutSLA,
@@ -41,7 +40,7 @@ func NewPayment(
 
 func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 	transactionLocked, err := p.memoryLockRepository.Lock(
-		context.TODO(),
+		context.Background(),
 		p.timeoutSLA,
 		mapTransactionRequestToMemoryLockEntity(tpr),
 	)
@@ -50,7 +49,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 	}
 	p.transactionLocked = transactionLocked
 
-	accountEntity, err := p.accountRepository.FindByUID(context.TODO(), tpr.AccountUID)
+	accountEntity, err := p.accountRepository.FindByUID(context.Background(), tpr.AccountUID)
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to retrieve account entity: %w", err))
 	}
@@ -59,7 +58,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 	account.Logger = p.logger
 
 	var merchant domain.Merchant
-	merchantEntity, err := p.merchantRepository.FindByName(context.TODO(), tpr.Merchant)
+	merchantEntity, err := p.merchantRepository.FindByName(context.Background(), tpr.Merchant)
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to retrieve merchant entity with name %s", tpr.Merchant))
 	}
@@ -81,14 +80,14 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 	}
 
 	err = p.accountRepository.SaveTransactions(
-		context.TODO(),
+		context.Background(),
 		mapTransactionDomainsToEntities(approvedTransactions),
 	)
 	if err != nil {
 		return p.rejectedGenericErr(fmt.Errorf("failed to save transaction entity: %w", err))
 	}
 
-	_ = p.memoryLockRepository.Unlock(context.TODO(), p.transactionLocked.Key)
+	_ = p.memoryLockRepository.Unlock(context.Background(), p.transactionLocked.Key)
 
 	return domain.CODE_APPROVED, nil
 }
@@ -96,7 +95,7 @@ func (p *Payment) Execute(tpr port.TransactionPaymentRequest) (string, error) {
 func (p *Payment) rejectedGenericErr(err error) (string, error) {
 	p.debugLog(err.Error())
 
-	_ = p.memoryLockRepository.Unlock(context.TODO(), p.transactionLocked.Key)
+	_ = p.memoryLockRepository.Unlock(context.Background(), p.transactionLocked.Key)
 
 	return domain.CODE_REJECTED_GENERIC, err
 }
@@ -104,7 +103,7 @@ func (p *Payment) rejectedGenericErr(err error) (string, error) {
 func (p *Payment) rejectedCustomErr(cErr *domain.CustomError) (string, error) {
 	p.debugLog(cErr.Error())
 
-	_ = p.memoryLockRepository.Unlock(context.TODO(), p.transactionLocked.Key)
+	_ = p.memoryLockRepository.Unlock(context.Background(), p.transactionLocked.Key)
 
 	return cErr.Code, fmt.Errorf("failed to approve transaction: %s", cErr.Message)
 }

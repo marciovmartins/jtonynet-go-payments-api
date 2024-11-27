@@ -25,7 +25,7 @@ type Database struct {
 }
 
 type Router struct {
-	Strategy string `mapstructure:"HTTP_ROUTER_STRATEGY"` // gin
+	Strategy string `mapstructure:"HTTP_ROUTER_STRATEGY"`
 }
 
 type PubSub struct {
@@ -61,7 +61,7 @@ type Lock struct {
 	Expiration int    `mapstructure:"LOCK_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS"`
 }
 
-func (l *Lock) ToInMemoryDatabase() (InMemoryDatabase, error) {
+func (l *Lock) ToInMemoryDatabase() InMemoryDatabase {
 	return InMemoryDatabase{
 		Strategy:   l.Strategy,
 		Pass:       l.Pass,
@@ -70,7 +70,7 @@ func (l *Lock) ToInMemoryDatabase() (InMemoryDatabase, error) {
 		DB:         l.DB,
 		Protocol:   l.Protocol,
 		Expiration: l.Expiration,
-	}, nil
+	}
 }
 
 type Cache struct {
@@ -83,7 +83,7 @@ type Cache struct {
 	Expiration int    `mapstructure:"CACHE_IN_MEMORY_EXPIRATION_DEFAULT_IN_MS"`
 }
 
-func (c *Cache) ToInMemoryDatabase() (InMemoryDatabase, error) {
+func (c *Cache) ToInMemoryDatabase() InMemoryDatabase {
 	return InMemoryDatabase{
 		Strategy:   c.Strategy,
 		Pass:       c.Pass,
@@ -92,14 +92,21 @@ func (c *Cache) ToInMemoryDatabase() (InMemoryDatabase, error) {
 		DB:         c.DB,
 		Protocol:   c.Protocol,
 		Expiration: c.Expiration,
-	}, nil
+	}
 }
 
 type Logger struct {
-	Strategy  string `mapstructure:"LOG_STRATEGY"`   // slog
-	Level     string `mapstructure:"LOG_LEVEL"`      // debug | info | warn | error
-	Format    string `mapstructure:"LOG_OPT_FORMAT"` // text | json
+	Strategy  string `mapstructure:"LOG_STRATEGY"`
+	Level     string `mapstructure:"LOG_LEVEL"`
+	Format    string `mapstructure:"LOG_OPT_FORMAT"`
 	AddSource bool   `mapstructure:"LOG_OPT_ADD_SOURCE_BOOL"`
+}
+
+type GRPC struct {
+	ServerHost string `mapstructure:"GRPC_SERVER_HOST"`
+	ServerPort string `mapstructure:"GRPC_SERVER_PORT"`
+	ClientHost string `mapstructure:"GRPC_CLIENT_HOST"`
+	ClientPort string `mapstructure:"GRPC_CLIENT_PORT"`
 }
 
 type Config struct {
@@ -110,6 +117,7 @@ type Config struct {
 	Lock     Lock     `mapstructure:",squash"`
 	Cache    Cache    `mapstructure:",squash"`
 	Logger   Logger   `mapstructure:",squash"`
+	GRPC     GRPC     `mapstructure:",squash"`
 }
 
 func LoadConfig(path string) (*Config, error) {
