@@ -74,17 +74,16 @@ func (suite *RedisReposSuite) SetupSuite() {
 		log.Fatalf("cannot load config: %v", err)
 	}
 
-	cacheCfg, _ := cfg.Cache.ToInMemoryDatabase()
-	cacheConn, err := inMemoryDatabase.NewClient(cacheCfg)
+	cacheConn, err := inMemoryDatabase.NewClient(cfg.Cache.ToInMemoryDatabase())
 	if err != nil {
 		log.Fatalf("error: dont instantiate cache client: %v", err)
 	}
 
-	if cacheConn.Readiness(context.TODO()) != nil {
+	if cacheConn.Readiness(context.Background()) != nil {
 		log.Fatalf("error: dont connecting to cache: %v", err)
 	}
 
-	cacheConn.Delete(context.TODO(), merchantName)
+	cacheConn.Delete(context.Background(), merchantName)
 
 	dbFake := newDBfake()
 	merchantRepo := newMerchantRepoFake(dbFake)
@@ -97,13 +96,12 @@ func (suite *RedisReposSuite) SetupSuite() {
 	suite.cacheConn = cacheConn
 	suite.cachedMerchantRepo = cachedMerchantRepo
 
-	lockCfg, _ := cfg.Lock.ToInMemoryDatabase()
-	lockConn, err := inMemoryDatabase.NewClient(lockCfg)
+	lockConn, err := inMemoryDatabase.NewClient(cfg.Lock.ToInMemoryDatabase())
 	if err != nil {
 		log.Fatalf("error: dont instantiate lock client: %v", err)
 	}
 
-	if lockConn.Readiness(context.TODO()) != nil {
+	if lockConn.Readiness(context.Background()) != nil {
 		log.Fatalf("error: dont connecting to lock: %v", err)
 	}
 
@@ -122,26 +120,26 @@ func (suite *RedisReposSuite) SetupSuite() {
 }
 
 func (suite *RedisReposSuite) TearDownSuite() {
-	suite.cacheConn.Delete(context.TODO(), merchantName)
+	suite.cacheConn.Delete(context.Background(), merchantName)
 }
 
 func (suite *RedisReposSuite) MerchantRepositoryFindByNameNotCached() {
-	_, err := suite.cacheConn.Get(context.TODO(), merchantName)
+	_, err := suite.cacheConn.Get(context.Background(), merchantName)
 	assert.EqualError(suite.T(), err, "redis: nil")
 
-	merchantEntity, err := suite.cachedMerchantRepo.FindByName(context.TODO(), merchantName)
+	merchantEntity, err := suite.cachedMerchantRepo.FindByName(context.Background(), merchantName)
 	assert.NoError(suite.T(), err)
 	assert.NotNil(suite.T(), merchantEntity)
 
-	_, err = suite.cacheConn.Get(context.TODO(), merchantName)
+	_, err = suite.cacheConn.Get(context.Background(), merchantName)
 	assert.NoError(suite.T(), err)
 }
 
 func (suite *RedisReposSuite) MerchantRepositoryFindByNameCached() {
-	_, err := suite.cacheConn.Get(context.TODO(), merchantName)
+	_, err := suite.cacheConn.Get(context.Background(), merchantName)
 	assert.NoError(suite.T(), err)
 
-	merchantEntity, err := suite.cachedMerchantRepo.FindByName(context.TODO(), merchantName)
+	merchantEntity, err := suite.cachedMerchantRepo.FindByName(context.Background(), merchantName)
 	assert.NoError(suite.T(), err)
 	assert.NotNil(suite.T(), merchantEntity)
 }

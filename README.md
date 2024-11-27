@@ -5,7 +5,7 @@
     Prompt: gopher azul, simbolo da linguagem golang com um bone laranja, trabalhando como caixa de supermercado com algumas maquinhas de cartão de credito e cartões em cima da mesa, estilo cartoon, historia em quadrinhos, fundo branco chapado para facilitar remoção
 -->
 <center>
-<a href="#rgo-turn-based-challenge">
+<a href="#header">
     <img src="./docs/assets/images/layout/header.png" alt="gopher azul, simbolo da linguagem golang com um bone laranja, trabalhando como caixa de supermercado com algumas maquinhas de cartão de credito e cartões em cima da mesa, estilo cartoon, historia em quadrinhos" />
 </a>
 </center>
@@ -15,9 +15,11 @@
     https://devicon.dev/
     https://simpleicons.org/
 -->
-[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="Go Logo" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Logo" title="Gin">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSql Logo" title="PostgreSql">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.com/)  [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubuntu" alt="Ubuntu" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="Viper DotEnv Logo" title="Viper DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) 
+[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="Go Logo" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Logo" title="Gin">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSql Logo" title="PostgreSql">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.com/) [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="gRPC Logo" title="gRPC">](https://grpc.io/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubuntu" alt="Ubuntu" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="Viper DotEnv Logo" title="Viper DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) <!-- [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) -->
 
- <!-- [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="grpc Logo" title="grpc">](https://grpc.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/)  [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/rabbitmq.svg" width="25px" height="25px" alt="RabbitMQ Logo" title="RabbitMQ">](https://rabbitmq.com/) -->
+<!-- 
+[<img src="./docs/assets/images/icons/nginx.svg" width="25px" height="25px" alt="nginx Logo" title="nginx">](https://nginx.org/en/) [<img src="./docs/assets/images/icons/rabbitmq.svg" width="25px" height="25px" alt="RabbitMQ Logo" title="RabbitMQ">](https://rabbitmq.com/) [<img src="./docs/assets/images/icons/grafana_loki.png" width="30px" height="30px" alt="Grafana Loki Logo" title="Grafana Loki">](https://grafana.com/oss/loki/) [<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://www.jaegertracing.io/) 
+-->
 
 
 [![Badge Status](https://img.shields.io/badge/STATUS-REABERTO-green)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-KANBAN-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions)
@@ -33,7 +35,6 @@
 <a id="index"></a>
 ### ⤴️ Índice
 
-
 __[Go Payments API](#header)__<br/>
   1.  ⤴️ [Índice](#index)
   2.  📖 [Sobre](#about)
@@ -48,13 +49,13 @@ __[Go Payments API](#header)__<br/>
       - ⚙️[Automatizados](#test-auto)
       - 🧑‍🔧[Manuais](#test-manual)
   6.  📊 [Diagramas](#diagrams)
-      - 📈 [Fluxo](#diagrams-flowchart)
       - 📈 [ER](#diagrams-erchart)
+      - 📈 [Fluxo](#diagrams-flowchart)
   7.  🅻4️⃣ [Questão Aberta L4](#open-question)
-  8.  👏 [Boas Práticas](#best-practices)
-  9.  🧠 [ADR - Architecture Decision Records](#adr)
-  10. 🔢 [Versões](#versions)
-  11. 🧰 [Ferramentas](#tools)
+  8.  🧠 [ADR - Architecture Decision Records](#adr)
+  9. 🔢 [Versões](#versions)
+  10. 🧰 [Ferramentas](#tools)
+  11. 👏 [Boas Práticas](#best-practices)
   12. 🤖 [Uso de IA](#ia)
   13. 🏁 [Conclusão](#conclusion)
 
@@ -175,18 +176,24 @@ Este repositório foi criado com a intenção de propor uma possível solução 
 
 <br/>
 
-**Arquitetura Atual do Projeto**<br/>
-Arquitetura atendendo ao requisito `L4`, agora com a utilização de notificações do `Redis Keyspace Notification` para gerenciar locks em cenários de concorrência. A implementação elimina retentativas desnecessárias, substituindo-as por uma abordagem baseada em eventos assíncronos. O sistema aguarda mensagens de desbloqueio em um canal `pub/sub` (`payment-unlock-channel`), garantindo maior eficiência. A solução está funcional, com um modelo de `Lock Distribuído`, projetada para escalar conforme sugerido em [Questão Aberta L4](#open-question) e na ADR [0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md).
+**L4 plenamente atendido com segregação de serviços (`REST` e `Processor`) por gRPC**
+
+Arquitetura projetada para atender ao requisito `L4`, utilizando `Redis Keyspace Notification` para gerenciar locks em cenários de concorrência. O sistema aguarda mensagens de desbloqueio em um canal `pub/sub`, garantindo maior eficiência. A API `REST` está segregada do `Processor`, mantendo um nível adequado de segurança para os serviços internos. A solução foi desenhada para escalar conforme indicado na __Questão Aberta L4__ e na `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md).
+
 
 <center>
-    <img src="./docs/assets/images/screen_captures/miro/architectureV2_with_pub_sub_redis_keyspace_notification.png">
+<!-- 
+    diagram by:
+    https://miro.com
+-->
+    <img src="./docs/assets/images/screen_captures/miro/architectureV3_segregation_services_grpc.png">
 </center>
 
 _*Para acompanhar a evolução do projeto com seus respectivos diagramas, acesse o [Evolution Doc](./docs/architecture/evolution.md)_
 
 <br/>
 
-O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`, evidenciando preferências, mas aceitando subscrições com outras linguagens e paradigmas. Realizarei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior familiaridade e experiência além de entender que essa linguagem e arquitetura se encaixam ao desafio.
+O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`, evidenciando preferências, mas aceitando subscrições com outras linguagens e paradigmas. Realizarei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior familiaridade e experiência, além de ser mencionada na `job description` como parte do stack tecnológico utilizado pelo proponente. Acredito que essa combinação seja altamente compatível com os requisitos do desafio.
 
 Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adotar novas tecnologias e paradigmas conforme necessário.
 
@@ -220,10 +227,13 @@ docker compose build
 # Rodar o PostgreSQL e o Redis de Desenvolvimento
 docker compose up postgres-payments redis-payments -d
 
-# Rodar a API
-docker compose up payments-api
+# Rodar a API (Sugiro em terminais distintos para acompanhar debug logs)
+docker compose up payment-transaction-processor
+docker compose up payment-transaction-rest
 ```
  A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executados.
+
+<img src="./docs/assets/images/screen_captures/running.jpeg">
 
 <br/>
 
@@ -250,7 +260,7 @@ ou se conecte a uma database válida no arquivo `.env`, então no diretório `pa
 go mod download
 
 # Rodar a API
-go run cmd/http/main.go
+go run cmd/rest/main.go
 ```
  A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executados.
 
@@ -286,7 +296,7 @@ A interface do Swagger pode executar [Testes Manuais](#test-manual) a partir de 
 #### 🐋 Conteinerizado 
 Para rodar os [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Conteinerizado](#run-containerized).
 
-As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _containerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `teste`.
+As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _containerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `test`.
 
 <br/>
 
@@ -297,10 +307,14 @@ Para rodar os [Testes Automatizados](#test-auto) com a API fora do container, de
 No arquivo `/.env.TEST`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
 DATABASE_HOST=localhost         ### local: localhost | conteinerized: test-postgres-payments
-DATABASE_PORT=5433              ### local: 5433 | conteinerized: 5432
+DATABASE_PORT=5433              ### local: 5433      | conteinerized: 5432
 
-IN_MEMORY_CACHE_HOST=localhost  ### local: localhost | conteinerized: redis-payments
+PUBSUB_HOST=localhost           ### local: localhost | conteinerized: redis-payments
 IN_MEMORY_LOCK_HOST=localhost   ### local: localhost | conteinerized: redis-payments
+IN_MEMORY_CACHE_HOST=localhost  ### local: localhost | conteinerized: redis-payments
+
+GRPC_SERVER_HOST=localhost      ### local: localhost | conteinerized: payment-transaction-processor
+GRPC_CLIENT_HOST=localhost      ### local: localhost | conteinerized: payment-transaction-processor
 ```
 <br/>
 
@@ -317,7 +331,7 @@ docker compose up test-postgres-payments -d
 Comando para executar o teste _conteinerizado_ com a API levantada
 ```bash
 # Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
-docker compose exec -e ENV=test payments-api go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
+docker compose exec -e ENV=test  payment-transaction-rest go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 Comando para executar o teste _local_ em `payments-api`
@@ -354,39 +368,23 @@ Como as `migrations` e `seeds` ainda não foram adicionadas ao projeto, você po
 
 ```bash
 # Executa Testes no Docker com ENV dev (PostgreSQL de Desenvolvimento na Integração)
-docker compose exec payments-api go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
+docker compose exec payment-transaction-rest go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
 <br/>
 
-Registros e Saldos para teste manual
+Registros e Saldos no banco para teste manual
 
-L1. L2. Account e Saldos por Categoria
+`accounts`
 > 
 > | __Account:__                                            | __AcountID:__ |
 > |---------------------------------------------------------|---------------|
 > |123e4567-e89b-12d3-a456-426614174000                     | 1             |
 >
-> ---
->
-> | __Categoria__ | __MCCs__           | __Amount Disponível na Categoria__ |
-> |---------------|--------------------|------------------------------------|
-> | FOOD          | 5411, 5412         | 105.01                             |
-> | MEAL          | 5811, 5812         | 110.22                             |
-> | CASH          |                    | 115.33                             |
 
 <br/>
 
-L3. Merchants com mapeamentos MCC incorretos
->
-> | __Merchant__                             | __MCCs__           | __Mapeado para Categoria__ |
-> |------------------------------------------|--------------------|----------------------------|
-> | UBER EATS                   SAO PAULO BR | 5412               | FOOD                       |
-> | PAG*JoseDaSilva          RIO DE JANEI BR | 5812               | MEAL                       |
-
-<br/>
-
-Query Consulta Balances por Account:
+Query Consulta Balances (saldo mais recente de `transactions` por `categories`) por account:
 ```sql
 SELECT 
 	a.id as account_id, 
@@ -419,8 +417,25 @@ WHERE
 GROUP BY a.id, a.uid, t.id, t.uid, t.amount, c.id, c.name, c.priority;
 ```
 
+L1. L2. Resultado esperado:
+> | __account_id__ | __account_uid__                      | __transaction_id__ | __transaction_uid__                  | __amount__ | category_id | category_name | priority | codes     |
+> |----------------|--------------------------------------|--------------------|--------------------------------------|------------|-------------|---------------|----------|-----------|
+> |1               | 123e4567-e89b-12d3-a456-426614174000 | 2                  | [NULL]                               | 110.22     | 2           | MEAL          | 2        | 5811,5812 |
+> |1               | 123e4567-e89b-12d3-a456-426614174000 | 3                  | [NULL]                               | 115.33     | 3           | CASH          | 3        |           |
+> |1               | 123e4567-e89b-12d3-a456-426614174000 | 4                  | 00000000-0000-0000-0000-000000000000 |205.11      | 1           | FOOD          | 1        | 5411,5412 |
 
-_*Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como a [Documentação da API](#api-docs) (Swagger) pode ser utilizado para proceder as `requests`. <br/> **Utilize o campo `name` real da tabela `merchant`, o github pode formatar de maneira incorreta esse dado no markdown._
+
+_*Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como a [Documentação da API](#api-docs) (Swagger) pode ser utilizado para proceder as `requests`._
+
+<br/>
+
+L3. `merchants` com mapeamentos MCC incorretos
+>
+> | __Merchant__                             | __MCCs__           | __Mapeado para Categoria__ |
+> |------------------------------------------|--------------------|----------------------------|
+> | UBER EATS                   SAO PAULO BR | 5412               | FOOD                       |
+> | PAG*JoseDaSilva          RIO DE JANEI BR | 5812               | MEAL                       |
+_*Utilize o campo `name` real da tabela `merchant`, o github pode formatar de maneira incorreta esse dado no markdown._
 
 <br/>
 
@@ -436,76 +451,6 @@ _*Diagramas Mermaid podem apresentar problemas de visualização em aplicativos 
     diagrams by:
     https://mermaid.js.org/
 -->
-
-<a id="diagrams-flowchart"></a>
-#### 📈 Fluxo
-__Autorização de Pagamento__
-
-```mermaid
-flowchart TD
-    A([▶️<br/>Recebe Transação JSON]) --> B[Mapeia Categoria pelo nome do comerciante]
-    B --> C[Buscar Saldos da Conta]
-    C --> D{Saldo é suficiente <br/> na Categoria?}
-    
-    D -- Sim --> E[Debita Saldo da Categoria]
-    D -- Não --> F{Saldo suficiente na <br/> Categoria e CASH?}
-    
-    F -- Sim --> G[Debita Categoria e CASH]
-    F -- Não --> H{Saldo suficiente em CASH?}
-    
-    H -- Sim --> I[Debita Saldo de CASH]
-    H -- Não --> J[Rejeita Transação com Código 51]
-    
-    E --> K[Registrar Transação Aprovada]
-    G --> K[Registrar Transação Aprovada]
-    I --> K[Registrar Transação Aprovada]
-    
-    K --> P{Ocorreu Erro no Processo da Transação?}
-    P -- Sim --> Q[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>07</b> por Falha Genérica</b>]
-        P -- Não --> M[✅<br/><b>Aprovada</b><br/> Retorna Código <b>00</b>]
-    
-    J --> N[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>51</b> por Saldo Insuficiente</b>]
-
-    N --> O([⏹️<br/>Fim do Processo])
-    M --> O
-    Q --> O
-
-    style M fill:#009933,stroke:#000
-    style N fill:#cc0000,stroke:#000
-    style Q fill:#cc0000,stroke:#000
-```
-_*Diagrama apresenta uma interpretação do sistema_
-
-<a id="diagrams-flowchart-description"></a>
-##### 📝 Descrição
-
-1. **Recebe Transação JSON**: O sistema recebe o payload de transação.
-
-2. **Mapeia MCC pelo Merchant Name**: Busca um relacionamento entre o `merchant` e uma categoria adequada. Caso categoria Não exista segue o fluxo para debitar de CASH
-
-3. **Buscar Saldos da Conta**: A conta e os saldos (FOOD, MEAL, CASH) são buscados no banco de dados 
-
-4. **Saldo é suficiente na Categoria?**: Verifica se o saldo disponível na categoria mapeada (com base no MCC) é suficiente.
-    - Se sim, debita o saldo da categoria correspondente.
-    - Se não, verifica o saldo de CASH.
-
-5. **Saldo suficiente em CASH?**: Se a categoria principal não tiver saldo suficiente, o sistema verifica o saldo de CASH.
-    - Se sim, debita parcial ou totalmente o saldo de CASH.
-    - Se não, rejeita a transação com o código "51" (fundos insuficientes).
-
-6. **Registrar Transação Aprovada**: A transação aprovada é registrada no banco de dados.
-
-7. **Retorna Código "00"**: Se a transação foi aprovada, retorna o código "00" (aprovada).
-
-8. **Retorna Código "51"**: Se a transação foi rejeitada por falta de fundos, retorna o código "51".
-
-<br/>
-
-_*Esse fluxo representa o processo de aprovação, fallback e rejeição da transação com base nos saldos e MCC._
-
----
-
-<br/>
 
 <a id="diagrams-erchart"></a>
 #### 📈 ER
@@ -586,7 +531,7 @@ erDiagram
 
 
     accounts_categories }o--|| accounts : has
-    transactions }o--|| accounts : performs
+    transactions }o--|| accounts : has
 
 ```
 
@@ -601,6 +546,81 @@ erDiagram
 **categories** Armazena categorias (FOOD, MEAL, CASH...), com `priority` para definir a ordem de utilização.  
 **mccs** Contém MCCs (códigos de quatro dígitos) associados às categorias.  
 **merchants** Ajusta MCCs com base no nome do comerciante.
+
+<br/>
+
+
+---
+
+<a id="diagrams-flowchart"></a>
+#### 📈 Fluxo
+__Autorização de Pagamento__
+
+<!-- 
+    diagram by:
+    https://mermaid.js.org/
+-->
+```mermaid
+flowchart TD
+    A([▶️<br/>Recebe Transação JSON]) --> B[Mapeia Categoria pelo nome do comerciante]
+    B --> C[Buscar Saldos da Conta]
+    C --> D{Saldo é suficiente <br/> na Categoria?}
+    
+    D -- Sim --> E[Debita Saldo da Categoria]
+    D -- Não --> F{Saldo suficiente na <br/> Categoria e CASH?}
+    
+    F -- Sim --> G[Debita Categoria e CASH]
+    F -- Não --> H{Saldo suficiente em CASH?}
+    
+    H -- Sim --> I[Debita Saldo de CASH]
+    H -- Não --> J[Rejeita Transação com Código 51]
+    
+    E --> K[Registrar Transação Aprovada]
+    G --> K[Registrar Transação Aprovada]
+    I --> K[Registrar Transação Aprovada]
+    
+    K --> P{Ocorreu Erro no Processo da Transação?}
+    P -- Sim --> Q[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>07</b> por Falha Genérica</b>]
+        P -- Não --> M[✅<br/><b>Aprovada</b><br/> Retorna Código <b>00</b>]
+    
+    J --> N[❌<br/><b>Rejeitada</b><br/> Retorna Código <b>51</b> por Saldo Insuficiente</b>]
+
+    N --> O([⏹️<br/>Fim do Processo])
+    M --> O
+    Q --> O
+
+    style M fill:#009933,stroke:#000
+    style N fill:#cc0000,stroke:#000
+    style Q fill:#cc0000,stroke:#000
+```
+_*Diagrama apresenta uma interpretação do sistema_
+
+<a id="diagrams-flowchart-description"></a>
+##### 📝 Descrição
+
+1. **Recebe Transação JSON**: O sistema recebe o payload de transação.
+
+2. **Mapeia MCC pelo Merchant Name**: Busca um relacionamento entre o `merchant` e uma categoria adequada. Caso categoria Não exista segue o fluxo para debitar de CASH
+
+3. **Buscar Saldos da Conta**: A conta e os saldos (FOOD, MEAL, CASH) são buscados no banco de dados 
+
+4. **Saldo é suficiente na Categoria?**: Verifica se o saldo disponível na categoria mapeada (com base no MCC) é suficiente.
+    - Se sim, debita o saldo da categoria correspondente.
+    - Se não, verifica o saldo de CASH.
+
+5. **Saldo suficiente em CASH?**: Se a categoria principal não tiver saldo suficiente, o sistema verifica o saldo de CASH.
+    - Se sim, debita parcial ou totalmente o saldo de CASH.
+    - Se não, rejeita a transação com o código "51" (fundos insuficientes).
+
+6. **Registrar Transação Aprovada**: A transação aprovada é registrada no banco de dados.
+
+7. **Retorna Código "00"**: Se a transação foi aprovada, retorna o código "00" (aprovada).
+
+8. **Retorna Código "51"**: Se a transação foi rejeitada por falta de fundos, retorna o código "51".
+
+<br/>
+
+_*Esse fluxo representa o processo de aprovação, fallback e rejeição da transação com base nos saldos e MCC._
 
 <br/>
 
@@ -624,7 +644,12 @@ Com [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/ke
 
 Como proposto na questão _"...uma pequena, mas existente probabilidade de ocorrerem duas transações ao mesmo tempo"_, a concorrência excessiva por `account` não deve ocorrer utilizando essa abordagem.
 
+_*Diagramas Mermaid podem apresentar problemas de visualização em aplicativos mobile_
 
+<!-- 
+    diagram by:
+    https://mermaid.js.org/
+-->
 ```mermaid
 flowchart TD
     A([▶️<br/>Recebe Transação JSON]) --> B[Inicia Processamento de Transação]
@@ -677,29 +702,16 @@ _*Esses diagramas representam uma interpretação do sistema, não sua implement
 
 O diagrama de fluxo acima foi produzido após uma sessão de `Miro Board` conduzida pelos proponentes do desafio. O diagrama Miro da proposta de arquitetura, resultado dessa sessão, pode ser visto abaixo:
 
+<!-- 
+    diagram by:
+    https://miro.com
+-->
 <img src="./docs/assets/images/screen_captures/miro/interview_architecture_proposal_v1.jpeg">
 
-A partir desse diagrama, construí uma segunda versão com poucas modificações, acrescentando detalhes e contexto para os que não estiveram presentes nessa sessão. Esse diagrama gerou o ADR __[0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md)__, visando nortear a implementação do requisito L4 neste projeto, com finalidade estritamente de treinamento.
+A partir desse diagrama, construí uma segunda versão com poucas modificações, acrescentando detalhes e contexto para os que não estiveram presentes nessa sessão. Esse diagrama gerou o ADR __[0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md)__, visando nortear a implementação do requisito L4 neste projeto, com finalidade estritamente de treinamento.
 
 Via de regra, o que foi discutido naquela reunião deve ser implementado.
 
-
-<br/>
-
-[⤴️ de volta ao índice](#index)
-
----
-
-<a id="best-practices"></a>
-### 👏 Boas Práticas
-
-- [Swagger](https://swagger.io/)
-- [Github Project - Kanban](https://github.com/users/jtonynet/projects/7/views/1)
-- [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
-- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-- [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
-- [ADR - Architecture Decision Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
-- [Mermaid Diagrams](https://mermaid.js.org)
 
 <br/>
 
@@ -712,7 +724,8 @@ Via de regra, o que foi discutido naquela reunião deve ser implementado.
 
 - [0001: Registro de Decisões de Arquitetura (ADR)](./docs/architecture/decisions/0001-registro-de-decisoes-de-arquitetura.md)
 - [0002: Go, Gin, Gorm e PostgreSQL com Arquitetura Hexagonal e TDD](./docs/architecture/decisions/0002-go-gin-gorm-e-postgres-com-arquitetura-hexagonal-tdd.md)
-- [0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md)
+- [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md)
+- [0004: Banco Relacional Modelado Orientado a Eventos](./docs/architecture/decisions/0004-banco-relacional-modelado-de-maneira-orientada-a-eventos.md)
 
 <br/>
 
@@ -748,6 +761,7 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
   - [Gin-Swagger](https://github.com/swaggo/gin-swagger)
   - [gjson](https://github.com/tidwall/gjson)
   - [uuid](github.com/google/uuid)
+  - [gRPC](https://grpc.io/docs/languages/go/quickstart/)
 
 
 - Infra & Tecnologias
@@ -757,8 +771,28 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
   - [Redis](https://redis.com/)
 
 - GUIs:
-  - [VsCode](https://code.visualstudio.com/)
   - [DBeaver](https://dbeaver.io/)
+  - [VsCode](https://code.visualstudio.com/)
+    - [Redis Dunn - VsCode Extension](https://marketplace.visualstudio.com/items?itemName=Dunn.redis)
+    - [gRPC Clicker - VsCode Extension](https://marketplace.visualstudio.com/items?itemName=Dancheg97.grpc-clicker)
+
+<br/>
+
+[⤴️ de volta ao índice](#index)
+
+---
+
+<a id="best-practices"></a>
+### 👏 Boas Práticas
+
+- [Swagger](https://swagger.io/)
+- [Github Project - Kanban](https://github.com/users/jtonynet/projects/7/views/1)
+- [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
+- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+- [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+- [ADR - Architecture Decision Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
+- [Mermaid Diagrams](https://mermaid.js.org)
+- [Miro Diagrams](https://miro.com/)
 
 <br/>
 
@@ -795,9 +829,9 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Defini o modelo hexagonal pois sua abordagem de `ports` and `adapters` proporciona flexibilidade para que o sistema atenda a chamadas `http`, e possa ser facilmente estendido para outras abordagens, como processamento de `mensagens` e `pub/sub` (sugestão de solução L4), sem alterar o `core`, garantindo um sistema com separação de responsabilidades.
 
-- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada pelo proponente do desafio em uma sessão no `Miro Board` devido à latência adicional gerada. Isso fica explícito no `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Worker para reduzir latência e evitar concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-worker-para-reduzir-latencia-e-evitar-concorrencia.md) e em tarefas do `Kanban` que visam implementar parte do que foi discutido no `Miro`.
+- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada pelo proponente do desafio em uma sessão no `Miro Board` devido à latência adicional gerada. Isso fica explícito no `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir latência e evitar concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md) e em tarefas do `Kanban` que visam implementar parte do que foi discutido no `Miro`.
 
-- Foi realizado um `refactor` na estrutura das tabelas para tornar a aplicação mais robusta, criando um ponto único para inserir `transactions` e atualizar os saldos das `accounts` com base nas `categories`. Essa abordagem baseada em `eventos` visa mitigar impactos de `inconsistência eventual`.
+- Foi realizado um `refactor` na estrutura das tabelas para tornar a aplicação mais robusta, criando um ponto único para inserir `transactions` e atualizar os saldos das `accounts` com base nas `categories`. Essa abordagem garante `imutabilidade` ao banco, baseada em `eventos` visa mitigar impactos de `inconsistência eventual`. Como pode ser visto no `ADR` [0004: Banco Relacional Modelado Orientado a Eventos](./docs/architecture/decisions/0004-banco-relacional-modelado-de-maneira-orientada-a-eventos.md)
 
 - Testes adicionais devem ser criados (multiplos cenários de erros nas rotas e serviços). 
 
@@ -805,7 +839,14 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 Essas são minhas considerações sobre o que consegui produzir ao longo desse desafio, e continuarei me aplicando aos pontos cegos que não tive tempo ou conhecimento para aprimorar.
 
-😊🚀
+<br/>
+<br/>
+
+<center>
+<img src="./docs/assets/images/layout/lifelong_learning_&_prosper.png" alt="personagem Vulcano de orelhas pontudas parecido com o de conhecida  franquia de ficcao cientifica mas de pele negra, usando cabelo estilo black power anos 70, com o uniforme azul fazendo sua saudacao com a mao, meio corpo, fundo branco. imagem realista" />
+
+🖖🏾🚀
+</center>
 
 <br/>
 
@@ -822,4 +863,22 @@ docker system prune -a --volumes
 
 sudo systemctl restart docker
 -->
+
+<!--
+gRPC WIP Commands:
+
+```bash
+cd payments-api/internal/core/port/proto/
+```
+
+```bash
+protoc --go_out=./../../../adapter/protobuffer \
+       --go_opt=paths=source_relative \
+       --go-grpc_out=./../../../adapter/protobuffer \
+       --go-grpc_opt=paths=source_relative \
+       ./transaction.proto
+```
+-->
+
+
 

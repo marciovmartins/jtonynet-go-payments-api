@@ -50,7 +50,7 @@ func (suite *RepositoriesSuite) SetupSuite() {
 		log.Fatalf("error connecting to database: %v", err)
 	}
 
-	if conn.Readiness(context.TODO()) != nil {
+	if conn.Readiness(context.Background()) != nil {
 		log.Fatalf("error connecting to database: %v", err)
 	}
 
@@ -72,14 +72,14 @@ func (suite *RepositoriesSuite) SetupSuite() {
 
 func (suite *RepositoriesSuite) loadDBtestData(conn database.Conn) {
 
-	strategy, err := conn.GetStrategy(context.TODO())
+	strategy, err := conn.GetStrategy(context.Background())
 	if err != nil {
 		log.Fatalf("error retrieving database strategy to charge test data")
 	}
 
 	switch strategy {
 	case "gorm":
-		db, err := conn.GetDB(context.TODO())
+		db, err := conn.GetDB(context.Background())
 		if err != nil {
 			log.Fatalf("error retrieving database conn DB to charge test data")
 		}
@@ -111,11 +111,12 @@ func (suite *RepositoriesSuite) loadDBtestData(conn database.Conn) {
 		dbGorm.Exec(insertMCCQuery)
 
 		dbGorm.Exec("TRUNCATE TABLE merchants RESTART IDENTITY CASCADE")
-		insertMerchantQuery := `
+		insertMerchantQuery := fmt.Sprintf(`
 			INSERT INTO merchants (uid, name, mcc_id, created_at, updated_at)
 			VALUES
-				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', 'UBER EATS                   SAO PAULO BR', 2, NOW(), NOW()),
-				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', 'PAG*JoseDaSilva          RIO DE JANEI BR', 4, NOW(), NOW())`
+				('95abe1ff-6f67-4a17-a4eb-d4842e324f1f', '%s', 2, NOW(), NOW()),
+				('a53c6a52-8a18-4e7d-8827-7f612233c7ec', 'PAG*JoseDaSilva          RIO DE JANEI BR', 4, NOW(), NOW())`,
+			merchant1NameToMap)
 		dbGorm.Exec(insertMerchantQuery)
 
 		dbGorm.Exec("TRUNCATE TABLE accounts RESTART IDENTITY CASCADE")
@@ -153,8 +154,8 @@ func (suite *RepositoriesSuite) loadDBtestData(conn database.Conn) {
 }
 
 func (suite *RepositoriesSuite) AccountRepositoryFindByUIDsuccess() {
-	accountEntity, err := suite.AccountRepo.FindByUID(context.TODO(), accountUID)
-	assert.Equal(suite.T(), accountEntity.ID, uint(1))
+	accountEntity, err := suite.AccountRepo.FindByUID(context.Background(), accountUID)
+	assert.Equal(suite.T(), accountEntity.UID, accountUID)
 	assert.NoError(suite.T(), err)
 
 	suite.AccountEntity = accountEntity
@@ -171,12 +172,12 @@ func (suite *RepositoriesSuite) AccountRepositorySaveTransactionsSuccess() {
 		CategoryID:   merchant1CategoryToMap,
 	}
 
-	err := suite.AccountRepo.SaveTransactions(context.TODO(), transactionEntities)
+	err := suite.AccountRepo.SaveTransactions(context.Background(), transactionEntities)
 	assert.NoError(suite.T(), err)
 }
 
 func (suite *RepositoriesSuite) MerchantRepositoryFindByNameSuccess() {
-	merchantEntity, err := suite.MerchantRepo.FindByName(context.TODO(), merchant1NameToMap)
+	merchantEntity, err := suite.MerchantRepo.FindByName(context.Background(), merchant1NameToMap)
 	assert.Equal(suite.T(), merchantEntity.MCC, merchant1CorrectMccToMap)
 	assert.NoError(suite.T(), err)
 }

@@ -3,16 +3,16 @@ package bootstrap
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/jtonynet/go-payments-api/config"
 
-	"github.com/jtonynet/go-payments-api/internal/support"
 	"github.com/jtonynet/go-payments-api/internal/support/logger"
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
+	"github.com/jtonynet/go-payments-api/internal/adapter/gRPC"
 	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
+	"github.com/jtonynet/go-payments-api/internal/adapter/protobuffer"
 	"github.com/jtonynet/go-payments-api/internal/adapter/pubSub"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 
@@ -20,86 +20,82 @@ import (
 	"github.com/jtonynet/go-payments-api/internal/core/service"
 )
 
-type App struct {
-	Logger support.Logger
+type RESTApp struct {
+	Logger logger.Logger
+
+	GRPCpayment protobuffer.PaymentClient
+}
+
+type ProcessorApp struct {
+	Logger logger.Logger
 
 	PaymentService *service.Payment
 }
 
-func NewApp(cfg *config.Config) (App, error) {
-	app := App{}
-
-	timeoutSLA := port.TimeoutSLA(
-		time.Duration(cfg.API.TimeoutSLA) * time.Millisecond,
-	)
-
-	logger, err := logger.New(cfg.Logger)
+func NewRESTApp(cfg *config.Config) (*RESTApp, error) {
+	logger, err := initializeLogger(cfg.Logger)
 	if err != nil {
-		log.Printf("warning: dont instantiate logger: %v", err)
+		return nil, fmt.Errorf("failed to initialize logger: %w", err)
 	}
-	app.Logger = logger
 
-	pubSubUnlock, err := pubSub.New(cfg.PubSub)
+	gRPCPaymentClient, err := gRPC.NewPaymentClient(cfg.GRPC)
 	if err != nil {
-		return App{}, fmt.Errorf("error: dont instantiate pubsub client: %v", err)
+		return nil, fmt.Errorf("failed to initialize gRPC Client: %w", err)
 	}
 
-	lockCfg, _ := cfg.Lock.ToInMemoryDatabase()
-	lockConn, err := inMemoryDatabase.NewClient(lockCfg)
+	return &RESTApp{
+		Logger:      logger,
+		GRPCpayment: gRPCPaymentClient,
+	}, nil
+}
+
+func NewProcessorApp(cfg *config.Config) (*ProcessorApp, error) {
+	timeoutSLA := port.TimeoutSLA(time.Duration(cfg.API.TimeoutSLA) * time.Millisecond)
+
+	logger, err := initializeLogger(cfg.Logger)
 	if err != nil {
-		return App{}, fmt.Errorf("error: dont instantiate lock client: %v", err)
+		return nil, fmt.Errorf("failed to initialize logger: %w", err)
 	}
 
-	if lockConn.Readiness(context.TODO()) != nil {
-		return App{}, fmt.Errorf("error: dont connecting to lock: %v", err)
-	}
-
-	if logger != nil {
-		logger.Debug("successfully: connected to the lock!")
-	}
-
-	cacheCfg, _ := cfg.Cache.ToInMemoryDatabase()
-	cacheConn, err := inMemoryDatabase.NewClient(cacheCfg)
+	// Initialize adapters
+	pubSubClient, err := initializePubSub(cfg.PubSub, logger)
 	if err != nil {
-		return App{}, fmt.Errorf("error: dont instantiate cache client: %v", err)
+		return nil, err
 	}
 
-	if cacheConn.Readiness(context.TODO()) != nil {
-		return App{}, fmt.Errorf("error: dont connecting to cache: %v", err)
-	}
-
-	dbConn, err := database.NewConn(cfg.Database)
+	lockClient, err := initializeInMemoryDatabase(cfg.Lock.ToInMemoryDatabase(), "lock", logger)
 	if err != nil {
-		return App{}, fmt.Errorf("error: dont instantiate database: %v", err)
+		return nil, err
 	}
 
-	if dbConn.Readiness(context.TODO()) != nil {
-		return App{}, fmt.Errorf("error: dont connecting to database: %v", err)
+	cacheClient, err := initializeInMemoryDatabase(cfg.Cache.ToInMemoryDatabase(), "cache", logger)
+	if err != nil {
+		return nil, err
 	}
 
-	if logger != nil {
-		logger.Debug("successfully: connected to the database!")
+	dbConn, err := initializeDatabase(cfg.Database, logger)
+	if err != nil {
+		return nil, err
 	}
 
+	// Initialize repositories
 	allRepos, err := repository.GetAll(dbConn)
 	if err != nil {
-		return App{}, fmt.Errorf("error: dont instantiate repositories: %v", err)
+		return nil, fmt.Errorf("failed to initialize repositories: %w", err)
 	}
 
-	cachedMerchantRepo, err := repository.NewCachedMerchant(
-		cacheConn,
-		allRepos.Merchant,
-	)
+	cachedMerchantRepo, err := repository.NewCachedMerchant(cacheClient, allRepos.Merchant)
 	if err != nil {
-		return App{}, fmt.Errorf("error: dont instantiate merchant cached repository: %v", err)
+		return nil, fmt.Errorf("failed to initialize cached merchant repository: %w", err)
 	}
 
-	memoryLockRepo, err := repository.NewMemoryLock(lockConn, pubSubUnlock)
+	memoryLockRepo, err := repository.NewMemoryLock(lockClient, pubSubClient)
 	if err != nil {
-		return App{}, fmt.Errorf("error: dont instantiate memory lock repository: %v", err)
+		return nil, fmt.Errorf("failed to initialize memory lock repository: %w", err)
 	}
 
-	app.PaymentService = service.NewPayment(
+	// Initialize services
+	paymentService := service.NewPayment(
 		timeoutSLA,
 		allRepos.Account,
 		cachedMerchantRepo,
@@ -107,5 +103,60 @@ func NewApp(cfg *config.Config) (App, error) {
 		logger,
 	)
 
-	return app, nil
+	return &ProcessorApp{
+		Logger:         logger,
+		PaymentService: paymentService,
+	}, nil
+}
+
+func initializeLogger(cfg config.Logger) (logger.Logger, error) {
+	logger, err := logger.New(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create logger: %w", err)
+	}
+
+	logger.Debug("Logger initialized successfully")
+	return logger, nil
+}
+
+func initializePubSub(cfg config.PubSub, logger logger.Logger) (pubSub.PubSub, error) {
+	pubsub, err := pubSub.New(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize pub/sub client: %w", err)
+	}
+
+	logger.Debug("Pub/Sub client initialized successfully")
+	return pubsub, nil
+}
+
+func initializeInMemoryDatabase(
+	cfg config.InMemoryDatabase,
+	componentName string,
+	logger logger.Logger,
+) (inMemoryDatabase.Client, error) {
+	conn, err := inMemoryDatabase.NewClient(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize %s client: %w", componentName, err)
+	}
+
+	if err := conn.Readiness(context.Background()); err != nil {
+		return nil, fmt.Errorf("%s client is not ready: %w", componentName, err)
+	}
+
+	logger.Debug(fmt.Sprintf("%s client initialized successfully", componentName))
+	return conn, nil
+}
+
+func initializeDatabase(cfg config.Database, logger logger.Logger) (database.Conn, error) {
+	conn, err := database.NewConn(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize database connection: %w", err)
+	}
+
+	if err := conn.Readiness(context.Background()); err != nil {
+		return nil, fmt.Errorf("database connection is not ready: %w", err)
+	}
+
+	logger.Debug("Database connection initialized successfully")
+	return conn, nil
 }
