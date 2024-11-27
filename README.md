@@ -839,7 +839,7 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 Essas são minhas considerações sobre o que consegui produzir ao longo desse desafio, e continuarei me aplicando aos pontos cegos que não tive tempo ou conhecimento para aprimorar.
 
-<br/>
+
 <br/>
 
 <a id="footer"></a>
