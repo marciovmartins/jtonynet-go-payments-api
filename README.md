@@ -64,6 +64,25 @@ __[Go Payments API](#header)__<br/>
 <a id="about"></a>
 ### 📖 Sobre
 
+__Resumo:__
+
+> Dei continuidade ao desafio, mesmo após implementar os requisitos `L1`, `L2` e `L3` (obrigatórios), visando construir as melhorias do diagrama no `Miro`, desenhado junto à equipe proponente, para implementar o requisito `L4` e resolver questões que surgiram no decorrer do processo. Tornei o desafio um pouco mais abrangente. Continuo aplicando melhorias conforme meu tempo de estudo permite
+> 
+> <br/>
+> 
+> Desafio de `Autorizador de Pagamentos` de benefícios com `SLA de 100ms` por request e `controle de concorrência` com baixa possibilidade de colisão. 
+> Em `Arquitetura Hexagonal` com `Gin` e `Gorm`, protocolo `gRPC` entre o serviço `REST` e o serviço `Processor` (o processador de pagamentos) por segurança.
+> 
+> - `Memory Lock Pessimista` com `Redis`  
+> - `Unlocks` através de `Pub/Sub` com `Redis Keyspace Notification` (outras `Abordagens` e `Filas` foram desconsideradas devido `Latência Adicional`)
+> - `PostgreSQL` modelado inspirado em `Event Sourcing` para garantir `Consistência`
+> - `GitHub Actions` para `CI` 
+
+<br/>
+<br/>
+
+__Texto Original:__
+
 Acompanhe as tarefas pelo __[Kanban](https://github.com/users/jtonynet/projects/7/views/1)__
 
 Este repositório foi criado com a intenção de propor uma possível solução para o seguinte desafio:
@@ -176,6 +195,12 @@ Este repositório foi criado com a intenção de propor uma possível solução 
 
 <br/>
 
+O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`, evidenciando preferências, mas aceitando subscrições com outras linguagens e paradigmas. Realizarei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior familiaridade e experiência, além de ser mencionada na `job description` como parte do stack tecnológico utilizado pelo proponente. Acredito que essa combinação seja altamente compatível com os requisitos do desafio.
+
+Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adotar novas tecnologias e paradigmas conforme necessário.
+
+<br/>
+
 **L4 plenamente atendido com segregação de serviços (`REST` e `Processor`) por gRPC**
 
 Arquitetura projetada para atender ao requisito `L4`, utilizando `Redis Keyspace Notification` para gerenciar locks em cenários de concorrência. O sistema aguarda mensagens de desbloqueio em um canal `pub/sub`, garantindo maior eficiência. A API `REST` está segregada do `Processor`, mantendo um nível adequado de segurança para os serviços internos. A solução foi desenhada para escalar conforme indicado na __Questão Aberta L4__ e na `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md).
@@ -190,12 +215,6 @@ Arquitetura projetada para atender ao requisito `L4`, utilizando `Redis Keyspace
 </center>
 
 _*Para acompanhar a evolução do projeto com seus respectivos diagramas, acesse o [Evolution Doc](./docs/architecture/evolution.md)_
-
-<br/>
-
-O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`, evidenciando preferências, mas aceitando subscrições com outras linguagens e paradigmas. Realizarei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior familiaridade e experiência, além de ser mencionada na `job description` como parte do stack tecnológico utilizado pelo proponente. Acredito que essa combinação seja altamente compatível com os requisitos do desafio.
-
-Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adotar novas tecnologias e paradigmas conforme necessário.
 
 <br/>
 
@@ -847,11 +866,16 @@ Essas são minhas considerações sobre o que consegui produzir ao longo desse d
 
 <a id="footer"></a>
 
-<a href="#footer">
-<img src="./docs/assets/images/layout/learn_ingenuity_drone_footer.png" />
-</a>
+_Sejamos __ingênuos__ a ponto de acreditar que podemos mudar o mundo positivamente, através da __engenhosidade__ de nosso estudo e trabalho no decorrer da __jornada__._
 
 <br/>
+
+<a href="#footer">
+<img src="./docs/assets/images/layout/learn_ingenuity_drone_footer.png" />
+<!-- <img src="./docs/assets/images/layout/drone_footer.png" /> -->
+</a>
+
+
 <br/>
 
 >  _"Lifelong Learning & Prosper"_
