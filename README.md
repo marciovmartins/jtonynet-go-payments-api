@@ -66,7 +66,7 @@ __[Go Payments API](#header)__<br/>
 
 __Resumo:__
 
-> Dei continuidade ao desafio, mesmo após implementar os requisitos `L1`, `L2` e `L3` (obrigatórios), visando construir as melhorias do diagrama no `Miro`, desenhado junto à equipe proponente, para implementar o requisito `L4` e resolver questões que surgiram no decorrer do processo. Tornei o desafio um pouco mais abrangente. Continuo aplicando melhorias conforme meu tempo de estudo permite
+> Dei continuidade ao desafio, mesmo após implementar os requisitos `L1`, `L2` e `L3` (obrigatórios), visando construir as melhorias do diagrama no `Miro`, desenhado junto à equipe proponente, para implementar o requisito `L4` e resolver questões que surgiram no decorrer do processo. Tornei o desafio um pouco mais abrangente. Continuo aplicando melhorias conforme meu tempo permite
 > 
 > <br/>
 > 
