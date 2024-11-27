@@ -855,6 +855,7 @@ Essas são minhas considerações sobre o que consegui produzir ao longo desse d
 > <br/> 
 >  _Mr. Spock, maybe_   🖖🏾🚀
 
+<br/>
 
 [⤴️ de volta ao índice](#index)
 
