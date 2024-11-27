@@ -842,13 +842,17 @@ Essas são minhas considerações sobre o que consegui produzir ao longo desse d
 <br/>
 <br/>
 
-<center>
-<img src="./docs/assets/images/layout/lifelong_learning_&_prosper.png" alt="personagem Vulcano de orelhas pontudas parecido com o de conhecida  franquia de ficcao cientifica mas de pele negra, usando cabelo estilo black power anos 70, com o uniforme azul fazendo sua saudacao com a mao, meio corpo, fundo branco. imagem realista" />
-
-🖖🏾🚀
-</center>
+<a href="#footer">
+<img src="./docs/assets/images/layout/learn_ingenuity_drone_footer.png" />
+</a>
 
 <br/>
+<br/>
+
+>  _"Lifelong Learning & Prosper"_
+> <br/> 
+>  _Mr. Spock, maybe_   🖖🏾🚀
+
 
 [⤴️ de volta ao índice](#index)
 
