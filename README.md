@@ -842,6 +842,8 @@ Essas são minhas considerações sobre o que consegui produzir ao longo desse d
 <br/>
 <br/>
 
+<a id="footer"></a>
+
 <a href="#footer">
 <img src="./docs/assets/images/layout/learn_ingenuity_drone_footer.png" />
 </a>
