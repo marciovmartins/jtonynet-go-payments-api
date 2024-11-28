@@ -67,7 +67,7 @@ __[Go Payments API](#header)__<br/>
 
 __Resumo:__
 
- Dei continuidade com o desafio, após implementar os requisitos `L1`, `L2` e `L3` (obrigatórios), focando em algumas das melhorias previstas no diagrama `Miro`, criado com a equipe proponente. Implementei o requisito `L4` (opcional) de acordo com o proposto no diagrama.
+ Dei continuidade com o desafio, após implementar os requisitos `L1`, `L2` e `L3` (obrigatórios), focando em algumas das melhorias previstas no diagrama `Miro`, criado com a equipe proponente. Implementei o requisito `L4` (que era estritamente para técnica) como aprimoramento, de acordo com o proposto no diagrama.
 
 > 
 > Desafio de `Autorizador de Pagamentos` de benefícios com `SLA de 100ms` por request e `controle de concorrência` com baixa possibilidade de colisão. 
