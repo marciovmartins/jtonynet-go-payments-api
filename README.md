@@ -66,9 +66,8 @@ __[Go Payments API](#header)__<br/>
 
 __Resumo:__
 
-> Dei continuidade ao desafio, mesmo após implementar os requisitos `L1`, `L2` e `L3` (obrigatórios), visando construir as melhorias do diagrama no `Miro`, desenhado junto à equipe proponente, para implementar o requisito `L4` e resolver questões que surgiram no decorrer do processo. Tornei o desafio um pouco mais abrangente. Continuo aplicando melhorias conforme meu tempo permite
-> 
-> <br/>
+ Dei continuidade com o desafio, após implementar os requisitos `L1`, `L2` e `L3` (obrigatórios), focando nas melhorias previstas no diagrama `Miro`, criado com a equipe proponente. Também implementei o requisito `L4` (opcional) de acordo com o proposto e resolvo outras questões ao longo do processo.
+
 > 
 > Desafio de `Autorizador de Pagamentos` de benefícios com `SLA de 100ms` por request e `controle de concorrência` com baixa possibilidade de colisão. 
 > Em `Arquitetura Hexagonal` com `Gin` e `Gorm`, protocolo `gRPC` entre o serviço `REST` e o serviço `Processor` (o processador de pagamentos) por segurança.
