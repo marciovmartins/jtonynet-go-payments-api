@@ -18,13 +18,13 @@ import (
 type PaymentServer struct {
 	protobuffer.UnimplementedPaymentServer
 	hostAndPort    string
-	PaymentService service.Payment
+	paymentService service.Payment
 }
 
-func NewPaymentServer(cfg config.GRPC, PaymentService service.Payment) (PaymentServer, error) {
+func NewPaymentServer(cfg config.GRPC, paymentService service.Payment) (PaymentServer, error) {
 	return PaymentServer{
 		hostAndPort:    fmt.Sprintf("%s:%s", cfg.ServerHost, cfg.ServerPort),
-		PaymentService: PaymentService,
+		paymentService: paymentService,
 	}, nil
 }
 
@@ -56,7 +56,7 @@ func (ps *PaymentServer) Execute(
 		return nil, err
 	}
 
-	code, _ := ps.PaymentService.Execute(
+	code, _ := ps.paymentService.Execute(
 		port.TransactionPaymentRequest{
 			AccountUID:  accountUID,
 			TotalAmount: totalAmount,

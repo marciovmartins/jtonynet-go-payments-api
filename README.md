@@ -654,12 +654,11 @@ _*Esse fluxo representa o processo de aprovação, fallback e rejeição da tran
 
 #### 🔒 Locks Distribuídos com Redis e Keyspace Notification
 
-Utilizaria `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esses dados sejam distintos. Um sistema de dados em memória rápido, como `Redis`, seria utilizado para armazenar e liberar locks, coordenando o acesso a recursos compartilhados de maneira eficiente.
+Utilizando `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esses dados sejam distintos. Um sistema de dados em memória rápido, como `Redis`, utilizado para armazenar e liberar locks, coordenando o acesso a recursos compartilhados de maneira eficiente.
 
 O processamento da transação verifica se a `account` já está registrada no `lock`. Se não estiver, a aplicação a insere no banco em memória e inicia suas tarefas. Caso já esteja registrada, indicando que outra instância está processando uma transação para a mesma `account`, a aplicação se inscreve em um canal, aguardando uma mensagem de desbloqueio por até 100 ms, evitando concorrência.
 
 Com [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/) (similar a `pub/sub`), quando o processamento terminar e a chave `account` for removida (pelo processo ou `ttl`), uma mensagem deve ser publicada pelo próprio `Redis` aos inscritos, sinalizando a liberação do `lock`.
-
 
 Como proposto na questão _"...uma pequena, mas existente probabilidade de ocorrerem duas transações ao mesmo tempo"_, a concorrência excessiva por `account` não deve ocorrer utilizando essa abordagem.
 
@@ -870,17 +869,16 @@ _"Sejamos __ingênuos__ a ponto de acreditar que podemos mudar o mundo positivam
 
 <br/>
 
-<a href="#footer">
-<img src="./docs/assets/images/layout/learn_ingenuity_drone_footer.png" />
-<!-- <img src="./docs/assets/images/layout/drone_footer.png" /> -->
-</a>
-
-
-<br/>
-
 >  _"Lifelong Learning & Prosper"_
 > <br/> 
 >  _Mr. Spock, maybe_   🖖🏾🚀
+
+
+<center>
+<a href="#footer">
+<img src="./docs/assets/images/layout/footer_learn_ingenuity_bg_hexagonal.png" />
+</a>
+</center>
 
 <!--
 docker stop $(docker ps -aq)
