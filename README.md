@@ -246,7 +246,7 @@ docker compose build
 # Rodar o PostgreSQL e o Redis de Desenvolvimento
 docker compose up postgres-payments redis-payments -d
 
-# Rodar a API (Sugiro em terminais distintos para acompanhar debug logs)
+# Rodar as APIs (Sugiro em terminais distintos para acompanhar debug logs)
 docker compose up payment-transaction-processor
 docker compose up payment-transaction-rest
 ```
@@ -261,24 +261,32 @@ docker compose up payment-transaction-rest
 
 Com o `Golang 1.23` instalado e após ter renomeado a copia de `.env.SAMPLE` para `.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu `localhost`.
 
-No arquivo `.env`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
+No arquivo `.env`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local` (exceto o `DATABASE_PORT`).
 ```bash
-DATABASE_HOST=localhost ### local: localhost | conteinerized: postgres-payments
+DATABASE_HOST=localhost         ### local: localhost | conteinerized: test-postgres-payments
+
+PUBSUB_HOST=localhost           ### local: localhost | conteinerized: redis-payments
+IN_MEMORY_LOCK_HOST=localhost   ### local: localhost | conteinerized: redis-payments
+IN_MEMORY_CACHE_HOST=localhost  ### local: localhost | conteinerized: redis-payments
+
+GRPC_SERVER_HOST=localhost      ### local: localhost | conteinerized: payment-transaction-processor
+GRPC_CLIENT_HOST=localhost      ### local: localhost | conteinerized: payment-transaction-processor
 ```
 
-Após editar o arquivo, suba apenas o banco de dados com o comando:
+Após editar o arquivo, suba apenas o banco e o redis de dados com o comando:
 
 ```bash
 # Rodar o PostgreSQL de Desenvolvimento
-docker compose up postgres-payments
+docker compose up postgres-payments redis-payments
 ```
-ou se conecte a uma database válida no arquivo `.env`, então no diretório `payments-api` execute os comandos:
+ou se conecte a database/redis válidos no arquivo `.env`, então no diretório `payments-api` execute os comandos:
 
 ```bash
 # Instala Dependências
 go mod download
 
-# Rodar a API
+# Rodar as APIs (Sugiro em terminais distintos para acompanhar debug logs)
+go run cmd/processor/main.go
 go run cmd/rest/main.go
 ```
  A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executados.
@@ -873,7 +881,6 @@ _"Sejamos __ingênuos__ a ponto de acreditar que podemos mudar o mundo positivam
 > <br/> 
 >  _Mr. Spock, maybe_   🖖🏾🚀
 
-
 <center>
 <a href="#footer">
 <img src="./docs/assets/images/layout/footer_learn_ingenuity_bg_hexagonal.png" />
@@ -899,14 +906,11 @@ gRPC WIP Commands:
 cd payments-api/internal/core/port/proto/
 ```
 
-```bash
-protoc --go_out=./../../../adapter/protobuffer \
+```
+protoc --go_out=./../../../adapter/gRPC/pb \
        --go_opt=paths=source_relative \
-       --go-grpc_out=./../../../adapter/protobuffer \
+       --go-grpc_out=./../../../adapter/gRPC/pb \
        --go-grpc_opt=paths=source_relative \
        ./transaction.proto
 ```
 -->
-
-
-

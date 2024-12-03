@@ -11,8 +11,7 @@ import (
 
 	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/gRPC"
-	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
-	"github.com/jtonynet/go-payments-api/internal/adapter/protobuffer"
+	pb "github.com/jtonynet/go-payments-api/internal/adapter/gRPC/pb"
 	"github.com/jtonynet/go-payments-api/internal/adapter/pubSub"
 	"github.com/jtonynet/go-payments-api/internal/adapter/repository"
 
@@ -23,7 +22,7 @@ import (
 type RESTApp struct {
 	Logger logger.Logger
 
-	GRPCpayment protobuffer.PaymentClient
+	GRPCpayment pb.PaymentClient
 }
 
 type ProcessorApp struct {
@@ -63,12 +62,12 @@ func NewProcessorApp(cfg *config.Config) (*ProcessorApp, error) {
 		return nil, err
 	}
 
-	lockClient, err := initializeInMemoryDatabase(cfg.Lock.ToInMemoryDatabase(), "lock", logger)
+	lockClient, err := initializeDatabaseInMemory(cfg.Lock.ToInMemoryDatabase(), "lock", logger)
 	if err != nil {
 		return nil, err
 	}
 
-	cacheClient, err := initializeInMemoryDatabase(cfg.Cache.ToInMemoryDatabase(), "cache", logger)
+	cacheClient, err := initializeDatabaseInMemory(cfg.Cache.ToInMemoryDatabase(), "cache", logger)
 	if err != nil {
 		return nil, err
 	}
@@ -129,12 +128,12 @@ func initializePubSub(cfg config.PubSub, logger logger.Logger) (pubSub.PubSub, e
 	return pubsub, nil
 }
 
-func initializeInMemoryDatabase(
+func initializeDatabaseInMemory(
 	cfg config.InMemoryDatabase,
 	componentName string,
 	logger logger.Logger,
-) (inMemoryDatabase.Client, error) {
-	conn, err := inMemoryDatabase.NewClient(cfg)
+) (database.InMemory, error) {
+	conn, err := database.NewInMemory(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize %s client: %w", componentName, err)
 	}

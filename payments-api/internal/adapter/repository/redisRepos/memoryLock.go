@@ -6,17 +6,17 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jtonynet/go-payments-api/internal/adapter/inMemoryDatabase"
+	"github.com/jtonynet/go-payments-api/internal/adapter/database"
 	"github.com/jtonynet/go-payments-api/internal/adapter/pubSub"
 	"github.com/jtonynet/go-payments-api/internal/core/port"
 )
 
 type MemoryLock struct {
-	lockConn inMemoryDatabase.Client
+	lockConn database.InMemory
 	pubsub   pubSub.PubSub
 }
 
-func NewMemoryLock(lockConn inMemoryDatabase.Client, pubsub pubSub.PubSub) (port.MemoryLockRepository, error) {
+func NewMemoryLock(lockConn database.InMemory, pubsub pubSub.PubSub) (port.MemoryLockRepository, error) {
 	return &MemoryLock{
 		lockConn,
 		pubsub,
@@ -33,8 +33,8 @@ func (ml *MemoryLock) Lock(
 		return port.MemoryLockEntity{}, err
 	}
 
-	_, lockErr := ml.isUnlocked(mle)
-	if lockErr == nil {
+	isUnlocked, _ := ml.isUnlocked(mle)
+	if isUnlocked {
 		err = ml.lockConn.Set(ctx, mle.Key, mle.Timestamp, expiration)
 		if err != nil {
 			return port.MemoryLockEntity{}, err
