@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 
+
+## [0.1.7] - 2024-04-12
+### Adicionado
+  - Melhorias
+    - Adicionado `migrations` e `seeds`
+    - melhorias nos adapters de database
+    - melhorias no `logger`
+
 ## [0.1.6] - 2024-25-11
 ### Adicionado
 
@@ -138,6 +146,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Documentação base: Readme Rico, [Diagramas Mermaid](https://github.com/jtonynet/go-products-api/tree/main#diagrams), ADRs: [0001: Registro de Decisões de Arquitetura (ADR)](./docs/architecture/decisions/registro-de-decisoes-de-arquitetura.md) e [0002: Go, Gin, Gorm e PostgreSQL com Arquitetura Hexagonal e TDD](./docs/architecture/decisions/0002-go-gin-gorm-e-postgres-com-arquitetura-hexagonal-tdd.md).
   - Sabemos o que fazer, graças às definições do arquivo __README.md__. Sabemos como fazer graças aos __ADRs__ e documentações vinculadas. Devemos nos organizar em estrutura __Kanban__, guiados pelo modelo Agile, em nosso __Github Project__, e dar o devido prosseguimento às tarefas.
 
+[0.1.7]: https://github.com/jtonynet/go-payments-api/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jtonynet/go-payments-api/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/jtonynet/go-payments-api/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/jtonynet/go-payments-api/compare/v0.1.3...v0.1.4
