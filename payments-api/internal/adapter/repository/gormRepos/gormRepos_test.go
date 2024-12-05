@@ -13,17 +13,17 @@ import (
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
-
 	migrate "github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
 var (
-	postgresMigrationsPath = "file://./../../../../scripts/database/postgres/migrations"
-	postgresSeedPath       = "./../../../../scripts/database/postgres/seeds/test_charge.up.sql"
+	postgresMigrationsPath = "file://./../../database/postgres/migrations"
+	postgresSeedPath       = "./../../database/postgres/seeds/integration_test_charge.up.sql"
 
 	accountUID, _ = uuid.Parse("123e4567-e89b-12d3-a456-426614174000")
 
@@ -73,10 +73,6 @@ func (suite *RepositoriesSuite) SetupSuite() {
 	suite.MerchantRepo = merchant
 
 	suite.loadDBtestData(conn)
-}
-
-func (suite *RepositoriesSuite) TearDownSuite() {
-	suite.migrate.Down()
 }
 
 func (suite *RepositoriesSuite) loadDBtestData(conn database.Conn) {
@@ -183,4 +179,11 @@ func (suite *RepositoriesSuite) TestCases() {
 	suite.T().Run("TestMerchantRepositoryFindByNameSuccess", func(t *testing.T) {
 		suite.MerchantRepositoryFindByNameSuccess()
 	})
+}
+
+func (suite *RepositoriesSuite) TearDownSuite() {
+	err := suite.migrate.Down()
+	if err != nil {
+		log.Fatalf("failure to Down migrations: %s", err)
+	}
 }
