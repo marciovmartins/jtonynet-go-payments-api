@@ -15,12 +15,15 @@
     https://devicon.dev/
     https://simpleicons.org/
 -->
-[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="Go Logo" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Logo" title="Gin">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSql Logo" title="PostgreSql">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.com/) [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="gRPC Logo" title="gRPC">](https://grpc.io/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubuntu" alt="Ubuntu" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="Viper DotEnv Logo" title="Viper DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) <!-- [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) -->
+[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="Go Logo" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Logo" title="Gin">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSql Logo" title="PostgreSql">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.com/) [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="gRPC Logo" title="gRPC">](https://grpc.io/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubuntu" alt="Ubuntu" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="Viper DotEnv Logo" title="Viper DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) 
+
+<!--
+[<img src="./docs/assets/images/icons/k6.svg" width="25px" height="25px" alt="K6 Logo" title="K6">](https://k6.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) [<img src="./docs/assets/images/icons/grafana_loki.png" width="30px" height="30px" alt="Grafana Loki Logo" title="Grafana Loki">](https://grafana.com/oss/loki/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://opentelemetry.io/) [<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) 
+--> 
 
 <!-- 
-[<img src="./docs/assets/images/icons/nginx.svg" width="25px" height="25px" alt="nginx Logo" title="nginx">](https://nginx.org/en/) [<img src="./docs/assets/images/icons/rabbitmq.svg" width="25px" height="25px" alt="RabbitMQ Logo" title="RabbitMQ">](https://rabbitmq.com/) [<img src="./docs/assets/images/icons/grafana_loki.png" width="30px" height="30px" alt="Grafana Loki Logo" title="Grafana Loki">](https://grafana.com/oss/loki/) [<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://www.jaegertracing.io/) 
+[<img src="./docs/assets/images/icons/nginx.svg" width="25px" height="25px" alt="nginx Logo" title="nginx">](https://nginx.org/en/) [<img src="./docs/assets/images/icons/rabbitmq.svg" width="25px" height="25px" alt="RabbitMQ Logo" title="RabbitMQ">](https://rabbitmq.com/)
 -->
-
 
 [![Badge Status](https://img.shields.io/badge/STATUS-REABERTO-green)](#header) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-KANBAN-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/7/views/1)  [![Badge GitHubActions](https://github.com/jtonynet/go-payments-api/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jtonynet/go-payments-api/actions) [![Go Version](https://img.shields.io/badge/GO-1.23.2-blue?logo=go&logoColor=white)](https://go.dev/)
 
@@ -30,6 +33,8 @@
 [![linkedin](https://img.shields.io/badge/Linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jos%C3%A9-r-99896a39/) [![dev.to](https://img.shields.io/badge/dev.to-0A0A0A?style=for-the-badge&logo=devdotto&logoColor=white)](https://dev.to/learningenuity) [![gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:learningenuity@gmail.com)
 
 ---
+
+<br/>
 
 ## 📁 O Projeto
 
@@ -48,19 +53,22 @@ __[Go Payments API](#header)__<br/>
       - 🐋 [Conteinerizado](#test-containerized)
       - 🏠 [Local](#test-locally)
       - ⚙️[Automatizados](#test-auto)
+      - 🚚[Carga (WIP)](#test-load)
       - 🧑‍🔧[Manuais](#test-manual)
   6.  📊 [Diagramas](#diagrams)
       - 📈 [ER](#diagrams-erchart)
       - 📈 [Fluxo](#diagrams-flowchart)
   7.  🅻4️⃣ [Questão Aberta L4](#open-question)
   8.  🧠 [ADR - Architecture Decision Records](#adr)
-  9. 🔢 [Versões](#versions)
+  9.  🔢 [Versões](#versions)
   10. 🧰 [Ferramentas](#tools)
   11. 👏 [Boas Práticas](#best-practices)
   12. 🤖 [Uso de IA](#ia)
   13. 🏁 [Conclusão](#conclusion)
 
 ---
+
+<br/>
 
 <a id="about"></a>
 ### 📖 Sobre
@@ -69,16 +77,37 @@ __Resumo:__
 
 > 
 > Desafio de `Autorizador de Pagamentos` de benefícios em `Arquitetura Hexagonal` com `SLA de 100ms` por request e `controle de concorrência` com baixa possibilidade de colisão. 
-> Construído com `Gin` e `Gorm`, protocolo `gRPC` entre o serviço `REST` ("aberto" ao mundo, o ponto de entrada) e o serviço `Processor` ("fechado" ao mundo, o processador de pagamentos) por segurança.
-> 
-> - `Redis` para `Memory Lock Pessimista`
-> - `Redis Keyspace Notification` como `Pub/Sub` para `Unlocks` (outras `Abordagens` e `Filas` foram desconsideradas devido `Latência Adicional`)
+> Construído com `Gin` e `Gorm`, protocolo `gRPC` entre o serviço "`REST`" `http` ("aberto" ao mundo, o ponto de entrada) e o serviço `Processor` ("fechado" ao mundo, o processador de pagamentos) por segurança.
+>
+> __Principais Tecnologias e abordagens:__
+> - `Arquitetura Hexagonal`
+> - `TDD`, `DDD`, `SOLID`, `ADRs`
+> - `Diagram as code` com `Mermaid.js` e `Miro`
+> - `Dockerized` Solução com uso de containers
+> - `gRPC` e `http` entre `Microsservices`
 > - `PostgreSQL` modelado inspirado em `Event Sourcing` para garantir `Consistência`
 > - `CI` com `GitHub Actions` 
-
- Após passar de fase no challange com os requisitos `L1`, `L2` e `L3` (obrigatórios) implementados no prazo previsto, reabri dando continuidade com o desafio. Focado em algumas das melhorias elaboradas no diagrama `Miro`, criado com a equipe proponente. Implementei o requisito `L4` (que era estritamente para discussão técnica nesse caso) como aprimoramento, de acordo com o proposto no diagrama.
+> - `Redis` para `Memory Lock Pessimista`
+> - `Redis Keyspace Notification` como `Pub/Sub` para `Unlocks` (outras Abordagens como `Filas` foram desconsideradas devido `Latência Adicional`)
+> - `Performance/Load Test Dockerized` com `Gatling` (WIP)
 
 <br/>
+
+Após concluir os requisitos obrigatórios (`L1`, `L2`, `L3`) no prazo, retomei o desafio, focando melhorias do diagrama `Miro` criado em conjunto a equipe proponente. Implementei o requisito `L4` como aprimoramento técnico sugerido no diagrama e na `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md).
+
+
+<center>
+<!-- 
+    diagram by:
+    https://miro.com
+-->
+    <img src="./docs/assets/images/screen_captures/miro/architectureV3_segregation_services_grpc.png">
+</center>
+
+_*Para acompanhar a evolução do projeto com seus respectivos diagramas, acesse o [Evolution Doc](./docs/architecture/evolution.md)_
+
+<br/>
+<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
 <br/>
 
 __Texto Original:__
@@ -194,33 +223,22 @@ Este repositório foi criado com a intenção de propor uma possível solução 
 > <br/>
 
 <br/>
-
-O desafio sugere `Scala`, `Kotlin` e o `paradigma de programação funcional`, evidenciando preferências, mas aceitando subscrições com outras linguagens e paradigmas. Realizarei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior familiaridade e experiência, além de ser mencionada na `job description` como parte do stack tecnológico utilizado pelo proponente. Acredito que essa combinação seja altamente compatível com os requisitos do desafio.
-
-Contudo, sou aberto a expandir minhas habilidades, e disposto a aprender e adotar novas tecnologias e paradigmas conforme necessário.
+<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
+<br/>
 
 <br/>
 
-**L4 plenamente atendido com segregação de serviços (`REST` e `Processor`) por gRPC**
+O desafio sugere `Scala`, `Kotlin` e o `paradigma funcional`, mas aceita outras linguagens e paradigmas. Realizei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior experiência e familiaridade, além de ser mencionada na `job description` como parte do stack utilizado. Essa combinação atende bem aos requisitos do desafio.
 
-Arquitetura projetada para atender ao requisito `L4`, utilizando `Redis Keyspace Notification` para gerenciar locks em cenários de concorrência. O sistema aguarda mensagens de desbloqueio em um canal `pub/sub`, garantindo maior eficiência. A API `REST` está segregada do `Processor`, mantendo um nível adequado de segurança para os serviços internos. A solução foi desenhada para escalar conforme indicado na __Questão Aberta L4__ e na `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md).
-
-
-<center>
-<!-- 
-    diagram by:
-    https://miro.com
--->
-    <img src="./docs/assets/images/screen_captures/miro/architectureV3_segregation_services_grpc.png">
-</center>
-
-_*Para acompanhar a evolução do projeto com seus respectivos diagramas, acesse o [Evolution Doc](./docs/architecture/evolution.md)_
+Contudo, sou aberto a expandir minhas habilidades e disposto a aprender novas tecnologias e paradigmas conforme necessário.
 
 <br/>
 
 [⤴️ de volta ao índice](#index)
 
 ---
+
+<br/>
 
 <a id="run"></a>
 ### 💻 Rodando o Projeto
@@ -233,9 +251,12 @@ _*Para acompanhar a evolução do projeto com seus respectivos diagramas, acesse
 Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./payments-api/.env`.
 
 <br/>
+<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
+<br/>
 
 <a id="run-containerized"></a>
 #### 🐋 Conteinerizado 
+_Recomendado_
 
 Após a `.env` renomeada, rode os comandos `docker compose` (de acordo com sua versão do docker compose) no diretório raiz do projeto
 ```bash
@@ -266,16 +287,18 @@ docker compose up payment-transaction-processor
 docker compose up payment-transaction-rest
 ```
 
-<br/>
+<img src="./docs/assets/images/screen_captures/running.jpeg">
 
 A API está pronta e a rota da [Documentação da API](#api-docs) (Swagger) estará disponível, assim como os [Testes](#tests) poderão ser executados.
 
-<img src="./docs/assets/images/screen_captures/running.jpeg">
-
+<br/>
+<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
 <br/>
 
 <a id="run-locally"></a>
+
 #### 🏠 Local
+_Apenas se necessário_
 
 Com o `Golang 1.23` instalado e após ter renomeado a copia de `.env.SAMPLE` para `.env`, serão necessárias outras alterações para que a aplicação funcione corretamente no seu `localhost`.
 
@@ -329,6 +352,8 @@ go run cmd/rest/main.go
 
 ---
 
+<br/>
+
 <a id="api-docs"></a>
 ### 📰  Documentação da API
 
@@ -348,19 +373,29 @@ A interface do Swagger pode executar [Testes Manuais](#test-manual) a partir de 
 
 ---
 
+<br/>
+
 <a id="tests"></a>
 ### ✅ Testes
 
 <a id="test-containerized"></a>
+
 #### 🐋 Conteinerizado 
+_Recomendado_
+
 Para rodar os [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Conteinerizado](#run-containerized).
 
 As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _containerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `test`.
 
 <br/>
+<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
+<br/>
 
 <a id="test-locally"></a>
+
 #### 🏠 Local
+_Apenas se necessário_
+
 Para rodar os [Testes Automatizados](#test-auto) com a API fora do container, de maneira _local_, é necessário editar seu `/.env.TEST`.
 
 No arquivo `/.env.TEST`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
@@ -375,6 +410,9 @@ IN_MEMORY_CACHE_HOST=localhost  ### local: localhost | conteinerized: redis-paym
 GRPC_SERVER_HOST=localhost      ### local: localhost | conteinerized: payment-transaction-processor
 GRPC_CLIENT_HOST=localhost      ### local: localhost | conteinerized: payment-transaction-processor
 ```
+
+<br/>
+<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
 <br/>
 
 <a id="test-auto"></a>
@@ -387,45 +425,141 @@ GRPC_CLIENT_HOST=localhost      ### local: localhost | conteinerized: payment-tr
 docker compose up test-postgres-payments -d
 ```
 
-Comando para executar o teste _conteinerizado_ com a API levantada
+Comando para executar o teste _conteinerizado_ com a API levantada __(Recomendado)__
 ```bash
 # Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
 docker compose exec -e ENV=test  payment-transaction-rest go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
-Comando para executar o teste _local_ em `payments-api`
+Comando para executar o teste _local_ em `payments-api` __(Apenas se necessário)__
 ```bash
 # Executa Testes Localmente com ENV test (PostgreSQL de Testes na Integração)
 ENV=test go test -v -count=1  ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
-<br/>
+Cada vez que o comando for executado, as tabelas e índices da base de dados testada serão truncados e recriados no banco de dados do ambiente selecionado garantindo uma execução segura e limpa.
 
-Cada vez que o comando for executado, as tabelas e índices da base de dados testada serão truncados e recriados no banco de dados do ambiente selecionado (`test` ou `dev`). Os usuários dos ambientes `homol`, `prod` e correlatos não devem ter permissões para executar essas ações no próprio database, garantindo uma execução segura, limpa e sem impacto nos dados de produção.
-
-<center>
-    <img src="./docs/assets/images/screen_captures/tests_run.png">
-</center>
-
-_*Saída esperada do comando_
+<details>
+  <summary><b>Saída esperada do comando</b></summary>
+    <center>
+        <img src="./docs/assets/images/screen_captures/tests_run.png">
+    </center>
+</details>
 
 <br/>
 
 Os testes também são executados como parte da rotina minima de `CI` do <a href="https://github.com/jtonynet/go-payments-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge `CI` no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
 
-<img src="./docs/assets/images/screen_captures/githubactions_tests_run.png">
+<details>
+  <summary><b>Saída esperada do <u>workload</u> na fase test do <u>github</u></b></summary>
+    <center>
+        <img src="./docs/assets/images/screen_captures/githubactions_tests_run.png">
+        <i>*Essa abordagem pode evoluir para uma rotina adequada de `CD`</i>
+    </center>
+</details>
 
-_*Saída esperada do `workload` na fase test do `github` <br/> **Essa abordagem pode evoluir para uma rotina adequada de `CD`._ 
+<br/>
+<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
+<br/>
+
+<a id="test-load"></a>
+
+#### 🚚 Carga (Work In Progress)
+
+_Apenas Conteinerizado_
+
+Atualmente o `Gatling` na versão 3.9.5 (desatualizada), realiza os testes de carga.<br/>Para executá-los, é necessário estar [Rodando o Projeto Conteinerizado](#run-containerized). Em outro terminal, no diretório raiz do projeto, execute os seguintes comandos
+
+```bash
+# Rodar o Gatling
+docker compose up gatling -d
+```
+
+<br/>
+
+```bash
+# Executa o teste de carga 
+docker exec -ti gatling /entrypoint run-test 
+```
+_*Caso retorne erro de rede, rode o de teste comando novamente._
+
+<br/>
+
+Na primeira execução, o comando baixa os arquivos do `Gatling` para `tests/gatling/bundle`. Em execuções seguintes, o bundle já existente é utilizado. O teste executa **7500k transações em 5 minutos** (ou 25 `TPS`), validando o `timeoutSLA` de 100ms na máquina local. Essa configuração está na seguinte linha do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
 
 
+```scala
+testPaymentExecute.inject(rampUsers(7500).during(301.seconds))
+```
+
+<details>
+  <summary><b>Saída esperada nos <u>Terminais dos Microsservices</u></b></summary>
+    <center>
+        <img src="./docs/assets/images/screen_captures/load_test_performs_microservices.png">
+    </center>
+</details>
+
+<br/>
+
+<details>
+  <summary><b>Saída esperada no <u>Terminal de Execução do Gatling</u></b></summary>
+    <center>
+        <img src="./docs/assets/images/screen_captures/load_test_gatling_terminal.png">
+    </center>
+</details>
+
+<br/>
+
+<details>
+  <summary><b>Saída esperada no site <a href="http://localhost:8082">Gatling em seu localhost</a></b></summary>
+    <center>
+        <img src="./docs/assets/images/screen_captures/load_test_gatling_web.png">
+    </center>
+</details>
+
+<br/>
+
+O teste de carga não restaura o banco ao estado anterior. Para fins de comparação, os testes mais antigos permanecem no diretório `tests/gatling/results/history/`.
+
+O comando abaixo remove o bundle do Gatling e limpa o histórico dos testes de carga. Atenção: ele não restaura os dados do banco alvo do teste, sendo necessário recriá-lo, se preciso.
+```bash
+# Limpa os dados do teste de carga 
+docker exec -ti gatling /entrypoint clean-test 
+```
+
+<br>
+
+##### Considerações  
+
+- Os resultados variam conforme os processos e a configuração da máquina. Recomenda-se executar com poucas aplicações rodando e monitorar via `htop`.  
+- Os resultados são apenas referência para o desenvolvimento local; sempre valide em ambientes próximos à produção.  
+
+##### Métricas Relevantes  
+As principais métricas incluem:  
+- `Timeout`: tempo médio, mínimo e máximo de cada request.  
+- `Erros`: Use logs de debug para mapear serviços e identificar gargalos. (No futuro, utilize as ferramentas de `observabilidade`)
+
+##### Pré-produção e Stress Tests  
+Nos ambientes de `pre-prod` e `stg`, use amostras maiores de dados reais (`TPS`, `usuários médios` e `picos históricos`). Realize também `stress tests`, comprimindo cargas _(e.g., simular 30 minutos de tráfego em 10)_. Esses testes ajudam a identificar falhas e garantem a escalabilidade progressiva.
+
+
+<!-- 
+Gatling nao atualiza para usar linha de comando, migrar para K6
+https://community.gatling.io/t/missing-command-line-options-in-gatling-3-11-bundles/9311
+https://github.com/gatling/gatling/issues/4512
+
+LoadTester em Golang
+https://github.com/josephcopenhaver/loadtester-go
+-->
+
+<br/>
+<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
 <br/>
 
 <a id="test-manual"></a>
 #### 🧑‍🔧Manuais
 
 O banco de desenvolvimento local, quando adequadamente instalado, possui uma carga inicial de dados que pode ser utilizada para testes manuais.
-
-<br/>
 
 Registros e Saldos no banco para teste manual
 
@@ -449,7 +583,7 @@ SELECT
 	c.id as category_id, 
 	c.name as category_name, 
 	c.priority as priority,
-	STRING_AGG(mc.mcc, ',') AS codes
+	STRING_AGG(DISTINCT mc.mcc, ',') AS codes
 FROM 
 	accounts as a 
 JOIN 
@@ -474,9 +608,11 @@ GROUP BY a.id, a.uid, t.id, t.uid, t.amount, c.id, c.name, c.priority;
 L1. L2. Resultado esperado:
 > | __account_id__ | __account_uid__                      | __transaction_id__ | __transaction_uid__                  | __amount__ | category_id | category_name | priority | codes     |
 > |----------------|--------------------------------------|--------------------|--------------------------------------|------------|-------------|---------------|----------|-----------|
-> |1               | 123e4567-e89b-12d3-a456-426614174000 | 2                  | [NULL]                               | 110.22     | 2           | MEAL          | 2        | 5811,5812 |
-> |1               | 123e4567-e89b-12d3-a456-426614174000 | 3                  | [NULL]                               | 115.33     | 3           | CASH          | 3        |           |
-> |1               | 123e4567-e89b-12d3-a456-426614174000 | 4                  | 00000000-0000-0000-0000-000000000000 |205.11      | 1           | FOOD          | 1        | 5411,5412 |
+> |1               | 123e4567-e89b-12d3-a456-426614174000 | 1                  | [NULL]                               | 1205.11    | 1           | FOOD          | 1        | 5411,5412 |
+> |1               | 123e4567-e89b-12d3-a456-426614174000 | 2                  | [NULL]                               | 1110.22    | 2           | MEAL          | 2        | 5811,5812 |
+> |1               | 123e4567-e89b-12d3-a456-426614174000 | 3                  | [NULL]                               | 1115.33    | 2           | MOBILITY      | 3        | 6411      |
+> |1               | 123e4567-e89b-12d3-a456-426614174000 | 4                  | [NULL]                               | 1215.33    | 5           | CASH          | 5        |           |
+
 
 
 _*Com acesso ao banco a partir dos dados de `.env`, para validar. Bem como a [Documentação da API](#api-docs) (Swagger) pode ser utilizado para proceder as `requests`._
@@ -489,6 +625,10 @@ L3. `merchants` com mapeamentos MCC incorretos
 > |------------------------------------------|--------------------|----------------------------|
 > | UBER EATS                   SAO PAULO BR | 5412               | FOOD                       |
 > | PAG*JoseDaSilva          RIO DE JANEI BR | 5812               | MEAL                       |
+> <div align="center">...</div>
+
+<br/>
+
 _*Utilize o campo `name` real da tabela `merchant`, o github pode formatar de maneira incorreta esse dado no markdown._
 
 <br/>
@@ -496,6 +636,8 @@ _*Utilize o campo `name` real da tabela `merchant`, o github pode formatar de ma
 [⤴️ de volta ao índice](#index)
 
 ---
+
+<br/>
 
 <a id="diagrams"></a>
 ### 📊 Diagramas do Sistema
@@ -603,8 +745,9 @@ erDiagram
 
 <br/>
 
-
----
+<br/>
+<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
+<br/>
 
 <a id="diagrams-flowchart"></a>
 #### 📈 Fluxo
@@ -672,8 +815,6 @@ _*Diagrama apresenta uma interpretação do sistema_
 
 8. **Retorna Código "51"**: Se a transação foi rejeitada por falta de fundos, retorna o código "51".
 
-<br/>
-
 _*Esse fluxo representa o processo de aprovação, fallback e rejeição da transação com base nos saldos e MCC._
 
 <br/>
@@ -682,6 +823,8 @@ _*Esse fluxo representa o processo de aprovação, fallback e rejeição da tran
 
 ---
 
+<br/>
+
 <a id="open-question"></a>
 ### 🅻4️⃣ Questão Aberta L4
 
@@ -689,13 +832,11 @@ _*Esse fluxo representa o processo de aprovação, fallback e rejeição da tran
 
 #### 🔒 Locks Distribuídos com Redis e Keyspace Notification
 
-Utilizando `Locks Distribuídos` com `Bloqueio Pessimista`, forçando o processamento síncrono por `account`, mas mantendo a simultaneidade das operações onde esses dados sejam distintos. Um sistema de dados em memória rápido, como `Redis`, utilizado para armazenar e liberar locks, coordenando o acesso a recursos compartilhados de maneira eficiente.
+Com [`Locks Distribuídos`](https://redis.io/glossary/redis-lock/) e [`Bloqueio Pessimista`](https://martinfowler.com/eaaCatalog/pessimisticOfflineLock.html), o processamento por `account` é síncrono, mas operações distintas seguem simultâneas. O `Redis` gerencia locks para coordenar o acesso eficiente a recursos.
 
-O processamento da transação verifica se a `account` já está registrada no `lock`. Se não estiver, a aplicação a insere no banco em memória e inicia suas tarefas. Caso já esteja registrada, indicando que outra instância está processando uma transação para a mesma `account`, a aplicação se inscreve em um canal, aguardando uma mensagem de desbloqueio por até 100 ms, evitando concorrência.
+O processamento verifica se a `account` está no `lock`. Se não, a insere e inicia tarefas. Caso esteja, aguarda desbloqueio no canal por até 100 ms para evitar concorrência. Utlizando [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/), ao remover a chave `account` (pelo processo ou `ttl`), o `Redis` publica a liberação do `lock`. 
 
-Com [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/) (similar a `pub/sub`), quando o processamento terminar e a chave `account` for removida (pelo processo ou `ttl`), uma mensagem deve ser publicada pelo próprio `Redis` aos inscritos, sinalizando a liberação do `lock`.
-
-Como proposto na questão _"...uma pequena, mas existente probabilidade de ocorrerem duas transações ao mesmo tempo"_, a concorrência excessiva por `account` não deve ocorrer utilizando essa abordagem.
+Consulte a `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md) para maiores detalhes.
 
 _*Diagramas Mermaid podem apresentar problemas de visualização em aplicativos mobile_
 
@@ -747,30 +888,29 @@ flowchart TD
     style P fill:#007bff,stroke:#000
 ```
 
-_*Esses diagramas representam uma interpretação do sistema, não sua implementação.<br/>**A etapa [`Processa Autorização de Pagamento`](#diagrams-flowchart) é uma sub-rotina vinculada ao diagrama de fluxo de Autorização de Pagamento, mantida de forma simplificada para que esse fluxograma tenha sentido isoladamente. Considere os detalhes do processamento para o débito de saldos das categorias corretas no fluxograma vinculado._
-
-
-<br/>
-<br/>
-
-O diagrama de fluxo acima foi produzido após uma sessão de `Miro Board` conduzida pelos proponentes do desafio. O diagrama Miro da proposta de arquitetura, resultado dessa sessão, pode ser visto abaixo:
+_*A etapa [`Processa Autorização de Pagamento`](#diagrams-flowchart) é uma sub-rotina do fluxo de Autorização, simplificada para sentido isolado. Detalhes do débito de saldos estão no fluxograma vinculado._
 
 <!-- 
     diagram by:
     https://miro.com
 -->
-<img src="./docs/assets/images/screen_captures/miro/interview_architecture_proposal_v1.jpeg">
-
+<details>
+  <summary>O diagrama de fluxo acima foi produzido após uma sessão de <u>Miro Board</u> conduzida pelos proponentes do desafio. O diagrama Miro da proposta de arquitetura, resultado dessa sessão, pode ser visto <b><u>Aqui</u></b></summary>
+    <center>
+        <img src="./docs/assets/images/screen_captures/miro/interview_architecture_proposal_v1.jpeg">
+    </center>
 A partir desse diagrama, construí uma segunda versão com poucas modificações, acrescentando detalhes e contexto para os que não estiveram presentes nessa sessão. Esse diagrama gerou o ADR __[0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md)__, visando nortear a implementação do requisito L4 neste projeto, com finalidade estritamente de treinamento.
 
 Via de regra, o que foi discutido naquela reunião deve ser implementado.
-
+</details>
 
 <br/>
 
 [⤴️ de volta ao índice](#index)
 
 ---
+
+<br/>
 
 <a id="adr"></a> 
 ### 🧠 ADR - Architecture Decision Records
@@ -786,6 +926,8 @@ Via de regra, o que foi discutido naquela reunião deve ser implementado.
 
 ---
 
+<br/>
+
 <a id="versions"></a>
 ### 🔢 Versões
 
@@ -798,6 +940,8 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
 [⤴️ de volta ao índice](#index)
 
 ---
+
+<br/>
 
 <a id="tools"></a>
 ### 🧰 Ferramentas
@@ -822,6 +966,7 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
   - [Docker compose v2.21.0](https://www.docker.com/)
   - [Postgres v16.0](https://www.postgresql.org/)
   - [Redis](https://redis.com/)
+  - [Gatling](https://gatling.com/)
 
 - GUIs:
   - [DBeaver](https://dbeaver.io/)
@@ -835,6 +980,8 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
 
 ---
 
+<br/>
+
 <a id="best-practices"></a>
 ### 👏 Boas Práticas
 
@@ -846,12 +993,15 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
 - [ADR - Architecture Decision Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
 - [Mermaid Diagrams](https://mermaid.js.org)
 - [Miro Diagrams](https://miro.com/)
+- [Dockerized Load Testing Gatling](https://gatling.io/blog/load-testing-a-dockerized-application)
 
 <br/>
 
 [⤴️ de volta ao índice](#index)
 
 ---
+
+<br/>
 
 <a id="ia"></a>
 ### 🤖 Uso de IA
@@ -871,24 +1021,24 @@ IA também é utilizada em minhas pesquisas e estudos como ferramenta de apoio; 
 
 Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser engenhoso!
 
-[⤴️ de volta ao índice](#index)
-
 <br/>
+
+[⤴️ de volta ao índice](#index)
 
 ---
 
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
-- Defini o modelo hexagonal pois sua abordagem de `ports` and `adapters` proporciona flexibilidade para que o sistema atenda a chamadas `http`, e possa ser facilmente estendido para outras abordagens, como processamento de `mensagens` e `pub/sub` (sugestão de solução L4), sem alterar o `core`, garantindo um sistema com separação de responsabilidades.
+- Adotei o modelo hexagonal por sua flexibilidade com `ports` e `adapters`, permitindo suporte a `http` e fácil extensão para `mensagens` ou `pub/sub` para atender ao requisito `L4`, sem impacto no `core` e com responsabilidades bem separadas.
 
-- Para o L4, uma solução utilizando filas foi proposta, porém desconsiderada pelo proponente do desafio em uma sessão no `Miro Board` devido à latência adicional gerada. Isso fica explícito no `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir latência e evitar concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md) e em tarefas do `Kanban` que visam implementar parte do que foi discutido no `Miro`.
+- Para o `L4`, filas foram descartadas pelo proponente no `Miro Board` devido à latência. Isso é detalhado no `ADR` [0003: gRPC e Redis Keyspace Notification](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md) e no `Kanban`.
 
-- Foi realizado um `refactor` na estrutura das tabelas para tornar a aplicação mais robusta, criando um ponto único para inserir `transactions` e atualizar os saldos das `accounts` com base nas `categories`. Essa abordagem garante `imutabilidade` ao banco, baseada em `eventos` visa mitigar impactos de `inconsistência eventual`. Como pode ser visto no `ADR` [0004: Banco Relacional Modelado Orientado a Eventos](./docs/architecture/decisions/0004-banco-relacional-modelado-de-maneira-orientada-a-eventos.md)
+- Refatoração das tabelas centralizou `transactions` e atualização de saldos por `categories`, garantindo `imutabilidade` e mitigando inconsistências. Detalhes no `ADR` [0004: Banco Relacional Modelado Orientado a Eventos](./docs/architecture/decisions/0004-banco-relacional-modelado-de-maneira-orientada-a-eventos.md).
+
+- Testes de performance com `Gatling` foram criados para garantir implantações seguras.  
 
 - Testes adicionais devem ser criados (multiplos cenários de erros nas rotas e serviços). 
-
-- Para além de `locks` e `filas`, testes de carga e performance extras devem ser adicionados, com ferramentas como `JMeter` ou `Gatling`. Eles devem ser incorporados à rotina de desenvolvimento para garantir implantações seguras de nossos serviços em conjunto com o ciclo de CI.
 
 Essas são minhas considerações sobre o que consegui produzir ao longo desse desafio, e continuarei me aplicando aos pontos cegos que não tive tempo ou conhecimento para aprimorar.
 
@@ -899,8 +1049,6 @@ Essas são minhas considerações sobre o que consegui produzir ao longo desse d
 ---
 
 <a id="footer"></a>
-
-_"Sejamos __ingênuos__ a ponto de acreditar que podemos mudar o mundo positivamente, através da __engenhosidade__ de nosso estudo e trabalho no decorrer da __jornada__. A ingenuidade engenhosa de mudar o mundo."_
 
 <br/>
 
@@ -957,10 +1105,4 @@ migrate create -ext=sql -dir=payments-api/scripts/database/postgres/migrations i
 migrate -source file://payments-api/scripts/database/postgres/migrations -database "postgres://api_user:api_pass@localhost:5432/payments_db?sslmode=disable" -verbose up 
 
 docker compose exec postgres-payments psql -U api_user -d payments_db -f /seeds/load_test_charge.up.sql
--->
-
-<!-- 
-Gatling
-
-https://gatling.io/blog/load-testing-a-dockerized-application
 -->
