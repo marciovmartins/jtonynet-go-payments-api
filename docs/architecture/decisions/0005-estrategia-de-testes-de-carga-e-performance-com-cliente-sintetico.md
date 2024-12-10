@@ -14,13 +14,12 @@ _`Clientes Sintéticos` (como `Gatling`, `Jmeter`, `K6`...) utilizados em [`Test
 
 O desenvolvimento da `payment API` com um `timeoutSLA` de `100ms`, como requisito de negócio, é desafiador. Embora em `Golang` existam recursos poderosos para controle de concorrência e cancelamento, como `context.timeout`, validar a concorrência com timeout em cenários próximos aos reais na máquina do desenvolvedor pode ser frustrante.
 
-O uso de um `Cliente Sintético` é essencial. Este documento avalia abordagens e ferramentas para testes de `Performance/Desempenho`, executáveis localmente e em ambientes próximos à produção (como `pre-prod`, `homol`, `stg` etc.). Sempre que possível, devem ser utilizadas amostras de dados semelhantes aos reais (`TPS`, `usuários médios`, `picos históricos`). Também é possível realizar `stress tests`, comprimindo cargas _(ex: simular 30 minutos de tráfego em 10)_, para identificar falhas e garantir escalabilidade.
-
-Embora já tenha tido experiências com o [`Jmeter`](https://jmeter.apache.org/) e o [`Vegeta`](https://github.com/tsenart/vegeta), desconsiderei-os em favor de dois outros clientes mais modernos e em asenção: o [`Gatling`](https://gatling.com/), pela fácil configuração através de script `.sh`, relatórios `html` e simplicidade nos testes; e o [`Grafana K6`](https://k6.io/), que tem ganhado mercado por sua compatibilidade com o ecossistema de observabilidade do `Grafana`.
+O uso de um `Cliente Sintético` é essencial. Este documento avalia abordagens e ferramentas para testes de `Performance/Desempenho`, executáveis localmente e em ambientes próximos à produção (como `pre-prod`, `homol`, `stg` etc.) Embora já tenha tido experiências com o [`Jmeter`](https://jmeter.apache.org/) e o [`Vegeta`](https://github.com/tsenart/vegeta), desconsiderei-os em favor de dois outros clientes mais modernos e em ascensão: o [`Gatling`](https://gatling.com/), pela fácil configuração, e o [`Grafana K6`](https://k6.io/) pela aderencia a `observabilidade`
 
 ### Referências e Opções de Clientes Sintéticos:
 
-__[Artigo Recomendado - `Grafana Load Testing`](https://grafana.com/load-testing/)__: embora da equipe `Grafana`, oferece overview abrangentes sobre estratégia, ferramentas e tipos de testes.
+[`Grafana Load Testing`](https://grafana.com/load-testing/)
+<br/>Embora da equipe `Grafana`, oferece overview abrangentes sobre estratégia, ferramentas e tipos de testes.
 
 
 - [`Grafana K6`](https://k6.io/)
@@ -35,13 +34,11 @@ __[Artigo Recomendado - `Grafana Load Testing`](https://grafana.com/load-testing
 
 <br/>
 
-Em conjunto com a `Observabilidade`, que deve ser discutida em um `ADR` futuro e provavelmente implementada, teremos um conjunto robusto, inclusive na máquina local, para validar a solução da `payment API`.
-
 ## Decisão
 
 Como o uso do script `.sh` do `Gatling` já é conhecido, utilizaremos para configurar inicialmente um teste de carga com esforço de desenvolvimento reduzido. Porém, a [configuração em novas versões](https://github.com/gatling/gatling/issues/4512) do mesmo foi [alterada](https://community.gatling.io/t/missing-command-line-options-in-gatling-3-11-bundles/9311), o que força a manter uma versão antiga (3.9.5). 
 
-Esse cenário frustrante, embora incentive a pesquisa sobre outras maneiras de utilização do `Gatling`, nos levou a avaliar sua substituição pelo `K6` no futuro próximo. Além da modernidade da ferramenta, integracoes pipelines CI/CD, suas [`extensões escritas em Golang`](https://grafana.com/docs/k6/latest/extensions/) 🫶🏽 e já existem iniciativas (não documentadas) para que os [testes sejam escritos na mesma linguagem do projeto](https://github.com/szkiba/xk6-g0) (além do padrão em `TypeScript`).
+Esse cenário frustrante, embora incentive a pesquisa sobre outras maneiras de utilização do `Gatling`, nos levou a avaliar sua substituição pelo `K6` no futuro próximo. Além da modernidade da ferramenta com integrações a pipelines CI/CD, suas [`extensões escritas em Golang`](https://grafana.com/docs/k6/latest/extensions/) 🫶🏽 e ao fato de já existirem iniciativas (não documentadas) para que os [testes sejam escritos na mesma linguagem do projeto](https://github.com/szkiba/xk6-g0) (além do padrão em `TypeScript`).
 
 Sendo assim, no momento, o projeto deve continuar com `Gatling` em versão antiga, mas tão logo a `Observabilidade` seja adicionada ao projeto, seu uso deve ser pivotado para o `K6`, o que deve servir também como estudo de sua integração com as ferramentas da família `Grafana` que fazem sentido nesse cenário.
 

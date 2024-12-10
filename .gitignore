@@ -31,3 +31,4 @@
 
 # Ignorar resultados e bundle de teste de carga
 /tests/gatling/results/*
+/tests/gatling/bundle/*

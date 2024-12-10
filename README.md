@@ -15,10 +15,14 @@
     https://devicon.dev/
     https://simpleicons.org/
 -->
-[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="Go Logo" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Logo" title="Gin">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSql Logo" title="PostgreSql">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.com/) [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="gRPC Logo" title="gRPC">](https://grpc.io/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubuntu" alt="Ubuntu" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="Viper DotEnv Logo" title="Viper DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) 
+[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="Go Logo" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Logo" title="Gin">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSql Logo" title="PostgreSql">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.com/) [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="gRPC Logo" title="gRPC">](https://grpc.io/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubuntu" alt="Ubuntu" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="Viper DotEnv Logo" title="Viper DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/)
 
 <!--
-[<img src="./docs/assets/images/icons/k6.svg" width="25px" height="25px" alt="K6 Logo" title="K6">](https://k6.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) [<img src="./docs/assets/images/icons/grafana_loki.png" width="30px" height="30px" alt="Grafana Loki Logo" title="Grafana Loki">](https://grafana.com/oss/loki/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://opentelemetry.io/) [<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) 
+[<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/)
+-->
+
+<!--
+[<img src="./docs/assets/images/icons/k6.svg" width="25px" height="25px" alt="K6 Logo" title="K6">](https://k6.io/) [<img src="./docs/assets/images/icons/grafana_loki.png" width="30px" height="30px" alt="Grafana Loki Logo" title="Grafana Loki">](https://grafana.com/oss/loki/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://opentelemetry.io/) [<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) 
 --> 
 
 <!-- 
@@ -46,11 +50,11 @@ __[Go Payments API](#header)__<br/>
   2.  📖 [Sobre](#about)
   3.  💻 [Rodando o Projeto](#run)
       - 🌐 [Ambiente](#environment)
-      - 🐋 [Conteinerizado](#run-containerized)
+      - 🐋 [Containerizado](#run-containerized)
       - 🏠 [Local](#run-locally)
   4.  📰 [Documentação da API](#api-docs)
   5.  ✅ [Testes](#tests)
-      - 🐋 [Conteinerizado](#test-containerized)
+      - 🐋 [Containerizado](#test-containerized)
       - 🏠 [Local](#test-locally)
       - ⚙️[Automatizados](#test-auto)
       - 🚚[Carga (WIP)](#test-load)
@@ -93,7 +97,7 @@ __Resumo:__
 
 <br/>
 
-Após concluir os requisitos obrigatórios (`L1`, `L2`, `L3`) no prazo, retomei o desafio, focando melhorias do diagrama `Miro` criado em conjunto a equipe proponente. Implementei o requisito `L4` como aprimoramento técnico sugerido no diagrama e na `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md).
+Após concluir os requisitos obrigatórios (`L1`, `L2`, `L3`) no prazo, retomei o desafio, focando melhorias do diagrama `Miro` criado em conjunto a equipe proponente. Implementei o requisito `L4` como aprimoramento técnico sugerido no diagrama e na `ADR` [0003: gRPC e Redis Keyspace Notification reduzindo Latência e evitando Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md).
 
 
 <div align="center">
@@ -255,7 +259,7 @@ Crie uma copia do arquivo `./payments-api/.env.SAMPLE` e renomeie para `./paymen
 <br/>
 
 <a id="run-containerized"></a>
-#### 🐋 Conteinerizado 
+#### 🐋 Containerizado 
 _Recomendado_
 
 Após a `.env` renomeada, rode os comandos `docker compose` (de acordo com sua versão do docker compose) no diretório raiz do projeto
@@ -380,10 +384,10 @@ A interface do Swagger pode executar [Testes Manuais](#test-manual) a partir de 
 
 <a id="test-containerized"></a>
 
-#### 🐋 Conteinerizado 
+#### 🐋 Containerizado 
 _Recomendado_
 
-Para rodar os [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Conteinerizado](#run-containerized).
+Para rodar os [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Containerizado](#run-containerized).
 
 As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _containerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `test`.
 
@@ -418,14 +422,14 @@ GRPC_CLIENT_HOST=localhost      ### local: localhost | conteinerized: payment-tr
 <a id="test-auto"></a>
 #### ⚙️ Automatizados
 
-[Rodando o Projeto](#run) `payment-api`  em seu ambiente _local_ ou _conteinerizado_, levante o banco de testes com
+[Rodando o Projeto](#run) `payment-api`  em seu ambiente _local_ ou _containerizado_, levante o banco de testes com
 
 ```bash
 # Rodar o PostgreSQL de Testes
 docker compose up test-postgres-payments -d
 ```
 
-Comando para executar o teste _conteinerizado_ com a API levantada __(Recomendado)__
+Comando para executar o teste  _containerizado_com a API levantada __(Recomendado)__
 ```bash
 # Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
 docker compose exec -e ENV=test  payment-transaction-rest go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
@@ -466,9 +470,9 @@ Os testes também são executados como parte da rotina minima de `CI` do <a href
 
 #### 🚚 Carga (Work In Progress)
 
-_Apenas Conteinerizado_
+_Apenas Containerizado_
 
-Atualmente o `Gatling` na versão 3.9.5 (desatualizada), realiza os testes de carga.<br/>Para executá-los, é necessário estar [Rodando o Projeto Conteinerizado](#run-containerized). Em outro terminal, no diretório raiz do projeto, execute os seguintes comandos
+Atualmente o `Gatling` na versão 3.9.5 (desatualizada), realiza os testes de carga.<br/>Para executá-los, é necessário estar [Rodando o Projeto Containerizado](#run-containerized). Em outro terminal, no diretório raiz do projeto, execute os seguintes comandos
 
 ```bash
 # Rodar o Gatling
@@ -481,7 +485,6 @@ docker compose up gatling -d
 # Executa o teste de carga 
 docker exec -ti gatling /entrypoint run-test 
 ```
-_*Caso retorne erro de rede, rode o comando novamente._
 
 <details>
   <summary><b>Saída esperada do comando no <u>Terminal de Execução do Gatling</u></b></summary>
@@ -841,7 +844,7 @@ Com [`Locks Distribuídos`](https://redis.io/glossary/redis-lock/) e [`Bloqueio 
 
 O processamento verifica se a `account` está no `lock`. Se não, a insere e inicia tarefas. Caso esteja, aguarda desbloqueio no canal por até 100 ms para evitar concorrência. Utlizando [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/), ao remover a chave `account` (pelo processo ou `ttl`), o `Redis` publica a liberação do `lock`. 
 
-Consulte a `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md) para maiores detalhes.
+Consulte a `ADR` [0003: gRPC e Redis Keyspace Notification reduzindo Latência e evitando Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md) para maiores detalhes.
 
 _*Diagramas Mermaid podem apresentar problemas de visualização em aplicativos mobile_
 
@@ -904,7 +907,7 @@ _*A etapa [`Processa Autorização de Pagamento`](#diagrams-flowchart) é uma su
     <div align="center">
         <img src="./docs/assets/images/screen_captures/miro/interview_architecture_proposal_v1.jpeg">
     </div>
-A partir desse diagrama, construí uma segunda versão com poucas modificações, acrescentando detalhes e contexto para os que não estiveram presentes nessa sessão. Esse diagrama gerou o ADR __[0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md)__, visando nortear a implementação do requisito L4 neste projeto, com finalidade estritamente de treinamento.
+A partir desse diagrama, construí uma segunda versão com poucas modificações, acrescentando detalhes e contexto para os que não estiveram presentes nessa sessão. Esse diagrama gerou o ADR __[0003: gRPC e Redis Keyspace Notification reduzindo Latência e evitando Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md)__, visando nortear a implementação do requisito L4 neste projeto, com finalidade estritamente de treinamento.
 
 Via de regra, o que foi discutido naquela reunião deve ser implementado.
 </details>
@@ -922,9 +925,11 @@ Via de regra, o que foi discutido naquela reunião deve ser implementado.
 
 - [0001: Registro de Decisões de Arquitetura (ADR)](./docs/architecture/decisions/0001-registro-de-decisoes-de-arquitetura.md)
 - [0002: Go, Gin, Gorm e PostgreSQL com Arquitetura Hexagonal e TDD](./docs/architecture/decisions/0002-go-gin-gorm-e-postgres-com-arquitetura-hexagonal-tdd.md)
-- [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md)
+- [0003: gRPC e Redis Keyspace Notification reduzindo Latência e evitando Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md)
 - [0004: Banco Relacional Modelado Orientado a Eventos](./docs/architecture/decisions/0004-banco-relacional-modelado-de-maneira-orientada-a-eventos.md)
 - [0005: Estratégia de Testes de Carga e Performance com Cliente Sintético](./docs/architecture/decisions/0005-estrategia-de-testes-de-carga-e-performance-com-cliente-sintetico.md)
+- [0006: Observabilidade com Prometheus e Grafana](./docs/architecture/decisions/0006-observabilidade-com-prometheus-e-grafana.md)
+
 
 <br/>
 
