@@ -96,13 +96,13 @@ __Resumo:__
 Após concluir os requisitos obrigatórios (`L1`, `L2`, `L3`) no prazo, retomei o desafio, focando melhorias do diagrama `Miro` criado em conjunto a equipe proponente. Implementei o requisito `L4` como aprimoramento técnico sugerido no diagrama e na `ADR` [0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md).
 
 
-<center>
+<div align="center">
 <!-- 
     diagram by:
     https://miro.com
 -->
     <img src="./docs/assets/images/screen_captures/miro/architectureV3_segregation_services_grpc.png">
-</center>
+</div>
 
 _*Para acompanhar a evolução do projeto com seus respectivos diagramas, acesse o [Evolution Doc](./docs/architecture/evolution.md)_
 
@@ -361,9 +361,9 @@ go run cmd/rest/main.go
 
 Com a aplicação em execução, a rota de documentação Swagger fica disponível em http://localhost:8080/swagger/index.html
 
-<center>
+<div align="center">
     <img src="./docs/assets/images/screen_captures/swagger.png">
-</center>
+</div>
 
 A interface do Swagger pode executar [Testes Manuais](#test-manual) a partir de `requests` no endpoint `POST: /payment` 
 
@@ -439,9 +439,9 @@ ENV=test go test -v -count=1  ./internal/adapter/repository/gormRepos ./internal
 
 <details>
   <summary><b>Saída esperada do comando</b></summary>
-    <center>
+    <div align="center">
         <img src="./docs/assets/images/screen_captures/tests_run.png">
-    </center>
+    </div>
 </details>
 
 <br/>
@@ -452,10 +452,10 @@ Os testes também são executados como parte da rotina minima de `CI` do <a href
 
 <details>
   <summary><b>Saída esperada do <u>workload</u> na fase test do <u>github</u></b></summary>
-    <center>
+    <div align="center">
         <img src="./docs/assets/images/screen_captures/githubactions_tests_run.png">
         <i>*Essa abordagem pode evoluir para uma rotina adequada de `CD`</i>
-    </center>
+    </div>
 </details>
 
 <br/>
@@ -485,37 +485,37 @@ _*Caso retorne erro de rede, rode o comando novamente._
 
 <details>
   <summary><b>Saída esperada do comando no <u>Terminal de Execução do Gatling</u></b></summary>
-    <center>
+    <div align="center">
         <img src="./docs/assets/images/screen_captures/load_test_gatling_terminal.png">
-    </center>
+    </div>
 </details>
 
 <br/>
 
 <details>
   <summary><b>Saída esperada nos terminais de <u>payment-transaction-rest</u> e <u>payment-transaction-processor</u></b></summary>
-    <center>
+    <div align="center">
         <img src="./docs/assets/images/screen_captures/load_test_performs_microservices.png">
-    </center>
+    </div>
 </details>
 
 <br/>
 
 <details>
   <summary><b>Saída esperada no client <u>Redis</u> de <u>cache-inmemory (db0)</u> e <u>lock-inmemory (db1)</u></b></summary>
-    <center>
+    <div align="center">
         <img src="./docs/assets/images/screen_captures/load_test_redis_client.png">
         <br/><i><a href="https://marketplace.visualstudio.com/items?itemName=Dunn.redis">*Usando Redis Dunn - VsCode Extension</a></i>
-    </center>
+    </div>
 </details>
 
 <br/>
 
 <details>
   <summary><b>Saída esperada no site <a href="http://localhost:8082">Gatling em seu localhost</a></b></summary>
-    <center>
+    <div align="center">
         <img src="./docs/assets/images/screen_captures/load_test_gatling_web.png">
-    </center>
+    </div>
 </details>
 
 <br/>
@@ -660,7 +660,7 @@ _*Diagramas Mermaid podem apresentar problemas de visualização em aplicativos 
 <a id="diagrams-erchart"></a>
 #### 📈 ER
 
-<center>
+<div align="center">
 
 ```mermaid
 erDiagram
@@ -740,7 +740,7 @@ erDiagram
 
 ```
 
-</center>
+</div>
 
 <a id="diagrams-erchart-description"></a>
 ##### 📝 Descrição
@@ -905,9 +905,9 @@ _*A etapa [`Processa Autorização de Pagamento`](#diagrams-flowchart) é uma su
 -->
 <details>
   <summary>O diagrama de fluxo acima foi produzido após uma sessão de <u>Miro Board</u> conduzida pelos proponentes do desafio. O diagrama Miro da proposta de arquitetura, resultado dessa sessão, pode ser visto <b><u>Aqui</u></b></summary>
-    <center>
+    <div align="center">
         <img src="./docs/assets/images/screen_captures/miro/interview_architecture_proposal_v1.jpeg">
-    </center>
+    </div>
 A partir desse diagrama, construí uma segunda versão com poucas modificações, acrescentando detalhes e contexto para os que não estiveram presentes nessa sessão. Esse diagrama gerou o ADR __[0003: gRPC e Redis Keyspace Notification em API REST e Processor para reduzir Latência e evitar Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md)__, visando nortear a implementação do requisito L4 neste projeto, com finalidade estritamente de treinamento.
 
 Via de regra, o que foi discutido naquela reunião deve ser implementado.
