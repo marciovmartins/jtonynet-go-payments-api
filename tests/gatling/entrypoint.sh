@@ -9,6 +9,12 @@ if [ "$1" = "run-test" ]; then
 
     if [ ! -d "bundle/bin" ]; then
 
+        # TODO:
+        # Dangerous but necessary to run Gatling; 
+        # refactor in Docker.
+        chown -R $(whoami):$(whoami) bundle
+        chmod -R 700 bundle  
+
         cd bundle
 
         sleep 1
