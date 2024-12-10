@@ -437,8 +437,6 @@ Comando para executar o teste _local_ em `payments-api` __(Apenas se necessário
 ENV=test go test -v -count=1  ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
 ```
 
-Cada vez que o comando for executado, as tabelas e índices da base de dados testada serão truncados e recriados no banco de dados do ambiente selecionado garantindo uma execução segura e limpa.
-
 <details>
   <summary><b>Saída esperada do comando</b></summary>
     <center>
@@ -447,6 +445,8 @@ Cada vez que o comando for executado, as tabelas e índices da base de dados tes
 </details>
 
 <br/>
+
+Cada vez que o comando for executado, as tabelas e índices da base de dados testada serão truncados e recriados no banco de dados do ambiente selecionado garantindo uma execução segura e limpa.
 
 Os testes também são executados como parte da rotina minima de `CI` do <a href="https://github.com/jtonynet/go-payments-api/actions">GitHub Actions</a>, garantindo que versões estáveis sejam mescladas na branch principal. O badge `CI` no [cabeçalho](#header) do arquivo readme é uma ajuda visual para verificar rapidamente a integridade do desenvolvimento.
 
@@ -481,19 +481,19 @@ docker compose up gatling -d
 # Executa o teste de carga 
 docker exec -ti gatling /entrypoint run-test 
 ```
-_*Caso retorne erro de rede, rode o de teste comando novamente._
+_*Caso retorne erro de rede, rode o comando novamente._
+
+<details>
+  <summary><b>Saída esperada do comando no <u>Terminal de Execução do Gatling</u></b></summary>
+    <center>
+        <img src="./docs/assets/images/screen_captures/load_test_gatling_terminal.png">
+    </center>
+</details>
 
 <br/>
 
-Na primeira execução, o comando baixa os arquivos do `Gatling` para `tests/gatling/bundle`. Em execuções seguintes, o bundle já existente é utilizado. O teste executa **7500k transações em 5 minutos** (ou 25 `TPS`), validando o `timeoutSLA` de 100ms na máquina local. Essa configuração está na seguinte linha do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
-
-
-```scala
-testPaymentExecute.inject(rampUsers(7500).during(301.seconds))
-```
-
 <details>
-  <summary><b>Saída esperada nos <u>Terminais dos Microsservices</u></b></summary>
+  <summary><b>Saída esperada nos terminais de <u>payment-transaction-rest</u> e <u>payment-transaction-processor</u></b></summary>
     <center>
         <img src="./docs/assets/images/screen_captures/load_test_performs_microservices.png">
     </center>
@@ -502,9 +502,10 @@ testPaymentExecute.inject(rampUsers(7500).during(301.seconds))
 <br/>
 
 <details>
-  <summary><b>Saída esperada no <u>Terminal de Execução do Gatling</u></b></summary>
+  <summary><b>Saída esperada no client <u>Redis</u> de <u>cache-inmemory (db0)</u> e <u>lock-inmemory (db1)</u></b></summary>
     <center>
-        <img src="./docs/assets/images/screen_captures/load_test_gatling_terminal.png">
+        <img src="./docs/assets/images/screen_captures/load_test_redis_client.png">
+        <br/><i><a href="https://marketplace.visualstudio.com/items?itemName=Dunn.redis">*Usando Redis Dunn - VsCode Extension</a></i>
     </center>
 </details>
 
@@ -519,6 +520,14 @@ testPaymentExecute.inject(rampUsers(7500).during(301.seconds))
 
 <br/>
 
+Na primeira execução, o comando baixa os arquivos do `Gatling` para `tests/gatling/bundle`. Em execuções seguintes, o bundle já existente é utilizado. O teste executa **7500k transações em 5 minutos** (ou 25 `TPS`), validando o `timeoutSLA` de 100ms na máquina local. Essa configuração está na seguinte linha do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
+
+
+```scala
+testPaymentExecute.inject(rampUsers(7500).during(301.seconds))
+```
+
+
 O teste de carga não restaura o banco ao estado anterior. Para fins de comparação, os testes mais antigos permanecem no diretório `tests/gatling/results/history/`.
 
 O comando abaixo remove o bundle do Gatling e limpa o histórico dos testes de carga. Atenção: ele não restaura os dados do banco alvo do teste, sendo necessário recriá-lo, se preciso.
@@ -532,7 +541,7 @@ docker exec -ti gatling /entrypoint clean-test
 ##### Considerações  
 
 - Os resultados variam conforme os processos e a configuração da máquina. Recomenda-se executar com poucas aplicações rodando e monitorar via `htop`.  
-- Os resultados são apenas referência para o desenvolvimento local; sempre valide em ambientes próximos à produção.  
+- Os resultados são apenas referência para o desenvolvimento local; sempre valide em ambientes próximos à produção, eles tendem a ter perfomances superiores a máquina de desenvolvimento local.  
 
 ##### Métricas Relevantes  
 As principais métricas incluem:  
@@ -540,7 +549,7 @@ As principais métricas incluem:
 - `Erros`: Use logs de debug para mapear serviços e identificar gargalos. (No futuro, utilize as ferramentas de `observabilidade`)
 
 ##### Pré-produção e Stress Tests  
-Nos ambientes de `pre-prod` e `stg`, use amostras maiores de dados reais (`TPS`, `usuários médios` e `picos históricos`). Realize também `stress tests`, comprimindo cargas _(e.g., simular 30 minutos de tráfego em 10)_. Esses testes ajudam a identificar falhas e garantem a escalabilidade progressiva.
+Nos ambientes de `pre-prod` e `stg`, se possível, use amostras maiores de dados próximos aos reais (`TPS`, `usuários médios` e `picos históricos`). Realize também `stress tests`, comprimindo cargas _(e.g., simular 30 minutos de tráfego em 10)_. Esses testes ajudam a identificar falhas e garantem a escalabilidade progressiva.
 
 
 <!-- 
@@ -583,7 +592,7 @@ SELECT
 	c.id as category_id, 
 	c.name as category_name, 
 	c.priority as priority,
-	STRING_AGG(DISTINCT mc.mcc, ',') AS codes
+	STRING_AGG(mc.mcc, ',') AS codes
 FROM 
 	accounts as a 
 JOIN 
