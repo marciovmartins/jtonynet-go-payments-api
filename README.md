@@ -53,22 +53,22 @@ __[Go Payments API](#header)__<br/>
       - 🐋 [Containerizado](#run-containerized)
       - 🏠 [Local](#run-locally)
   4.  📰 [Documentação da API](#api-docs)
-  5.  ✅ [Testes](#tests)
+  5.  ✅ [Testes Unitários & Integração](#tests)
       - 🐋 [Containerizado](#test-containerized)
       - 🏠 [Local](#test-locally)
-      - ⚙️[Automatizados](#test-auto)
-      - 🚚[Carga (WIP)](#test-load)
-      - 🧑‍🔧[Manuais](#test-manual)
-  6.  📊 [Diagramas](#diagrams)
+      - ⚙️  [Executando Testes](#test-auto)
+  6.  🚚 [Testes Carga & Performance (WIP)](#test-load)
+  7.  🧑‍🔧 [Validação Manual](#test-manual)
+  8.  📊 [Diagramas](#diagrams)
       - 📈 [ER](#diagrams-erchart)
       - 📈 [Fluxo](#diagrams-flowchart)
-  7.  🅻4️⃣ [Questão Aberta L4](#open-question)
-  8.  🧠 [ADR - Architecture Decision Records](#adr)
-  9.  🔢 [Versões](#versions)
-  10. 🧰 [Ferramentas](#tools)
-  11. 👏 [Boas Práticas](#best-practices)
-  12. 🤖 [Uso de IA](#ia)
-  13. 🏁 [Conclusão](#conclusion)
+  9.  🅻 [Questão Aberta L4](#open-question)
+  10. 🧠 [ADR - Architecture Decision Records](#adr)
+  11. 🔢 [Versões](#versions)
+  12. 🧰 [Ferramentas](#tools)
+  13. 👏 [Boas Práticas](#best-practices)
+  14. 🤖 [Uso de IA](#ia)
+  15. 🏁 [Conclusão](#conclusion)
 
 ---
 
@@ -369,7 +369,7 @@ Com a aplicação em execução, a rota de documentação Swagger fica disponív
     <img src="./docs/assets/images/screen_captures/swagger.png">
 </div>
 
-A interface do Swagger pode executar [Testes Manuais](#test-manual) a partir de `requests` no endpoint `POST: /payment` 
+A interface do Swagger pode executar [Validação Manual](#test-manual) a partir de `requests` no endpoint `POST: /payment` 
 
 <br/>
 
@@ -380,14 +380,14 @@ A interface do Swagger pode executar [Testes Manuais](#test-manual) a partir de 
 <br/>
 
 <a id="tests"></a>
-### ✅ Testes
+### ✅ Testes Unitários & Integração
 
 <a id="test-containerized"></a>
 
 #### 🐋 Containerizado 
 _Recomendado_
 
-Para rodar os [Testes Automatizados](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Containerizado](#run-containerized).
+Para [Executar os Testes](#test-auto) usando container, é necessário que já esteja [Rodando o Projeto Containerizado](#run-containerized).
 
 As configurações para executar os testes de repositório e integração (dependentes de infraestrutura) de maneira _containerizada_ estão no arquivo `./payments-api/.env.TEST`. Não é necessário alterá-lo ou renomeá-lo, pois a API o usará automaticamente se a variável de ambiente `ENV` estiver definida como `test`.
 
@@ -400,7 +400,7 @@ As configurações para executar os testes de repositório e integração (depen
 #### 🏠 Local
 _Apenas se necessário_
 
-Para rodar os [Testes Automatizados](#test-auto) com a API fora do container, de maneira _local_, é necessário editar seu `/.env.TEST`.
+Para [Executar os Testes](#test-auto) com a API fora do container, de maneira _local_, é necessário editar seu `/.env.TEST`.
 
 No arquivo `/.env.TEST`, substitua os valores das variáveis de ambiente que contêm comentários no formato `local: valueA | containerized: valueB` pelos valores sugeridos na opção `local`.
 ```bash
@@ -420,7 +420,7 @@ GRPC_CLIENT_HOST=localhost      ### local: localhost | conteinerized: payment-tr
 <br/>
 
 <a id="test-auto"></a>
-#### ⚙️ Automatizados
+#### ⚙️ Executando Testes
 
 [Rodando o Projeto](#run) `payment-api`  em seu ambiente _local_ ou _containerizado_, levante o banco de testes com
 
@@ -463,12 +463,16 @@ Os testes também são executados como parte da rotina minima de `CI` do <a href
 </details>
 
 <br/>
-<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
+
+[⤴️ de volta ao índice](#index)
+
+---
+
 <br/>
 
 <a id="test-load"></a>
 
-#### 🚚 Carga (Work In Progress)
+### 🚚 Testes Carga & Performance (Work In Progress)
 
 _Apenas Containerizado_
 
@@ -523,15 +527,12 @@ docker exec -ti gatling /entrypoint run-test
 
 <br/>
 
-O teste executa **7500k transações em 5 minutos** (ou 25 `TPS`), validando o `timeoutSLA` de 100ms na máquina local. Essa configuração está na seguinte linha do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
-
+O teste executa **7500k transações em 5 minutos** (ou 25 `TPS`), validando o `timeoutSLA` de 100ms na máquina local. Essa configuração pode ser encontrada na seguinte linha do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
 
 ```scala
 testPaymentExecute.inject(rampUsers(7500).during(301.seconds))
 ```
-
-
-Para fins de comparação, os testes mais antigos permanecem no diretório `tests/gatling/results/history/`.
+<br/>
 
 O comando abaixo remove o bundle do Gatling e limpa o histórico dos testes de carga.
 ```bash
@@ -539,33 +540,37 @@ O comando abaixo remove o bundle do Gatling e limpa o histórico dos testes de c
 docker exec -ti gatling /entrypoint clean-test 
 ```
 
-##### Considerações  
+<br/>
 
-- Os resultados variam conforme os processos e a configuração da máquina. Recomenda-se executar com poucas aplicações rodando e monitorar via `htop`.  
-- Os resultados são apenas referência para o desenvolvimento local; sempre valide em ambientes próximos à produção, eles tendem a ter perfomances superiores a máquina de desenvolvimento local.  
-
-##### Métricas Relevantes  
-As principais métricas incluem:  
-- `Timeout`: tempo médio, mínimo e máximo de cada request.  
-- `Erros`: Use logs de debug para mapear serviços e identificar gargalos. (No futuro, utilize as ferramentas de `observabilidade`)
-
-##### Pré-produção e Stress Tests  
-Nos ambientes de `pre-prod` e `stg`, se possível, use amostras maiores de dados próximos aos reais (`TPS`, `usuários médios` e `picos históricos`). Realize também `stress tests`, comprimindo cargas _(e.g., simular 30 minutos de tráfego em 10)_. Esses testes ajudam a identificar falhas e garantem a escalabilidade progressiva.
-
-
-<!-- 
-LoadTester em Golang
-https://github.com/josephcopenhaver/loadtester-go
--->
+- __Considerações__
+    - Os resultados variam conforme os processos e a configuração da máquina. Recomenda-se executar com poucas aplicações rodando e monitorar via `htop`.
+    - Para fins de comparação, os testes mais antigos permanecem no diretório `tests/gatling/results/history/`.
+    - Os resultados são apenas referência para o desenvolvimento local
+    - Quando possível, valide em ambientes próximos à produção, eles tendem a ter perfomances superiores a máquina de desenvolvimento local.  
 
 <br/>
-<div align="center">. . . . . . . . . . . . . . . . . . . . . . . . . . . .</div>
+
+- __Métricas Relevantes__ 
+    - `Timeout`: tempo médio, mínimo e máximo de cada request.  
+    - `Erros`: Use logs de debug para mapear serviços e identificar gargalos. (No futuro, utilize as ferramentas de `Observabilidade`)
+    
+<br/>
+
+- __Pré-produção e Stress Tests__
+  - Nos ambientes de `pre-prod` e `stg`, se possível, use amostras maiores de dados próximos aos reais (`TPS`, `usuários médios` e `picos históricos`). Realize também `stress tests`, comprimindo cargas _(e.g., simular 30 minutos de tráfego em 10)_. Esses testes ajudam a identificar falhas e garantem a escalabilidade progressiva.
+
+<br/>
+
+[⤴️ de volta ao índice](#index)
+
+---
+
 <br/>
 
 <a id="test-manual"></a>
-#### 🧑‍🔧Manuais
+#### 🧑‍🔧 Validação Manual
 
-O banco de desenvolvimento local, quando adequadamente instalado, possui uma carga inicial de dados que pode ser utilizada para testes manuais.
+O banco de desenvolvimento local, quando adequadamente instalado, possui uma carga inicial de dados que pode ser utilizada para Validação Manual.
 
 Registros e Saldos no banco para teste manual
 
@@ -616,7 +621,7 @@ L1. L2. Resultado esperado:
 > |----------------|--------------------------------------|--------------------|--------------------------------------|------------|-------------|---------------|----------|-----------|
 > |1               | 123e4567-e89b-12d3-a456-426614174000 | 1                  | [NULL]                               | 1205.11    | 1           | FOOD          | 1        | 5411,5412 |
 > |1               | 123e4567-e89b-12d3-a456-426614174000 | 2                  | [NULL]                               | 1110.22    | 2           | MEAL          | 2        | 5811,5812 |
-> |1               | 123e4567-e89b-12d3-a456-426614174000 | 3                  | [NULL]                               | 1115.33    | 2           | MOBILITY      | 3        | 6411      |
+> |1               | 123e4567-e89b-12d3-a456-426614174000 | 3                  | [NULL]                               | 1115.33    | 3           | MOBILITY      | 3        | 6411      |
 > |1               | 123e4567-e89b-12d3-a456-426614174000 | 4                  | [NULL]                               | 1215.33    | 5           | CASH          | 5        |           |
 
 
@@ -834,17 +839,10 @@ _*Esse fluxo representa o processo de aprovação, fallback e rejeição da tran
 <a id="open-question"></a>
 ### 🅻4️⃣ Questão Aberta L4
 
-> Transações simultâneas: dado que o mesmo cartão de crédito pode ser utilizado em diferentes serviços online, existe uma pequena mas existente probabilidade de ocorrerem duas transações ao mesmo tempo. O que você faria para garantir que apenas uma transação por conta fosse processada em um determinado momento? Esteja ciente do fato de que todas as solicitações de transação são síncronas e devem ser processadas rapidamente (menos de 100 ms), ou a transação atingirá o timeout.
 
 #### 🔒 Locks Distribuídos com Redis e Keyspace Notification
 
-Com [`Locks Distribuídos`](https://redis.io/glossary/redis-lock/) e [`Bloqueio Pessimista`](https://martinfowler.com/eaaCatalog/pessimisticOfflineLock.html), o processamento por `account` é síncrono, mas operações distintas seguem simultâneas. O `Redis` gerencia locks para coordenar o acesso eficiente a recursos.
-
-O processamento verifica se a `account` está no `lock`. Se não, a insere e inicia tarefas. Caso esteja, aguarda desbloqueio no canal por até 100 ms para evitar concorrência. Utlizando [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/), ao remover a chave `account` (pelo processo ou `ttl`), o `Redis` publica a liberação do `lock`. 
-
-Consulte a `ADR` [0003: gRPC e Redis Keyspace Notification reduzindo Latência e evitando Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md) para maiores detalhes.
-
-_*Diagramas Mermaid podem apresentar problemas de visualização em aplicativos mobile_
+Com [`Locks Distribuídos`](https://redis.io/glossary/redis-lock/) e [`Bloqueio Pessimista`](https://martinfowler.com/eaaCatalog/pessimisticOfflineLock.html), o processamento por `account` é síncrono, mas operações distintas seguem simultâneas. O `Redis` gerencia `locks` para coordenar o acesso eficiente a recursos e o [`Redis Keyspace Notifications`](https://redis.io/docs/latest/develop/use/keyspace-notifications/), provê `unlocks` através de Pub/Sub. Consulte a `ADR` [0003: gRPC e Redis Keyspace Notification reduzindo Latência e evitando Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md) para maiores detalhes.
 
 <!-- 
     diagram by:
