@@ -523,7 +523,7 @@ docker exec -ti gatling /entrypoint run-test
 
 <br/>
 
-Na primeira execução, o comando baixa os arquivos do `Gatling` para `tests/gatling/bundle`. Em execuções seguintes, o bundle já existente é utilizado. O teste executa **7500k transações em 5 minutos** (ou 25 `TPS`), validando o `timeoutSLA` de 100ms na máquina local. Essa configuração está na seguinte linha do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
+O teste executa **7500k transações em 5 minutos** (ou 25 `TPS`), validando o `timeoutSLA` de 100ms na máquina local. Essa configuração está na seguinte linha do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
 
 
 ```scala
