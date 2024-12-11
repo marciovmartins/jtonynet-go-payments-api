@@ -531,15 +531,13 @@ testPaymentExecute.inject(rampUsers(7500).during(301.seconds))
 ```
 
 
-O teste de carga não restaura o banco ao estado anterior. Para fins de comparação, os testes mais antigos permanecem no diretório `tests/gatling/results/history/`.
+Para fins de comparação, os testes mais antigos permanecem no diretório `tests/gatling/results/history/`.
 
-O comando abaixo remove o bundle do Gatling e limpa o histórico dos testes de carga. Atenção: ele não restaura os dados do banco alvo do teste, sendo necessário recriá-lo, se preciso.
+O comando abaixo remove o bundle do Gatling e limpa o histórico dos testes de carga.
 ```bash
 # Limpa os dados do teste de carga 
 docker exec -ti gatling /entrypoint clean-test 
 ```
-
-<br>
 
 ##### Considerações  
 
