@@ -837,7 +837,7 @@ _*Esse fluxo representa o processo de aprovação, fallback e rejeição da tran
 <br/>
 
 <a id="open-question"></a>
-### 🅻4️⃣ Questão Aberta L4
+### 🅻 Questão Aberta L4
 
 
 #### 🔒 Locks Distribuídos com Redis e Keyspace Notification
