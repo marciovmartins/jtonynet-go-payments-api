@@ -568,7 +568,7 @@ docker exec -ti gatling /entrypoint clean-test
 <br/>
 
 <a id="test-manual"></a>
-#### 🧑‍🔧 Validação Manual
+### 🧑‍🔧 Validação Manual
 
 O banco de desenvolvimento local, quando adequadamente instalado, possui uma carga inicial de dados que pode ser utilizada para Validação Manual.
 
