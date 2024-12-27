@@ -233,7 +233,7 @@ Este repositório foi criado com a intenção de propor uma possível solução 
 
 <br/>
 
-O desafio sugere `Scala`, `Kotlin` e o `paradigma funcional`, mas aceita outras linguagens e paradigmas. Realizei em `Golang`, com arquitetura [`hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior experiência e familiaridade, além de ser mencionada na `job description` como parte do stack utilizado. Essa combinação atende bem aos requisitos do desafio.
+O desafio sugere `Scala`, `Kotlin` e o `paradigma funcional`, mas aceita outras linguagens e paradigmas. Realizei em [`Golang`](https://go.dev/), com arquitetura [`Hexagonal`](https://alistair.cockburn.us/hexagonal-architecture/), por maior experiência e familiaridade, além de ser mencionada na `job description` como parte do stack utilizado. Essa combinação atende bem aos requisitos do desafio.
 
 Contudo, sou aberto a expandir minhas habilidades e disposto a aprender novas tecnologias e paradigmas conforme necessário.
 
@@ -1112,6 +1112,8 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 [⤴️ de volta ao índice](#index)
 
 ---
+
+<br/>
 
 <a id="conclusion"></a>
 ### 🏁 Conclusão
