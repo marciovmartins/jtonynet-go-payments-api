@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 
-## [0.1.7] - 2024-28-12
+## [0.1.8] - 2024-28-12
 ### Adicionado
   - Adicionado `Gatling` para `Load and Stress tests`
   - Adicionado `context.WithTimeout`na `Service` para deaquado controle de SLA
