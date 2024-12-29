@@ -430,7 +430,7 @@ GRPC_CLIENT_HOST=localhost      ### local: localhost | conteinerized: transactio
 docker compose up test-postgres -d
 ```
 
-Comando para executar o teste  _containerizado_com a API levantada __(Recomendado)__
+Comando para executar o teste _containerizado_ com a API levantada __(Recomendado)__
 ```bash
 # Executa Testes no Docker com ENV test (PostgreSQL de Testes na Integração)
 docker compose exec -e ENV=test transaction-rest go test -v -count=1 ./internal/adapter/repository/gormRepos ./internal/adapter/repository/redisRepos ./internal/core/service ./internal/adapter/http/router
@@ -501,7 +501,7 @@ docker exec -ti gatling /entrypoint run-test
 <br/>
 
 <details>
-  <summary><b>Saída esperada nos terminais de <u>payment-transaction-rest</u> e <u>payment-transaction-processor</u></b></summary>
+  <summary><b>Saída esperada nos terminais de <u>transaction-rest</u> e <u>transaction-processor</u></b></summary>
     <div align="center">
         <img src="./docs/assets/images/screen_captures/load_test_performs_microservices.png">
     </div>
@@ -528,7 +528,7 @@ docker exec -ti gatling /entrypoint run-test
 
 <br/>
 
-O teste executa **7500k transações em 5 minutos** (ou 25 `TPS`), validando o `timeoutSLA` de 100ms na máquina local. Essa configuração pode ser encontrada na seguinte linha do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
+O teste executa **7500k transações em 5 minutos** (ou `25 TPS`), validando o `timeoutSLA` de `100ms` na máquina local. Essa configuração pode ser encontrada na seguinte linha do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
 
 ```scala
 testPaymentExecute.inject(rampUsers(7500).during(301.seconds))
@@ -575,7 +575,7 @@ _Apenas Containerizado._
 
 __Métricas com Prometheus:__
 
-Apos rodar com sucesso o `docker compose up` como visto anteriormente, acesse:
+Após rodar com sucesso o `docker compose up` como visto anteriormente, acesse:
 
 ```bash
 # Rodar o Prometheus
@@ -590,22 +590,26 @@ docker compose up prometheus grafana -d
 </details>
 
 <br/>
+
+__Acesse o [Grafana em seu localhost](http://localhost:3000/)__ _(usuário/senha: admin/admin | admin/12345)_
+
+<br/>
 <br/>
 
 __Configurando o Grafana:__
 
 A primeira vez que executarmos o Grafana, entramos com `usuário/senha` padrão de `admin/admin`. Ele solicita a alteração da senha, para facilitar o desenvolvimento local, alteramos para `admin/12345`.
-- Grafana - http://localhost:3000/ (usuário/senha: admin/admin | admin/12345)
+
   
 <details>
-  <summary>Uma vez dentro do Grafana em sua primeira execução, também precisamos criar uma conexão Datasource com o Prometheus (que acessamos acima). Procure por <i>`Connections > Add New Connection`</i> digite <i>Prometheus</i> no campo de Search, selecione-o, clique em <i>`Add New Datasource`</i> e configure-o com a URL: <i>http://prometheus:9090</i> e clique no botão <i>Save & test</i> no final da página</summary>
+  <summary>Uma vez dentro do Grafana em sua primeira execução, também precisamos criar uma conexão Datasource com o Prometheus (que acessamos acima). Procure por <i>`Connections > Add New Connection`</i> digite <i>Prometheus</i> no campo de Search, selecione-o, clique em <i>`Add New Datasource`</i> e configure-o com a URL: <i>http://prometheus:9090</i> e clique no botão <i>`Save & test`</i> no final da página</summary>
   <img src="./docs/assets/images/screen_captures/grafana_create_prometheus_conn.png">
 </details>
 
 <br/>
 
 <details>
-  <summary>Agora você pode usar o menu <i>`Dashboards > New > Import`</i> para importar o arquivo <b>dash-go-products-api.json</b> que está localizado no diretório: <a href="./scripts/grafana-dashboards/">./scripts/grafana-dashboards</a>. Acesse o diretório em seu computador, clique e arraste o arquivo para o campo correto especificado pela tela <b>Upload Dashboard JSON File</b></summary>
+  <summary>Agora você pode usar o menu <i>`Dashboards > New > Import`</i> para importar o arquivo <b>dash-payments-api.json</b> que está localizado no diretório: <a href="./scripts/grafana-dashboards/">./scripts/grafana-dashboards</a>. Acesse o diretório em seu computador, clique e arraste o arquivo para o campo correto especificado pela tela <b>Upload Dashboard JSON File</b>, selecione o Prometheus previamente configurado como data source e proceda o import</summary>
   <img src="./docs/assets/images/screen_captures/grafana_import_dashboard.png">
 </details>
 
@@ -650,7 +654,7 @@ Registros e Saldos no banco para teste manual
 
 <br/>
 
-Query Consulta Balances (saldo mais recente de `transactions` por `categories`) por account:
+Query Consulta Balances (saldo mais recente de `transactions` por `categories` , não é a mesma da `repository`) por account:
 ```sql
 SELECT 
 	a.id as account_id, 
@@ -798,6 +802,13 @@ erDiagram
         timestamp deleted_at
     }
 
+    transactions_latest {
+        int account_id PK
+        int category_id PK
+        int transactions_latest_id
+        numeric amount
+    }
+
     categories ||--o{ transactions : has
     categories ||--o{ mccs : has
     categories ||--o{ accounts_categories : defines
@@ -816,10 +827,11 @@ erDiagram
 
 **accounts** Tabela principal, conectada a **transactions** e **accounts_categories**, armazenando informações sobre as contas.  
 **accounts_categories** Vincula contas a categorias associadas.  
-**transactions** Registra o histórico de transações realizadas, incluindo categoria, comerciante e valores.  
 **categories** Armazena categorias (FOOD, MEAL, CASH...), com `priority` para definir a ordem de utilização.  
 **mccs** Contém MCCs (códigos de quatro dígitos) associados às categorias.  
 **merchants** Ajusta MCCs com base no nome do comerciante.
+**transactions** Registra o histórico de transações realizadas, incluindo categoria, comerciante e valores.  
+**transactions_latest**: Tabela auxiliar para reduzir o tempo de consulta às transações recentes das contas. Atualizada através da trigger `trg_update_latest_transaction`.
 
 <br/>
 
@@ -982,7 +994,7 @@ _*A etapa [`Processa Autorização de Pagamento`](#diagrams-flowchart) é uma su
     <div align="center">
         <img src="./docs/assets/images/screen_captures/miro/interview_architecture_proposal_v1.jpeg">
     </div>
-A partir desse diagrama, construí uma segunda versão com poucas modificações, acrescentando detalhes e contexto para os que não estiveram presentes nessa sessão. Esse diagrama gerou o ADR __[0003: gRPC e Redis Keyspace Notification reduzindo Latência e evitando Concorrência](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md)__, visando nortear a implementação do requisito L4 neste projeto, com finalidade estritamente de treinamento.
+A partir desse diagrama, construí uma segunda versão com poucas modificações, acrescentando detalhes e contexto para os que não estiveram presentes nessa sessão. Esse diagrama gerou o ADR <b><a href="./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md">0003: gRPC e Redis Keyspace Notification reduzindo Latência e evitando Concorrência</a></b>, visando nortear a implementação do requisito L4 neste projeto, com finalidade estritamente de treinamento.
 
 Via de regra, o que foi discutido naquela reunião deve ser implementado.
 </details>
@@ -1004,6 +1016,7 @@ Via de regra, o que foi discutido naquela reunião deve ser implementado.
 - [0004: Banco Relacional Modelado Inspirado em Eventos](./docs/architecture/decisions/0004-banco-relacional-modelado-de-maneira-orientada-a-eventos.md)
 - [0005: Estratégia de Testes de Carga e Performance com Cliente Sintético](./docs/architecture/decisions/0005-estrategia-de-testes-de-carga-e-performance-com-cliente-sintetico.md)
 - [0006: Observabilidade com Prometheus e Grafana](./docs/architecture/decisions/0006-observabilidade-com-prometheus-e-grafana.md)
+- [0007: Tabela Auxiliar para melhoria de Performance](./docs/architecture/decisions/0007-tabela-auxiliar-para-melhoria-de_performance.md)
 
 
 <br/>
@@ -1046,6 +1059,7 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
   - [uuid](github.com/google/uuid)
   - [gRPC](https://grpc.io/docs/languages/go/quickstart/)
   - [golang-migrate](https://github.com/golang-migrate/migrate)
+  - [prometheus/promhttp](https://pkg.go.dev/github.com/prometheus/client_golang@v1.20.5/prometheus/promhttp)
 
 - Infra & Tecnologias
   - [Docker v24.0.6](https://www.docker.com/)
@@ -1053,6 +1067,8 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
   - [Postgres v16.0](https://www.postgresql.org/)
   - [Redis](https://redis.com/)
   - [Gatling](https://gatling.com/)
+  - [Prometheus](https://prometheus.io/)
+  - [Grafana](https://grafana.com/)
 
 - GUIs:
   - [DBeaver](https://dbeaver.io/)
@@ -1080,6 +1096,7 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
 - [Mermaid Diagrams](https://mermaid.js.org)
 - [Miro Diagrams](https://miro.com/)
 - [Dockerized Load Testing Gatling](https://gatling.io/blog/load-testing-a-dockerized-application)
+- [Observability Metrics RED with Gatling](https://grafana.com/)
 
 <br/>
 
@@ -1118,17 +1135,21 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 <a id="conclusion"></a>
 ### 🏁 Conclusão
 
-- Adotei o modelo hexagonal por sua flexibilidade com `ports` e `adapters`, permitindo suporte a `http` e fácil extensão para `mensagens` ou `pub/sub` para atender ao requisito `L4`, sem impacto no `core` e com responsabilidades bem separadas.
+- Adotei o modelo hexagonal por sua flexibilidade com `ports` e `adapters`, permitindo suporte a `HTTP`, `gRPC` e fácil extensão para `Mensagens` ou `pub/sub` para atender ao requisito `L4`, sem impacto no `core` e com responsabilidades bem separadas.
 
-- Para o `L4`, filas foram descartadas pelo proponente no `Miro Board` devido à latência. Isso é detalhado no `ADR` [0003: gRPC e Redis Keyspace Notification](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md) e no `Kanban`.
+- Para o `L4`, filas foram descartadas pelo proponente no `Miro Board` devido à latência. Detalhes no `ADR` [0003: gRPC e Redis Keyspace Notification](./docs/architecture/decisions/0003-grpc-e-redis-keyspace-notification-em-api-rest-e-processor-para-reduzir-latencia-e-evitar-concorrencia.md) e no `Kanban`.
 
 - Refatoração das tabelas centralizou `transactions` e atualização de saldos por `categories`, garantindo `imutabilidade` e mitigando inconsistências. Detalhes no `ADR` [0004: Banco Relacional Modelado Inspirado em Eventos](./docs/architecture/decisions/0004-banco-relacional-modelado-de-maneira-orientada-a-eventos.md).
 
 - Testes de performance com `Gatling` foram criados para garantir implantações seguras. Detalhes no `ADR` [0005: Estratégia de Testes de Carga e Performance com Cliente Sintético](./docs/architecture/decisions/0005-estrategia-de-testes-de-carga-e-performance-com-cliente-sintetico.md).  
 
-- Adicionada `Observabilidade Métricas RED` usando `Prometheus` e `Grafana`. Essas ferramentas também são úteis no desenvolvimento, quando usadas em conjunto aos testes de `Performance` e `Carga` citadas anteriormente. Detalhes no `ADR` [0006: Observabilidade com Prometheus e Grafana](./docs/architecture/decisions/0006-observabilidade-com-prometheus-e-grafana.md).
+- Adicionada `Observabilidade Métricas RED` usando `Prometheus` e `Grafana`. Essas ferramentas também são úteis no desenvolvimento, quando usadas em conjunto aos testes de `Performance` e `Carga` citadas anteriormente. Detalhes no `ADR` [0006: Observabilidade com Prometheus e Grafana](./docs/architecture/decisions/0006-observabilidade-com-prometheus-e-grafana.md). 
 
-- Testes adicionais devem ser criados (multiplos cenários de erros nas rotas e serviços). 
+- Os números de métricas entre os testes do `Gatling` e do `Grafana` (WIP) estão descolados (não de maneira muito significativa). É necessário maior investigação para entender os motivos. Também é esperado que, ao se adotar o `Cliente Sintético` `K6`, pertencente ao ecossistema `Grafana`, esse descolamento deixe de ocorrer.
+
+- Teste de stress abaixo foi realizado em um [Notebook ROG Strix G16 - 13ª Geração](https://br.store.asus.com/notebook-gamer-rog-strix-g16-13-geracao.html?config=90NR0D41-M00Y60) após melhorias no banco e consultas para `Performance`. Os resultados podem variar dependendo das configurações e processos abertos na máquina de desenvolvimento. Detalhes no `ADR` [0007: Tabela Auxiliar para Melhoria de Performance](./docs/architecture/decisions/0007-tabela-auxiliar-para-melhoria-de_performance.md). <div align="center"><img src="./docs/assets/images/screen_captures/improvement/load_test_400_tps_after_improvement.jpeg"></div>
+
+- Testes adicionais devem ser criados (multiplos cenários de erros nas rotas e serviços).
 
 Este desafio me permite consolidar conhecimentos e identificar pontos cegos para aprimoramento. Continuarei trabalhando para evoluir o projeto e expandir minhas habilidades.
 
