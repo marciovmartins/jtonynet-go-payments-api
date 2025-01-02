@@ -9,7 +9,8 @@ import (
 
 type PubSub interface {
 	GetStrategy(ctx context.Context) (string, error)
-	Subscribe(ctx context.Context, topic string) (<-chan string, error)
+	Subscribe(ctx context.Context, key string) (<-chan string, error)
+	UnSubscribe(_ context.Context, key string) error
 	Publish(ctx context.Context, topic, message string) error
 	Close() error
 }

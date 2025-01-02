@@ -33,7 +33,7 @@ func (ml *MemoryLock) Lock(
 		return port.MemoryLockEntity{}, err
 	}
 
-	isUnlocked, _ := ml.isUnlocked(mle)
+	isUnlocked, _ := ml.isUnlocked(ctx, mle)
 	if isUnlocked {
 		err = ml.lockConn.Set(ctx, mle.Key, mle.Timestamp, expiration)
 		if err != nil {
@@ -43,36 +43,43 @@ func (ml *MemoryLock) Lock(
 		return mle, nil
 	}
 
-	unlockChannel, err := ml.pubsub.Subscribe(ctx, mle.Key)
+	accountTransactionKey := fmt.Sprintf(`%s:%s`, mle.Key, mle.Transcation)
+	unlockSubscription, err := ml.pubsub.Subscribe(context.Background(), accountTransactionKey)
 	if err != nil {
 		return port.MemoryLockEntity{}, err
 	}
+	defer func() {
+		ml.pubsub.UnSubscribe(context.Background(), accountTransactionKey)
+	}()
 
 	deadline, ok := ctx.Deadline()
 	if !ok {
 		log.Fatalf("cannot acquire deadline from context")
 	}
 
-	select {
-	case <-unlockChannel:
-		err = ml.lockConn.Set(ctx, mle.Key, mle.Timestamp, expiration)
-		if err != nil {
-			return port.MemoryLockEntity{}, err
+	for {
+		select {
+		case <-unlockSubscription:
+			err = ml.lockConn.Set(ctx, mle.Key, mle.Timestamp, expiration)
+			if err != nil {
+				return port.MemoryLockEntity{}, err
+			}
+			return mle, nil
+		case <-time.After(time.Until(deadline)):
+			return port.MemoryLockEntity{}, fmt.Errorf("timeout waiting for lock release on key: %s", mle.Key)
+		case <-ctx.Done():
+			return port.MemoryLockEntity{}, ctx.Err()
 		}
-		return mle, nil
-	case <-time.After(time.Until(deadline)):
-		return port.MemoryLockEntity{}, fmt.Errorf("timeout waiting for lock release on key: %s", mle.Key)
-	case <-ctx.Done():
-		return port.MemoryLockEntity{}, ctx.Err()
 	}
+
 }
 
 func (ml *MemoryLock) Unlock(ctx context.Context, key string) error {
 	return ml.lockConn.Expire(ctx, key, 0)
 }
 
-func (ml *MemoryLock) isUnlocked(mle port.MemoryLockEntity) (bool, error) {
-	locked, err := ml.get(context.Background(), mle.Key)
+func (ml *MemoryLock) isUnlocked(ctx context.Context, mle port.MemoryLockEntity) (bool, error) {
+	locked, err := ml.get(ctx, mle.Key)
 	if err == nil {
 		elapsedTime := time.Now().UnixMilli() - locked.Timestamp
 		return false, fmt.Errorf("key is already locked by another process, held for %v ms", elapsedTime)

@@ -70,6 +70,7 @@ func PaymentExecution(ctx *gin.Context) {
 	result, err := app.GRPCpayment.Execute(
 		context.Background(),
 		&pb.TransactionRequest{
+			Transaction: uuid.NewString(),
 			Account:     transactionRequest.AccountUID.String(),
 			Mcc:         transactionRequest.MCC,
 			Merchant:    transactionRequest.Merchant,
