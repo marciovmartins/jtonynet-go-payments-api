@@ -43,7 +43,7 @@ func (ml *MemoryLock) Lock(
 		return mle, nil
 	}
 
-	accountTransactionKey := fmt.Sprintf(`%s:%s`, mle.Key, mle.Transcation)
+	accountTransactionKey := pubSub.Key{Account: mle.Key, Transaction: mle.Transcation}
 	unlockSubscription, err := ml.pubsub.Subscribe(context.Background(), accountTransactionKey)
 	if err != nil {
 		return port.MemoryLockEntity{}, err

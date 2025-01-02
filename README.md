@@ -1149,7 +1149,20 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Teste de stress abaixo foi realizado em um [Notebook ROG Strix G16 - 13ª Geração](https://br.store.asus.com/notebook-gamer-rog-strix-g16-13-geracao.html?config=90NR0D41-M00Y60) após melhorias no banco e consultas para `Performance`. Os resultados podem variar dependendo das configurações e processos abertos na máquina de desenvolvimento. Detalhes no `ADR` [0007: Tabela Auxiliar para Melhoria de Performance](./docs/architecture/decisions/0007-tabela-auxiliar-para-melhoria-de_performance.md). <div align="center"><img src="./docs/assets/images/screen_captures/improvement/load_test_400_tps_after_improvement.jpeg"></div>
 
-- O requisito `L4` foi aprimorado em sua `concorrência` com o `refactor` do `adapter` de `PubSub` `Redis` e do `repository` de `memoryLock`. A instância da aplicação se sobrescreve no `PubSub` `Redis` uma única vez e distribui as mensagens de desbloqueio apenas para as `requests` bloqueadas, através de `channels` com `bufferSize` de `1`, armazenados em um `syncMap` com chave `accountUID:TransactionUID`, tornando cada requisição única e eliminando conexões custosas com o `Redis`.
+- O requisito `L4` foi aprimorado em sua `Concorrência` com o `Refactor` do `adapter` de `PubSub` `Redis` e do `repository` de `memoryLock`. A instância da aplicação sobrescreve no `PubSub` uma única vez e distribui as mensagens de desbloqueio apenas para as `requests` bloqueadas, através de `channels` com `bufferSize` de `1`, armazenados em um `syncMap` com chave `accountUID`. Esse map por sua vez armazena os `channels` de `subscriptions` em um `hashMap` cuja as chaves são `transactionUID` , tornando cada requisição única e eliminando conexões custosas com o `Redis`.
+
+```go
+subscriptions := sync.Map{
+    "account1": map[string]chan string{
+        "transaction1": make(chan string, 1),
+        "transaction2": make(chan string, 1),
+    },
+    "account2": map[string]chan string{
+        "transaction3": make(chan string, 1),
+    },
+}
+
+```
 
 - Testes adicionais devem ser criados (multiplos cenários de erros nas rotas e serviços).
 

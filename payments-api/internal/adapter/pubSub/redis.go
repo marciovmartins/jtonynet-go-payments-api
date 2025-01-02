@@ -3,7 +3,6 @@ package pubSub
 import (
 	"context"
 	"fmt"
-	"strings"
 	"sync"
 
 	"github.com/jtonynet/go-payments-api/config"
@@ -14,8 +13,8 @@ type RedisPubSub struct {
 	client *redis.Client
 	pubsub *redis.PubSub
 
-	subscriptionListeners sync.Map
-	strategy              string
+	subscriptions sync.Map
+	strategy      string
 }
 
 func NewRedisPubSub(cfg config.PubSub) (*RedisPubSub, error) {
@@ -29,9 +28,9 @@ func NewRedisPubSub(cfg config.PubSub) (*RedisPubSub, error) {
 	})
 
 	rps := &RedisPubSub{
-		client:                client,
-		strategy:              cfg.Strategy,
-		subscriptionListeners: sync.Map{},
+		client:        client,
+		strategy:      cfg.Strategy,
+		subscriptions: sync.Map{},
 	}
 
 	err := rps.subscribe(context.Background())
@@ -42,43 +41,83 @@ func NewRedisPubSub(cfg config.PubSub) (*RedisPubSub, error) {
 	return rps, nil
 }
 
-func (r *RedisPubSub) Subscribe(_ context.Context, key string) (<-chan string, error) {
-	if listner, ok := r.subscriptionListeners.Load(key); ok {
-		subscriptionListener, _ := listner.(chan string)
-		return subscriptionListener, nil
+func (r *RedisPubSub) Subscribe(_ context.Context, key Key) (<-chan string, error) {
+	listenerBufferSize := 1
+
+	if transactionsSubscriptions, ok := r.subscriptions.Load(key.Account); ok {
+		transactionMap, _ := transactionsSubscriptions.(map[string]chan string)
+
+		if subscription, exists := transactionMap[key.Transaction]; exists {
+			return subscription, nil
+		}
+
+		subscription := make(chan string, listenerBufferSize)
+		transactionMap[key.Transaction] = subscription
+		r.subscriptions.Store(key.Account, transactionMap)
+		return subscription, nil
 	}
 
-	listnerBufferSize := 1
-	listnerChannel := make(chan string, listnerBufferSize)
-	r.subscriptionListeners.Store(key, listnerChannel)
-	return listnerChannel, nil
+	subscription := make(chan string, listenerBufferSize)
+	transactionMap := map[string]chan string{
+		key.Transaction: subscription,
+	}
+
+	r.subscriptions.Store(key.Account, transactionMap)
+	return subscription, nil
 }
 
-func (r *RedisPubSub) UnSubscribe(_ context.Context, key string) error {
-	if listener, ok := r.subscriptionListeners.Load(key); ok {
-		r.subscriptionListeners.Delete(key)
-		close(listener.(chan string))
+func (r *RedisPubSub) UnSubscribe(_ context.Context, key Key) error {
+	if transactionsSubscriptions, ok := r.subscriptions.Load(key.Account); ok {
+		transactionMap, _ := transactionsSubscriptions.(map[string]chan string)
+
+		if subscription, exists := transactionMap[key.Transaction]; exists {
+
+			delete(transactionMap, key.Transaction)
+			close(subscription)
+
+			if len(transactionMap) == 0 {
+				r.subscriptions.Delete(key.Account)
+			} else {
+				r.subscriptions.Store(key.Account, transactionMap)
+			}
+		}
 	}
 
 	return nil
 }
 
-func (r *RedisPubSub) subscribe(_ context.Context) error {
+func (r *RedisPubSub) subscribe(ctx context.Context) error {
 	keyspaceChannel := fmt.Sprintf("__keyevent@%d__:expired", r.client.Options().DB)
-	r.pubsub = r.client.Subscribe(context.Background(), keyspaceChannel)
+	r.pubsub = r.client.Subscribe(ctx, keyspaceChannel)
 
 	go func() {
-		for msg := range r.pubsub.Channel() {
-			// Necessary to message multiple `transaction` requests for the same `account` by `UIDs`
-			keyPrefix := msg.Payload // msg.Payload is a key `accountUID` of expired register
-			r.subscriptionListeners.Range(func(key, value any) bool {
-				if strKey, ok := key.(string); ok && strings.HasPrefix(strKey, keyPrefix) {
-					if ch, ok := value.(chan string); ok {
-						ch <- keyPrefix
+		defer r.pubsub.Close()
+
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case msg, ok := <-r.pubsub.Channel():
+				if !ok {
+					return
+				}
+
+				accountUID := msg.Payload
+				if transactionsSubscriptions, ok := r.subscriptions.Load(accountUID); ok {
+					subscriptions, valid := transactionsSubscriptions.(map[string]chan string)
+					if !valid {
+						continue
+					}
+
+					for _, subscription := range subscriptions {
+						select {
+						case subscription <- accountUID:
+						default:
+							continue
+						}
 					}
 				}
-				return true
-			})
+			}
 		}
 	}()
 
