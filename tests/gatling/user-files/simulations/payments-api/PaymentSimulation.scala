@@ -29,13 +29,10 @@ class Payment extends Simulation {
   val testPaymentExecute = scenario("Test Payments").exec(paymentExecute)
 
 
-  /*
-    Common TPS:
-     9000k in 5min -  30 TPS
-    15000k in 5min -  50 TPS
-    30000k in 5min - 100 TPS
-  */
+  private val tps = 25
+  private val window = 5.minutes
+  private val activeUsers = (window.toSeconds * tps).toInt
   setUp(
-    testPaymentExecute.inject(rampUsers(7500).during(301.seconds)) // 7500k in 5min - 25 TPS
+    testPaymentExecute.inject(rampUsers(activeUsers).during(window))
   ).protocols(httpProtocol)
 }

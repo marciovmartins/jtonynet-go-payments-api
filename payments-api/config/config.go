@@ -31,7 +31,8 @@ type Database struct {
 	MetricDBName        string `mapstructure:"DATABASE_METRICS_NAME"`
 	MetricIntervalInSec uint32 `mapstructure:"DATABASE_METRICS_INTERVAL_IN_SEC"`
 	MetricStartServer   bool   `mapstructure:"DATABASE_METRICS_START_SERVER"`
-	MetricServerPort    uint32 `mapstructure:"DATABASE_METRICS_SERVER_PORT"`
+	MetricServerHost    string `mapstructure:"DATABASE_METRICS_PUSHGATEWAY_HOST"`
+	MetricServerPort    uint32 `mapstructure:"DATABASE_METRICS_PUSHGATEWAY_PORT"`
 }
 
 type Router struct {
