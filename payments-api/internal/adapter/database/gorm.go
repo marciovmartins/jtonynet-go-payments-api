@@ -33,9 +33,12 @@ func NewGormConn(cfg config.Database) (Conn, error) {
 		}
 
 		if cfg.MetricEnabled {
+			pushGatewayHost := fmt.Sprintf(`%s:%s`, cfg.MetricServerHost, fmt.Sprint(cfg.MetricServerPort))
+
 			db.Use(prometheus.New(prometheus.Config{
 				DBName:          cfg.MetricDBName,        // `DBName` as metrics label
 				RefreshInterval: cfg.MetricIntervalInSec, // refresh metrics interval (default 15 seconds)
+				PushAddr:        pushGatewayHost,         // push metrics if `PushAddr` configured
 				StartServer:     cfg.MetricStartServer,   // start http server to expose metrics
 				HTTPServerPort:  cfg.MetricServerPort,    // configure http server port, default port 8080 (if you have configured multiple instances, only the first `HTTPServerPort` will be used to start server)
 				MetricsCollector: []prometheus.MetricsCollector{
