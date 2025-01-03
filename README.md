@@ -15,11 +15,11 @@
     https://devicon.dev/
     https://simpleicons.org/
 -->
-[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="Go Logo" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Logo" title="Gin">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSql Logo" title="PostgreSql">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.com/) [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="gRPC Logo" title="gRPC">](https://grpc.io/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubuntu" alt="Ubuntu" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="Viper DotEnv Logo" title="Viper DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/)
+[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="Go Logo" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Logo" title="Gin">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSql Logo" title="PostgreSql">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.com/) [<img src="./docs/assets/images/icons/grpc.svg" width="45px" alt="gRPC Logo" title="gRPC">](https://grpc.io/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubuntu" alt="Ubuntu" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="Viper DotEnv Logo" title="Viper DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) [<img src="./docs/assets/images/icons/gatling.svg" width="35px" height="35px" alt="Gatling Logo" title="Gatling">](https://gatling.com/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) <!-- --> [<img src="./docs/assets/images/icons/grafana_loki.png" width="30px" height="30px" alt="Grafana Loki Logo" title="Grafana Loki">](https://grafana.com/oss/loki/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://opentelemetry.io/) [<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) 
 
 
 <!--
-[<img src="./docs/assets/images/icons/k6.svg" width="25px" height="25px" alt="K6 Logo" title="K6">](https://k6.io/) [<img src="./docs/assets/images/icons/grafana_loki.png" width="30px" height="30px" alt="Grafana Loki Logo" title="Grafana Loki">](https://grafana.com/oss/loki/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://opentelemetry.io/) [<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) 
+[<img src="./docs/assets/images/icons/k6.svg" width="25px" height="25px" alt="K6 Logo" title="K6">](https://k6.io/) 
 --> 
 
 <!-- 
@@ -78,21 +78,22 @@ __[Go Payments API](#header)__<br/>
 __Resumo:__
 
 > 
-> Desafio de `Autorizador de Pagamentos` de benefícios em `Arquitetura Hexagonal` com `SLA de 100ms` por request e `controle de concorrência` com baixa possibilidade de colisão. 
-> Construído com `Gin` e `Gorm`, protocolo `gRPC` entre o serviço "`REST`" `http` ("aberto" ao mundo, o ponto de entrada) e o serviço `Processor` ("fechado" ao mundo, o processador de pagamentos) por segurança.
+> Desafio de `Payment Authorizer` de benefícios em `Hexagonal Architecture` com `100ms SLA` por request e controle de concorrência com baixa possibilidade de colisão. 
+> Construído com `Gin` e `Gorm`, protocolo `gRPC` entre o serviço `REST` `HTTP` ("aberto" ao mundo, o ponto de entrada) e o serviço `Processor` ("fechado" ao mundo, o processador de pagamentos) por segurança.
 >
 > __Principais Tecnologias e abordagens:__
 > - `Hexagonal Architecture`
 > - `TDD`, `DDD`, `SOLID`, `ADRs`
-> - `Diagram as code` com `Mermaid.js` e `Miro`
+> - `REST` `HTTP` e `gRPC` entre `Microsservices`
 > - `Dockerized` Solução com uso de containers
-> - `gRPC` e `http` entre `Microsservices`
-> - `PostgreSQL` modelado inspirado em `Event Sourcing` para garantir `Consistência`
+> - `PostgreSQL` modelado inspirado em `Event Sourcing` garantindo `Consistency`
+> -  `Concurrent Programming`
+> - `Redis` para `Pessimistic Memory Lock`
+> - `Redis Keyspace Notification` como `Pub/Sub` para `Unlocks` <br/>(`Robust Queues` foram desconsideradas devido `Additional Latency`)
 > - `CI` com `GitHub Actions` 
-> - `Redis` para `Memory Lock Pessimista` e `Concurrent Programming`
-> - `Redis Keyspace Notification` como `Pub/Sub` para `Unlocks` (outras Abordagens como `Filas` foram desconsideradas devido `Latência Adicional`)
 > - `Performance/Load Test Dockerized` com `Gatling`
-> - `Observability` com `Prometheus` e `Grafana` com `Metricas` `RED` (WIP)
+> - `Observability` com `Prometheus` e `Grafana` com `RED M etrics` (WIP)
+> - `Diagram as code` com `Mermaid.js` e `Miro`
 
 <br/>
 
@@ -477,7 +478,7 @@ Os testes também são executados como parte da rotina minima de `CI` do <a href
 
 _Apenas Containerizado._
 
-Atualmente o `Gatling` na versão 3.9.5 (desatualizada), realiza os testes de carga.<br/>Para executá-los, é necessário estar [Rodando o Projeto Containerizado](#run-containerized). Em outro terminal, no diretório raiz do projeto, execute os seguintes comandos
+Atualmente o `Gatling` na versão 3.9.5 (desatualizada), realiza os testes de carga. Para executá-los, é necessário estar [Rodando o Projeto Containerizado](#run-containerized). Em outro terminal, no diretório raiz do projeto, execute os seguintes comandos
 
 ```bash
 # Rodar o Gatling
@@ -519,8 +520,7 @@ docker exec -ti gatling /entrypoint run-test
 
 <br/>
 
-<details>
-  <summary><b>Saída esperada no site <a href="http://localhost:9099">Gatling em seu localhost</a></b></summary>
+__Saída esperada no site [Gatling em seu localhost](http://localhost:9099)__
     <div align="center">
         <img src="./docs/assets/images/screen_captures/load_test_gatling_web.png">
     </div>
@@ -538,8 +538,9 @@ O teste executa **7500k transações em 5 minutos** (ou `25 TPS`, `Transações 
 
 Picos de `TPS` sugeridos para testes seriam
 - 50
+- 75
 - 100
-- Valores acima podemos considerar como `stress test`
+- Os valores acima podem ser considerados como um `stress test`, e é esperado que haja falhas no sistema a partir desse ponto. Em um sistema de produção, essa carga deve ser distribuída entre diferentes `pods`.
 
 <br/>
 
@@ -583,12 +584,22 @@ _Apenas Containerizado. Validado no SO Ubunto 22_
 
 __Métricas com Prometheus:__
 
-Após rodar com sucesso o `docker compose up` como visto anteriormente, acesse:
+Em seu arquivo `.env`, altere a configuração de métricas do `database` para `true` e reinicie o `transaction-processor`.
+
+```
+DATABASE_METRICS_ENABLED=true
+```
+
+<br/>
+
+[Rodando o Projeto](#run) `payment-api`  em seu ambiente _containerizado_ com seu `.env` configurado, suba as imagens necessarias com o comando
 
 ```bash
-# Rodar o Prometheus e Grafana
+# Rodar o Prometheus, pushgateway e Grafana
 docker compose up prometheus pushgateway grafana -d
 ```
+
+<br/>
 
 <details>
   <summary><b>Saída esperada no site <a href="http://localhost:9090/">Prometheus em seu localhost</a> rodando a consulta</b> <i>gin_gonic_request_duration_bucket{path="/payment"}</i></summary>
@@ -630,7 +641,7 @@ A primeira vez que executarmos o Grafana, entramos com `usuário/senha` padrão 
 
 <br/>
 
-Quando adequadamente importado, o Dashboard estará disponível e responderá às solicitações que você pode simular pela [Documentação da API](#api-docs) ou pelos [Testes Carga & Performance](#test-load) (fortemente recomendados).
+Quando adequadamente importado, o Dashboard estará disponível e responderá às solicitações que você pode simular pela [Documentação da API](#api-docs) ou pelos [Testes Carga & Performance](#test-load) (fortemente recomendado rodar em conjunto com a `Observabilidade`).
 
 <div align="center">
     <img src="./docs/assets/images/screen_captures/grafana_red.png">
@@ -1158,9 +1169,27 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Teste de stress abaixo foi realizado em um [Notebook ROG Strix G16 - 13ª Geração](https://br.store.asus.com/notebook-gamer-rog-strix-g16-13-geracao.html?config=90NR0D41-M00Y60) após melhorias no banco e consultas para `Performance`. Os resultados podem variar dependendo das configurações e processos abertos na máquina de desenvolvimento. Detalhes no `ADR` [0007: Tabela Auxiliar para Melhoria de Performance](./docs/architecture/decisions/0007-tabela-auxiliar-para-melhoria-de_performance.md). <div align="center"><img src="./docs/assets/images/screen_captures/improvement/load_test_400_tps_after_improvement.jpeg"></div>
 
-- O requisito `L4` foi aprimorado em sua `concorrência` com o `refactor` do `adapter` de `PubSub` `Redis` e do `repository` de `memoryLock`. A instância da aplicação se sobrescreve no `PubSub` `Redis` uma única vez e distribui as mensagens de desbloqueio apenas para as `requests` bloqueadas, através de `channels` com `bufferSize` de `1`, armazenados em um `syncMap` com chave `accountUID:TransactionUID`, tornando cada requisição única e eliminando conexões custosas com o `Redis`.
+- O requisito `L4` foi aprimorado em sua `Concorrência` com o `Refactor` do `adapter` de `PubSub` `Redis` e do `repository` de `memoryLock`. A instância da aplicação sobrescreve no `PubSub` uma única vez e distribui as mensagens de desbloqueio apenas para as `requests` bloqueadas, através de `channels` com `bufferSize` de `1`, armazenados em um `syncMap` com chave `accountUID`. Esse map, por sua vez, armazena os `channels` de `subscriptions` em um `hashMap` cujas chaves são `transactionUID`, tornando cada requisição única e eliminando conexões custosas com o `Redis`. Com isso, espera-se validar a hipótese de que múltiplas instâncias são capazes de gerenciar os recursos de forma mais eficiente, resultando no aumento do `TPS` atendido.
 
-- Testes adicionais devem ser criados (multiplos cenários de erros nas rotas e serviços).
+```go
+// Exemplo de estrutura sync.Map usada no sistema para gerenciar concorrência
+subscriptions := sync.Map{
+    "account1": map[string]chan string{
+        "transaction1": make(chan string, 1),
+        "transaction2": make(chan string, 1),
+    },
+    "account2": map[string]chan string{
+        "transaction3": make(chan string, 1),
+    },
+}
+
+```
+
+- Aprimoramentos na `Observabilidade` com painéis de monitoramento `Grafana` do `Redis` `PubSub` e `Cache` fazem-se necessários, bem como melhorias na criação e no gerenciamento de `Logs` (`Grafana Loki`) e `Traces` baseados em `OpenTelemetry` com `Jaeger`. Esses aprimoramentos devem ser considerados no futuro próximo.
+
+- Aprimorar o `Disaster Recovery` e implementar `Graacefull Shutdown`
+
+- Testes adicionais devem ser criados (Concorrência e múltiplos cenários de erros nas rotas e serviços).
 
 Este desafio me permite consolidar conhecimentos e identificar pontos cegos para aprimoramento. Continuarei trabalhando para evoluir o projeto e expandir minhas habilidades.
 
@@ -1227,3 +1256,4 @@ migrate -source file://payments-api/scripts/database/postgres/migrations -databa
 
 docker compose exec postgres-payments psql -U api_user -d payments_db -f /seeds/load_test_charge.up.sql
 -->
+
