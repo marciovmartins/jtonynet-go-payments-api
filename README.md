@@ -520,7 +520,7 @@ docker exec -ti gatling /entrypoint run-test
 <br/>
 
 <details>
-  <summary><b>Saída esperada no site <a href="http://localhost:9091">Gatling em seu localhost</a></b></summary>
+  <summary><b>Saída esperada no site <a href="http://localhost:9099">Gatling em seu localhost</a></b></summary>
     <div align="center">
         <img src="./docs/assets/images/screen_captures/load_test_gatling_web.png">
     </div>
@@ -528,11 +528,19 @@ docker exec -ti gatling /entrypoint run-test
 
 <br/>
 
-O teste executa **7500k transações em 5 minutos** (ou `25 TPS`), validando o `timeoutSLA` de `100ms` na máquina local. Essa configuração pode ser encontrada na seguinte linha do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
+O teste executa **7500k transações em 5 minutos** (ou `25 TPS`, `Transações Por Segundo`. Valor pico médio de tráfego de esperado pelo proponente do desafio, validado por benchmarks reais), validando o `timeoutSLA` de `100ms` na máquina local. Essa configuração pode ser encontrada nas seguintes linhas do arquivo [PaymentSimulation.scala](./tests/gatling/user-files/simulations/payments-api/PaymentSimulation.scala):
 
 ```scala
-testPaymentExecute.inject(rampUsers(7500).during(301.seconds))
+  private val tps = 25
+  private val window = 5.minutes
+  private val activeUsers = (window.toSeconds * tps).toInt
 ```
+
+Picos de `TPS` sugeridos para testes seriam
+- 50
+- 100
+- Valores acima podemos considerar como `stress test`
+
 <br/>
 
 O comando abaixo remove o histórico dos testes de carga.
@@ -579,7 +587,7 @@ Após rodar com sucesso o `docker compose up` como visto anteriormente, acesse:
 
 ```bash
 # Rodar o Prometheus e Grafana
-docker compose up prometheus grafana -d
+docker compose up prometheus pushgateway grafana -d
 ```
 
 <details>
@@ -1068,6 +1076,7 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
   - [Redis](https://redis.com/)
   - [Gatling](https://gatling.com/)
   - [Prometheus](https://prometheus.io/)
+  - [prom/pushgateway](https://github.com/prometheus/pushgateway/blob/master/README.md)
   - [Grafana](https://grafana.com/)
 
 - GUIs:
