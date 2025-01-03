@@ -92,7 +92,7 @@ __Resumo:__
 > - `Redis Keyspace Notification` como `Pub/Sub` para `Unlocks` <br/>(`Robust Queues` foram desconsideradas devido `Additional Latency`)
 > - `CI` com `GitHub Actions` 
 > - `Performance/Load Test Dockerized` com `Gatling`
-> - `Observability` com `Prometheus` e `Grafana` com `RED M etrics` (WIP)
+> - `Observability` com `Prometheus` e `Grafana` com `RED Metrics` (WIP)
 > - `Diagram as code` com `Mermaid.js` e `Miro`
 
 <br/>
