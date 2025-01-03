@@ -1169,20 +1169,22 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Teste de stress abaixo foi realizado em um [Notebook ROG Strix G16 - 13ª Geração](https://br.store.asus.com/notebook-gamer-rog-strix-g16-13-geracao.html?config=90NR0D41-M00Y60) após melhorias no banco e consultas para `Performance`. Os resultados podem variar dependendo das configurações e processos abertos na máquina de desenvolvimento. Detalhes no `ADR` [0007: Tabela Auxiliar para Melhoria de Performance](./docs/architecture/decisions/0007-tabela-auxiliar-para-melhoria-de_performance.md). <div align="center"><img src="./docs/assets/images/screen_captures/improvement/load_test_400_tps_after_improvement.jpeg"></div>
 
-- O requisito `L4` foi aprimorado em sua `Concorrência` com o `Refactor` do `adapter` de `PubSub` `Redis` e do `repository` de `memoryLock`. A instância da aplicação sobrescreve no `PubSub` uma única vez e distribui as mensagens de desbloqueio apenas para as `requests` bloqueadas, através de `channels` com `bufferSize` de `1`, armazenados em um `syncMap` com chave `accountUID`. Esse map, por sua vez, armazena os `channels` de `subscriptions` em um `hashMap` cujas chaves são `transactionUID`, tornando cada requisição única e eliminando conexões custosas com o `Redis`. Com isso, espera-se validar a hipótese de que múltiplas instâncias são capazes de gerenciar os recursos de forma mais eficiente, resultando no aumento do `TPS` atendido.
+- O requisito `L4` foi aprimorado em sua `Concorrência` com o `Refactor` do `adapter` de `PubSub` `Redis` e do `repository` de `memoryLock`. A instância da aplicação sobrescreve no `PubSub` uma única vez e distribui as mensagens de desbloqueio apenas para as `requests` bloqueadas, através de `channels` com `bufferSize` de `1`, armazenados em um `syncMap` com chave `accountUID`. Esse map, por sua vez, armazena os `channels` de `subscriptions` em um outro `syncMap` cujas chaves são `transactionUID`, tornando cada requisição única e eliminando conexões custosas com o `Redis`. Com isso, espera-se validar a hipótese de que múltiplas instâncias são capazes de gerenciar os recursos de forma mais eficiente, resultando no aumento do `TPS` atendido.
 
 ```go
-// Exemplo de estrutura sync.Map usada no sistema para gerenciar concorrência
-subscriptions := sync.Map{
-    "account1": map[string]chan string{
-        "transaction1": make(chan string, 1),
-        "transaction2": make(chan string, 1),
-    },
-    "account2": map[string]chan string{
-        "transaction3": make(chan string, 1),
-    },
-}
+// Exemplo ilustrativo de estrutura sync.Map usada no sistema para gerenciar concorrência
+subscriptions := sync.Map{}
 
+// Criando um sync.Map para "account1"
+account1Transactions := &sync.Map{}
+account1Transactions.Store("transaction1", make(chan string, 1))
+account1Transactions.Store("transaction2", make(chan string, 1))
+subscriptions.Store("account1", account1Transactions)
+
+// Criando um sync.Map para "account2"
+account2Transactions := &sync.Map{}
+account2Transactions.Store("transaction3", make(chan string, 1))
+subscriptions.Store("account2", account2Transactions)
 ```
 
 - Aprimoramentos na `Observabilidade` com painéis de monitoramento `Grafana` do `Redis` `PubSub` e `Cache` fazem-se necessários, bem como melhorias na criação e no gerenciamento de `Logs` (`Grafana Loki`) e `Traces` baseados em `OpenTelemetry` com `Jaeger`. Esses aprimoramentos devem ser considerados no futuro próximo.
