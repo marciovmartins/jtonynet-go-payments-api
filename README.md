@@ -78,21 +78,22 @@ __[Go Payments API](#header)__<br/>
 __Resumo:__
 
 > 
-> Desafio de `Autorizador de Pagamentos` de benefícios em `Arquitetura Hexagonal` com `SLA de 100ms` por request e `controle de concorrência` com baixa possibilidade de colisão. 
-> Construído com `Gin` e `Gorm`, protocolo `gRPC` entre o serviço "`REST`" `http` ("aberto" ao mundo, o ponto de entrada) e o serviço `Processor` ("fechado" ao mundo, o processador de pagamentos) por segurança.
+> Desafio de `Payment Authorizer` de benefícios em `Hexagonal Architecture` com `100ms SLA` por request e controle de concorrência com baixa possibilidade de colisão. 
+> Construído com `Gin` e `Gorm`, protocolo `gRPC` entre o serviço `REST` `HTTP` ("aberto" ao mundo, o ponto de entrada) e o serviço `Processor` ("fechado" ao mundo, o processador de pagamentos) por segurança.
 >
 > __Principais Tecnologias e abordagens:__
 > - `Hexagonal Architecture`
 > - `TDD`, `DDD`, `SOLID`, `ADRs`
-> - `Diagram as code` com `Mermaid.js` e `Miro`
+> - `REST` `HTTP` e `gRPC` entre `Microsservices`
 > - `Dockerized` Solução com uso de containers
-> - `gRPC` e `http` entre `Microsservices`
-> - `PostgreSQL` modelado inspirado em `Event Sourcing` para garantir `Consistência`
+> - `PostgreSQL` modelado inspirado em `Event Sourcing` garantindo `Consistency`
+> -  `Concurrent Programming`
+> - `Redis` para `Pessimistic Memory Lock`
+> - `Redis Keyspace Notification` como `Pub/Sub` para `Unlocks` <br/>(`Robust Queues` foram desconsideradas devido `Additional Latency`)
 > - `CI` com `GitHub Actions` 
-> - `Redis` para `Memory Lock Pessimista` e `Concurrent Programming`
-> - `Redis Keyspace Notification` como `Pub/Sub` para `Unlocks` <br/>(`Filas` foram desconsideradas devido `Latência Adicional`)
 > - `Performance/Load Test Dockerized` com `Gatling`
-> - `Observability` com `Prometheus` e `Grafana` com `Métricas` `RED` (WIP)
+> - `Observability` com `Prometheus` e `Grafana` com `RED M etrics` (WIP)
+> - `Diagram as code` com `Mermaid.js` e `Miro`
 
 <br/>
 
@@ -477,7 +478,7 @@ Os testes também são executados como parte da rotina minima de `CI` do <a href
 
 _Apenas Containerizado._
 
-Atualmente o `Gatling` na versão 3.9.5 (desatualizada), realiza os testes de carga.<br/>Para executá-los, é necessário estar [Rodando o Projeto Containerizado](#run-containerized). Em outro terminal, no diretório raiz do projeto, execute os seguintes comandos
+Atualmente o `Gatling` na versão 3.9.5 (desatualizada), realiza os testes de carga. Para executá-los, é necessário estar [Rodando o Projeto Containerizado](#run-containerized). Em outro terminal, no diretório raiz do projeto, execute os seguintes comandos
 
 ```bash
 # Rodar o Gatling
@@ -519,8 +520,7 @@ docker exec -ti gatling /entrypoint run-test
 
 <br/>
 
-<details>
-  <summary><b>Saída esperada no site <a href="http://localhost:9099">Gatling em seu localhost</a></b></summary>
+__Saída esperada no site [Gatling em seu localhost](http://localhost:9099)__
     <div align="center">
         <img src="./docs/assets/images/screen_captures/load_test_gatling_web.png">
     </div>
@@ -538,8 +538,9 @@ O teste executa **7500k transações em 5 minutos** (ou `25 TPS`, `Transações 
 
 Picos de `TPS` sugeridos para testes seriam
 - 50
+- 75
 - 100
-- Valores acima podemos considerar como `stress test`
+- Os valores acima podem ser considerados como um `stress test`, e é esperado que haja falhas no sistema a partir desse ponto. Em um sistema de produção, essa carga deve ser distribuída entre diferentes `pods`.
 
 <br/>
 
@@ -583,12 +584,22 @@ _Apenas Containerizado. Validado no SO Ubunto 22_
 
 __Métricas com Prometheus:__
 
-Após rodar com sucesso o `docker compose up` como visto anteriormente, acesse:
+Em seu arquivo `.env`, altere a configuração de métricas do `database` para `true` e reinicie o `transaction-processor`.
+
+```
+DATABASE_METRICS_ENABLED=true
+```
+
+<br/>
+
+[Rodando o Projeto](#run) `payment-api`  em seu ambiente _containerizado_ com seu `.env` configurado, suba as imagens necessarias com o comando
 
 ```bash
-# Rodar o Prometheus e Grafana
+# Rodar o Prometheus, pushgateway e Grafana
 docker compose up prometheus pushgateway grafana -d
 ```
+
+<br/>
 
 <details>
   <summary><b>Saída esperada no site <a href="http://localhost:9090/">Prometheus em seu localhost</a> rodando a consulta</b> <i>gin_gonic_request_duration_bucket{path="/payment"}</i></summary>
@@ -630,7 +641,7 @@ A primeira vez que executarmos o Grafana, entramos com `usuário/senha` padrão 
 
 <br/>
 
-Quando adequadamente importado, o Dashboard estará disponível e responderá às solicitações que você pode simular pela [Documentação da API](#api-docs) ou pelos [Testes Carga & Performance](#test-load) (fortemente recomendados).
+Quando adequadamente importado, o Dashboard estará disponível e responderá às solicitações que você pode simular pela [Documentação da API](#api-docs) ou pelos [Testes Carga & Performance](#test-load) (fortemente recomendado rodar em conjunto com a `Observabilidade`).
 
 <div align="center">
     <img src="./docs/assets/images/screen_captures/grafana_red.png">
@@ -1158,9 +1169,10 @@ Contrate artistas para projetos comerciais ou mais elaborados e aprenda a ser en
 
 - Teste de stress abaixo foi realizado em um [Notebook ROG Strix G16 - 13ª Geração](https://br.store.asus.com/notebook-gamer-rog-strix-g16-13-geracao.html?config=90NR0D41-M00Y60) após melhorias no banco e consultas para `Performance`. Os resultados podem variar dependendo das configurações e processos abertos na máquina de desenvolvimento. Detalhes no `ADR` [0007: Tabela Auxiliar para Melhoria de Performance](./docs/architecture/decisions/0007-tabela-auxiliar-para-melhoria-de_performance.md). <div align="center"><img src="./docs/assets/images/screen_captures/improvement/load_test_400_tps_after_improvement.jpeg"></div>
 
-- O requisito `L4` foi aprimorado em sua `Concorrência` com o `Refactor` do `adapter` de `PubSub` `Redis` e do `repository` de `memoryLock`. A instância da aplicação sobrescreve no `PubSub` uma única vez e distribui as mensagens de desbloqueio apenas para as `requests` bloqueadas, através de `channels` com `bufferSize` de `1`, armazenados em um `syncMap` com chave `accountUID`. Esse map por sua vez armazena os `channels` de `subscriptions` em um `hashMap` cuja as chaves são `transactionUID` , tornando cada requisição única e eliminando conexões custosas com o `Redis`.
+- O requisito `L4` foi aprimorado em sua `Concorrência` com o `Refactor` do `adapter` de `PubSub` `Redis` e do `repository` de `memoryLock`. A instância da aplicação sobrescreve no `PubSub` uma única vez e distribui as mensagens de desbloqueio apenas para as `requests` bloqueadas, através de `channels` com `bufferSize` de `1`, armazenados em um `syncMap` com chave `accountUID`. Esse map, por sua vez, armazena os `channels` de `subscriptions` em um `hashMap` cujas chaves são `transactionUID`, tornando cada requisição única e eliminando conexões custosas com o `Redis`. Com isso, espera-se validar a hipótese de que múltiplas instâncias são capazes de gerenciar os recursos de forma mais eficiente, resultando no aumento do `TPS` atendido.
 
 ```go
+// Exemplo de estrutura sync.Map usada no sistema para gerenciar concorrência
 subscriptions := sync.Map{
     "account1": map[string]chan string{
         "transaction1": make(chan string, 1),
@@ -1173,7 +1185,11 @@ subscriptions := sync.Map{
 
 ```
 
-- Testes adicionais devem ser criados (multiplos cenários de erros nas rotas e serviços).
+- Aprimoramentos na `Observabilidade` com painéis de monitoramento `Grafana` do `Redis` `PubSub` e `Cache` fazem-se necessários, bem como melhorias na criação e no gerenciamento de `Logs` (`Grafana Loki`) e `Traces` baseados em `OpenTelemetry` com `Jaeger`. Esses aprimoramentos devem ser considerados no futuro próximo.
+
+- Aprimorar o `Disaster Recovery` e implementar `Graacefull Shutdown`
+
+- Testes adicionais devem ser criados (Concorrência e múltiplos cenários de erros nas rotas e serviços).
 
 Este desafio me permite consolidar conhecimentos e identificar pontos cegos para aprimoramento. Continuarei trabalhando para evoluir o projeto e expandir minhas habilidades.
 
