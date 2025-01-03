@@ -1187,7 +1187,7 @@ subscriptions := sync.Map{
 
 - Aprimoramentos na `Observabilidade` com painéis de monitoramento `Grafana` do `Redis` `PubSub` e `Cache` fazem-se necessários, bem como melhorias na criação e no gerenciamento de `Logs` (`Grafana Loki`) e `Traces` baseados em `OpenTelemetry` com `Jaeger`. Esses aprimoramentos devem ser considerados no futuro próximo.
 
-- Aprimorar o `Disaster Recovery` e implementar `Graacefull Shutdown`
+- Aprimorar o `Disaster Recovery` e implementar `Gracefull Shutdown`
 
 - Testes adicionais devem ser criados (Concorrência e múltiplos cenários de erros nas rotas e serviços).
 
