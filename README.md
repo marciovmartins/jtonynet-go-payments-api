@@ -537,11 +537,9 @@ O teste executa **7500k transações em 5 minutos** (ou `25 TPS`, `Transações 
 ```
 
 Picos de `TPS` sugeridos para testes seriam
-- 50
-- 75
-- 100
+- 50, 100
+- 200, 250
 - Os valores acima de 100 podem ser considerados como `stress test`. Em um sistema de produção, carga ofensora deve ser distribuída entre diferentes `pods`.
-
 <br/>
 
 O comando abaixo remove o histórico dos testes de carga.
