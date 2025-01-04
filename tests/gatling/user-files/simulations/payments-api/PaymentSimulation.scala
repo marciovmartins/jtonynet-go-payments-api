@@ -11,27 +11,24 @@ class Payment extends Simulation {
     .acceptEncodingHeader("gzip, deflate")
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
-
   val paymentExecute = 
     feed(tsv("transactions.tsv").circular())
-    .exec(session => {
-      val payload = session("payload").as[String]
-      println(s"Payload JSON: $payload")
-      session
-    })
     .exec(http("Requisição para /payment")
       .post("/payment")
       .body(StringBody("#{payload}"))
       .header("Content-Type", "application/json")
-      .check(status.in(200))
+      .check(
+        status.is(200),
+        jsonPath("$.code").transform(code => if (code == "07") throw new Exception("General Error: code 07") else code)
+      )
     )
 
   val testPaymentExecute = scenario("Test Payments").exec(paymentExecute)
 
-
   private val tps = 25
   private val window = 5.minutes
   private val activeUsers = (window.toSeconds * tps).toInt
+
   setUp(
     testPaymentExecute.inject(rampUsers(activeUsers).during(window))
   ).protocols(httpProtocol)

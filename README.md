@@ -540,7 +540,7 @@ Picos de `TPS` sugeridos para testes seriam
 - 50
 - 75
 - 100
-- Os valores acima podem ser considerados como um `stress test`, e é esperado que haja falhas no sistema a partir desse ponto. Em um sistema de produção, essa carga deve ser distribuída entre diferentes `pods`.
+- Os valores acima de 100 podem ser considerados como `stress test`. Em um sistema de produção, carga ofensora deve ser distribuída entre diferentes `pods`.
 
 <br/>
 
