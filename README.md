@@ -595,8 +595,8 @@ DATABASE_METRICS_ENABLED=true
 [Rodando o Projeto](#run) `payment-api`  em seu ambiente _containerizado_ com seu `.env` configurado, suba as imagens necessarias com o comando
 
 ```bash
-# Rodar o Prometheus, pushgateway e Grafana
-docker compose up prometheus pushgateway grafana -d
+# Rodar o pushgateway, redis-exporter, prometheus e grafana
+docker compose up pushgateway redis-exporter prometheus grafana -d
 ```
 
 <br/>
@@ -612,7 +612,6 @@ docker compose up prometheus pushgateway grafana -d
 
 __Acesse o [Grafana em seu localhost](http://localhost:3000/)__ _(usuário/senha: admin/admin | admin/12345)_
 
-<br/>
 <br/>
 
 __Configurando o Grafana:__
@@ -650,8 +649,16 @@ Quando adequadamente importado, o Dashboard estará disponível e responderá à
 
 <br/>
 
-[⤴️ de volta ao índice](#index)
+Repita os passos de importação de dashboard anteriores para o arquivo __dash-redis.json__
 
+<div align="center">
+    <img src="./docs/assets/images/screen_captures/grafana_redis.png">
+    <i>*Imagem retirada durante teste de carga</i>
+</div>
+
+<br/>
+
+[⤴️ de volta ao índice](#index)
 
 ---
 
@@ -1086,8 +1093,9 @@ Para obter mais informações, consulte o [Histórico de Versões](./CHANGELOG.m
   - [Postgres v16.0](https://www.postgresql.org/)
   - [Redis](https://redis.com/)
   - [Gatling](https://gatling.com/)
-  - [Prometheus](https://prometheus.io/)
   - [prom/pushgateway](https://github.com/prometheus/pushgateway/blob/master/README.md)
+  - [prom/redis-exporter](https://hub.docker.com/r/oliver006/redis_exporter)
+  - [Prometheus](https://prometheus.io/)
   - [Grafana](https://grafana.com/)
 
 - GUIs:
